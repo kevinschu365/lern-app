@@ -73,7 +73,7 @@ function renderModuleDetail() {
         <span class="badge" style="background:${module.softColor}; color:${module.color};">${module.title}</span>
         <h2>${module.topic}</h2>
         <p class="module-meta">${module.summary}</p>
-        <p class="module-counts">${module.questions.length} Fragen Â· ${module.flashcards.length} Karten</p>
+        <p class="module-counts">${module.questions.length} Fragen - ${module.flashcards.length} Karten</p>
         ${learnedModules.has(module.id) ? '<p class="module-status">Als gelernt markiert</p>' : ""}
       </div>
       <button class="progress-toggle" type="button" data-module-id="${module.id}">
@@ -83,7 +83,7 @@ function renderModuleDetail() {
 
     <section>
       <h3 class="section-title">Quiz</h3>
-      <p class="section-text">Enthaelt offene Fragen, Einzelauswahl und Mehrfachantworten.</p>
+      <p class="section-text">Geschlossene Fragen werden erst nach "Ergebnis ansehen" aufgeloest.</p>
       ${questionMarkup}
     </section>
 
@@ -126,38 +126,10 @@ function renderQuestion(question, index, color) {
     `;
   }
 
-  if (question.type === "multi") {
-    const options = question.options
-      .map(
-        (option, optionIndex) => `
-          <label class="multi-option">
-            <input type="checkbox" value="${optionIndex}" />
-            <span>${option}</span>
-          </label>
-        `,
-      )
-      .join("");
-
-    return `
-      <article class="quiz-card" data-question-type="multi">
-        <div class="question-label" style="background:${color}15; color:${color};">Frage ${index + 1}</div>
-        <h4>${question.prompt}</h4>
-        <p class="question-hint">Mehrere Antworten koennen richtig sein.</p>
-        <div class="multi-options">${options}</div>
-        <button class="check-multi" type="button">Antwort pruefen</button>
-        <div class="quiz-result" aria-live="polite"></div>
-        <div class="sample-answer" hidden>
-          <strong>Begruendung:</strong>
-          <p>${question.explanation}</p>
-        </div>
-      </article>
-    `;
-  }
-
   const options = question.options
     .map(
       (option, optionIndex) => `
-        <button class="quiz-option" type="button" data-correct="${optionIndex === question.correctIndex}">
+        <button class="answer-option" type="button" data-option-index="${optionIndex}">
           ${option}
         </button>
       `,
@@ -165,11 +137,16 @@ function renderQuestion(question, index, color) {
     .join("");
 
   return `
-    <article class="quiz-card" data-question-type="single">
+    <article class="quiz-card" data-question-type="${question.type}">
       <div class="question-label" style="background:${color}15; color:${color};">Frage ${index + 1}</div>
       <h4>${question.prompt}</h4>
       <div class="quiz-options">${options}</div>
+      <button class="check-answer" type="button">Ergebnis ansehen</button>
       <div class="quiz-result" aria-live="polite"></div>
+      <div class="sample-answer" hidden>
+        <strong>Begruendung:</strong>
+        <p>${question.explanation}</p>
+      </div>
     </article>
   `;
 }
@@ -217,66 +194,58 @@ function wireQuizInteractions() {
       });
     }
 
-    if (card.dataset.questionType === "single") {
-      wireSingleChoice(card);
-    }
-
-    if (card.dataset.questionType === "multi") {
-      wireMultiChoice(card);
+    if (card.dataset.questionType === "single" || card.dataset.questionType === "multi") {
+      wireClosedQuestion(card);
     }
   });
 }
 
-function wireSingleChoice(card) {
-  const options = card.querySelectorAll(".quiz-option");
-  const result = card.querySelector(".quiz-result");
-
-  options.forEach((option) => {
-    option.addEventListener("click", () => {
-      const isCorrect = option.dataset.correct === "true";
-
-      options.forEach((entry) => {
-        entry.disabled = true;
-        const entryCorrect = entry.dataset.correct === "true";
-        entry.classList.toggle("correct", entryCorrect);
-        entry.classList.toggle("incorrect", !entryCorrect && entry === option);
-      });
-
-      result.textContent = isCorrect
-        ? "Richtig. Gute Arbeit."
-        : "Noch nicht ganz. Die gruen markierte Antwort ist korrekt.";
-    });
-  });
-}
-
-function wireMultiChoice(card) {
-  const button = card.querySelector(".check-multi");
-  const checkboxes = [...card.querySelectorAll('input[type="checkbox"]')];
+function wireClosedQuestion(card) {
+  const options = [...card.querySelectorAll(".answer-option")];
+  const button = card.querySelector(".check-answer");
   const result = card.querySelector(".quiz-result");
   const sampleAnswer = card.querySelector(".sample-answer");
   const question = findQuestionByPrompt(card.querySelector("h4").textContent);
 
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      if (button.disabled) return;
+
+      if (question.type === "single") {
+        options.forEach((entry) => entry.classList.remove("selected"));
+        option.classList.add("selected");
+        return;
+      }
+
+      option.classList.toggle("selected");
+    });
+  });
+
   button.addEventListener("click", () => {
-    const selected = checkboxes
-      .map((checkbox, index) => (checkbox.checked ? index : null))
-      .filter((value) => value !== null);
+    const selected = options
+      .filter((option) => option.classList.contains("selected"))
+      .map((option) => Number(option.dataset.optionIndex));
+
+    const correctIndices =
+      question.type === "multi" ? question.correctIndices : [question.correctIndex];
 
     const isCorrect =
-      selected.length === question.correctIndices.length &&
-      selected.every((value) => question.correctIndices.includes(value));
+      selected.length === correctIndices.length &&
+      selected.every((value) => correctIndices.includes(value));
 
-    checkboxes.forEach((checkbox, index) => {
-      checkbox.disabled = true;
-      const label = checkbox.closest(".multi-option");
-      const shouldBeChecked = question.correctIndices.includes(index);
-      label.classList.toggle("correct", shouldBeChecked);
-      label.classList.toggle("incorrect", checkbox.checked && !shouldBeChecked);
+    options.forEach((option) => {
+      option.disabled = true;
+      const optionIndex = Number(option.dataset.optionIndex);
+      const isCorrectOption = correctIndices.includes(optionIndex);
+      option.classList.toggle("correct", isCorrectOption);
+      option.classList.toggle("incorrect", option.classList.contains("selected") && !isCorrectOption);
+      option.classList.remove("selected");
     });
 
     button.disabled = true;
     result.textContent = isCorrect
-      ? "Richtig. Du hast alle passenden Antworten erkannt."
-      : "Nicht ganz. Die gruen markierten Antworten sind richtig.";
+      ? "Richtig. Gute Arbeit."
+      : "Nicht ganz. Die gruen markierten Antworten sind korrekt.";
     sampleAnswer.removeAttribute("hidden");
   });
 }
@@ -413,4 +382,3 @@ updateStats();
 renderModuleCards();
 renderModuleDetail();
 wireModuleSelect();
-
