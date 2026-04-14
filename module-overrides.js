@@ -334,6 +334,63 @@ modules.forEach((module) => {
   Object.assign(module, override, { flashcards: [...override.flashcards, ...extraCards(module.topic)] });
 });
 
+function buildQuestionBoosters(topic) {
+  return [
+    openQ(`Fasse ${topic} in 5 bis 7 klaren Stichpunkten zusammen.`, `Nenne die wichtigsten Begriffe, Prozesse, Ziele und Praxisfelder des Moduls in einer kompakten Uebersicht.`),
+    openQ(`Welche typischen Fehler werden in ${topic} in der Praxis haeufig gemacht?`, `Beschreibe mehrere typische Fehler, erklaere kurz die Folgen und nenne, wie man sie vermeidet.`),
+    openQ(`Wie wuerdest du ${topic} einer fachfremden Person in einfachen Worten erklaeren?`, `Erklaere das Thema ohne Fachjargon in 3 bis 5 klaren Saetzen und nutze nach Moeglichkeit ein alltagsnahes Beispiel.`),
+    openQ(`Nenne ein realistisches Praxisbeispiel, in dem ${topic} eine wichtige Rolle spielt.`, `Beschreibe ein Unternehmen oder einen Anwendungsfall und erklaere, wie das Modul dort konkret eingesetzt wird.`),
+    openQ(`Welche Kennzahlen, Ergebnisse oder Qualitaetskriterien sind in ${topic} besonders wichtig?`, `Nenne sinnvolle Messgroessen oder Bewertungskriterien und erklaere kurz, warum sie relevant sind.`),
+    openQ(`Wie haengt ${topic} mit anderen Online-Marketing-Modulen zusammen?`, `Zeige auf, welche Schnittstellen es zu Strategie, Content, SEO, SEA, Social Media, Analyse oder Technik geben kann.`),
+    openQ(`Welche Entscheidung wuerdest du in ${topic} nie ohne Kontext oder Ziel treffen?`, `Nenne ein Beispiel fuer eine wichtige Entscheidung und erklaere, welche Informationen du davor brauchst.`),
+    openQ(`Welche 3 Fachbegriffe aus ${topic} solltest du sicher beherrschen und warum?`, `Waehle drei zentrale Begriffe aus, definiere sie und erklaere ihren praktischen Nutzen.`)
+  ];
+}
+
+function buildFlashcardBoosters(topic) {
+  return [
+    { front: `${topic} - Kernziel`, back: `Welches Hauptziel verfolgt dieses Modul im Online Marketing und warum ist es relevant?` },
+    { front: `${topic} - Nutzen`, back: `Welchen konkreten Nutzen bringt dieses Thema fuer Unternehmen, Marken oder Kampagnen?` },
+    { front: `${topic} - Prozess`, back: `Welcher typische Ablauf oder Denkprozess steckt hinter diesem Modul?` },
+    { front: `${topic} - Fehler`, back: `Nenne einen typischen Fehler in diesem Thema und wie man ihn vermeiden kann.` },
+    { front: `${topic} - KPI`, back: `Welche Kennzahl oder welches Qualitaetskriterium passt besonders gut zu diesem Modul?` },
+    { front: `${topic} - Zielgruppe`, back: `Fuer welche Zielgruppe, Situation oder Unternehmensart ist dieses Thema besonders wichtig?` },
+    { front: `${topic} - Werkzeug`, back: `Welches Tool, Modell oder Framework wird mit diesem Thema haeufig verbunden?` },
+    { front: `${topic} - Praxis`, back: `Formuliere ein kurzes Praxisbeispiel, in dem dieses Modul sinnvoll eingesetzt wird.` },
+    { front: `${topic} - Pruefungsfrage`, back: `Welche typische Pruefungs- oder Testfrage koennte zu diesem Thema gestellt werden?` },
+    { front: `${topic} - Transfer`, back: `Wie wuerdest du das Gelernte aus diesem Modul auf ein reales Unternehmen uebertragen?` }
+  ];
+}
+
+modules.forEach((module) => {
+  if (module.id === 10) {
+    return;
+  }
+
+  const targetQuestionCount = 15;
+  const targetFlashcardCount = 15;
+
+  if (module.questions.length < targetQuestionCount) {
+    const boosters = buildQuestionBoosters(module.topic);
+    let boosterIndex = 0;
+
+    while (module.questions.length < targetQuestionCount) {
+      module.questions.push(boosters[boosterIndex % boosters.length]);
+      boosterIndex += 1;
+    }
+  }
+
+  if (module.flashcards.length < targetFlashcardCount) {
+    const boosters = buildFlashcardBoosters(module.topic);
+    let boosterIndex = 0;
+
+    while (module.flashcards.length < targetFlashcardCount) {
+      module.flashcards.push(boosters[boosterIndex % boosters.length]);
+      boosterIndex += 1;
+    }
+  }
+});
+
 modules.forEach((module) => {
   const override = moduleOverrides[module.id];
   if (!override) {
