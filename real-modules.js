@@ -1,3 +1,45 @@
+﻿const palette = [
+  { color: "#0f766e", soft: "#ccfbf1" },
+  { color: "#b45309", soft: "#fef3c7" },
+  { color: "#b91c1c", soft: "#fee2e2" },
+  { color: "#7c3aed", soft: "#ede9fe" },
+  { color: "#2563eb", soft: "#dbeafe" },
+  { color: "#15803d", soft: "#dcfce7" },
+  { color: "#be123c", soft: "#ffe4e6" },
+  { color: "#4338ca", soft: "#e0e7ff" },
+  { color: "#0f766e", soft: "#ccfbf1" },
+  { color: "#92400e", soft: "#fef3c7" },
+  { color: "#0369a1", soft: "#e0f2fe" },
+  { color: "#6d28d9", soft: "#ede9fe" },
+  { color: "#c2410c", soft: "#ffedd5" },
+  { color: "#1d4ed8", soft: "#dbeafe" },
+  { color: "#0f766e", soft: "#ccfbf1" },
+  { color: "#475569", soft: "#e2e8f0" },
+  { color: "#7c2d12", soft: "#ffedd5" }
+];
+
+const single = (prompt, options, correctIndex, explanation) => ({
+  type: "single",
+  prompt,
+  options,
+  correctIndex,
+  explanation
+});
+
+const multi = (prompt, options, correctIndices, explanation) => ({
+  type: "multi",
+  prompt,
+  options,
+  correctIndices,
+  explanation
+});
+
+const open = (prompt, sampleAnswer) => ({
+  type: "open",
+  prompt,
+  sampleAnswer
+});
+
 const moduleTopics = [
   "Online-Marketing Strategie",
   "Website Marketing",
@@ -15,828 +57,302 @@ const moduleTopics = [
   "Video-Content mit DaVinci & KI",
   "Analyse & Optimierung",
   "Projektmanagement",
-  "KI im Online Marketing",
+  "KI im Online Marketing"
+];
+
+function baseModule(topic, index) {
+  const tone = palette[index % palette.length];
+  return {
+    id: index + 1,
+    title: `Modul ${index + 1}: ${topic}`,
+    topic,
+    color: tone.color,
+    softColor: tone.soft,
+    summary: `Dieses Modul ist als Platzhalter vorbereitet. Sobald die Praesentation vorliegt, wird es mit einer kompakten Zusammenfassung, praxistauglichen Quizfragen, Karteikarten und Uebungen gefuellt.`,
+    questions: [
+      open(
+        `Was erwartest du inhaltlich von ${topic}, und welche Lernziele waeren fuer dich am wichtigsten?`,
+        `Formuliere 3 bis 5 Stichpunkte: Welche Kernbegriffe, Prozesse, Tools oder Gesetze koennten in diesem Modul wichtig sein und wie wuerdest du das spaeter praktisch anwenden?`
+      )
+    ],
+    flashcards: [
+      {
+        front: `${topic} - Kernziel`,
+        back: `Notiere in einem Satz, welches Problem oder welche Aufgabe dieses Modul im Online Marketing loesen soll.`
+      },
+      {
+        front: `${topic} - Transfer`,
+        back: `Ueberlege dir ein Beispiel aus einem echten Unternehmen, auf das du die Inhalte dieses Moduls spaeter anwenden koenntest.`
+      }
+    ],
+    exercises: [
+      `Erstelle eine Mini-Zusammenfassung fuer ${topic} in 5 Stichpunkten, sobald die Unterlagen vorliegen.`,
+      `Sammle 10 Fachbegriffe aus ${topic} und erklaere jeden Begriff in einem einfachen Satz.`
+    ],
+    tips: [
+      `Lerne dieses Modul zuerst ueber Begriffe, dann ueber Prozesse, dann ueber Anwendungsfaelle.`,
+      `Pruefe bei jedem Thema, wie man Erfolg, Risiken und typische Fehler in der Praxis erkennt.`
+    ]
+  };
+}
+
+const content = [
+  {
+    summary: "Das Modul fuehrt in strategisches Online Marketing ein und verbindet Grundlagen wie Zielgruppen, Customer Journey, Positionierung und Erfolgsmessung mit dem moderneren 6P-Denken. Die 4P bleiben als Basis wichtig, werden aber um weitere Perspektiven ergaenzt.",
+    questions: [
+      single("Wofuer steht Marketing im Kern?", ["Nur fuer Werbung", "Fuer kundenorientierte Marktgestaltung", "Nur fuer Vertrieb", "Nur fuer Social Media"], 1, "Marketing richtet Angebote, Kommunikation und Prozesse an Kunden und Markt aus."),
+      single("Welche Aussage beschreibt die 4P korrekt?", ["Product, Price, Place, Promotion", "People, Planning, Process, Profit", "Product, Persona, Proof, Position", "Price, Platform, Performance, Policy"], 0, "Die 4P sind das klassische Marketing-Mix-Modell."),
+      single("Warum wird im Modul das 6P-Denken als aktueller dargestellt?", ["Weil digitale Maerkte komplexer geworden sind", "Weil die 4P verboten sind", "Weil nur Start-ups 6P nutzen", "Weil dadurch keine KPIs mehr noetig sind"], 0, "Digitale Maerkte brauchen meist mehr Perspektiven als nur den klassischen Mix."),
+      multi("Welche Aspekte koennen das klassische 4P-Modell in modernen Modellen sinnvoll erweitern?", ["People", "Processes", "Physical Evidence", "Nur Printanzeigen"], [0, 1, 2], "Gerade bei Dienstleistungen und digitalen Angeboten werden oft weitere P ergaenzt."),
+      single("Was ist eine Customer Journey?", ["Der interne Projektplan", "Die Reise eines Nutzers von Aufmerksamkeit bis Bindung", "Nur der Kaufvorgang im Shop", "Die Logistikroute"], 1, "Die Customer Journey betrachtet den Weg des Kunden ueber mehrere Kontaktpunkte."),
+      multi("Welche Phasen koennen Teil einer Customer Journey sein?", ["Awareness", "Consideration", "Conversion", "Retention"], [0, 1, 2, 3], "Je nach Modell wird die Reise in mehrere Stufen unterteilt."),
+      single("Was bedeutet Positionierung?", ["Eine Marke klar im Kopf der Zielgruppe verankern", "Nur das Logo platzieren", "Die Anzeigenposition in Google sichern", "Eine Preisliste drucken"], 0, "Positionierung beschreibt die gewuenschte Wahrnehmung der Marke."),
+      single("Welcher Vorteil entsteht durch klare Zielgruppenarbeit?", ["Beliebige Inhalte fuer alle", "Praezisere Angebote und Kommunikation", "Weniger Strategiebedarf", "Keine Analyse mehr noetig"], 1, "Je genauer die Zielgruppe, desto relevanter die Massnahmen."),
+      multi("Welche Kennzahlen koennen in einer Online-Marketing-Strategie relevant sein?", ["Conversion Rate", "Traffic", "Customer Lifetime Value", "Bounce Rate"], [0, 1, 2, 3], "KPIs haengen vom Ziel ab, mehrere davon sind oft gleichzeitig wichtig."),
+      single("Was beschreibt T-Shaped-Marketing?", ["Nur Spezialwissen ohne Breite", "Breites Grundwissen mit Tiefe in einem Schwerpunkt", "Ausschliesslich Social Media Wissen", "Nur operative Aufgaben"], 1, "T-Shaped Marketer verbinden Ueberblick mit Spezialisierung."),
+      multi("Welche Faktoren helfen bei einer strategischen Priorisierung von Massnahmen?", ["Ziele", "Ressourcen", "Zielgruppe", "Messbarkeit"], [0, 1, 2, 3], "Sinnvolle Priorisierung beruecksichtigt Wirkung, Aufwand und Relevanz."),
+      single("Was ist ein typischer Fehler in der Strategiearbeit?", ["Massnahmen ohne klare Ziele zu starten", "Ziele mit KPIs zu verbinden", "Personas zu definieren", "Daten auszuwerten"], 0, "Ohne Zielbild wird Marketing schnell unkoordiniert."),
+      open("Erklaere den Unterschied zwischen strategischen Zielen und operativen Massnahmen.", "Strategische Ziele beschreiben, was langfristig erreicht werden soll, etwa Markenbekanntheit oder Leads. Operative Massnahmen sind konkrete Aktionen wie Kampagnen, Content, Anzeigen oder E-Mail-Strecken, mit denen diese Ziele umgesetzt werden."),
+      open("Warum reicht es im Online Marketing nicht, nur Reichweite aufzubauen?", "Reichweite allein sagt wenig ueber Qualitaet, Relevanz oder Geschaeftserfolg aus. Wichtig ist, ob die richtigen Zielgruppen erreicht werden und daraus Interaktion, Leads, Verkaeufe oder Bindung entstehen."),
+      open("Nenne ein Beispiel, wie du das 6P-Denken auf ein kleines Unternehmen anwenden wuerdest.", "Beispiel: Angebot definieren, Preislogik festlegen, Vertriebskanaele waehlen, passende Kommunikation planen und zusaetzlich Menschen, Prozesse oder Servicequalitaet einbeziehen, damit das Kundenerlebnis konsistent wird.")
+    ],
+    flashcards: [
+      { front: "4P", back: "Product, Price, Place, Promotion als klassischer Marketing-Mix." },
+      { front: "6P-Denken", back: "Erweitert den Marketing-Mix um weitere fuer digitale oder serviceorientierte Kontexte wichtige Perspektiven." },
+      { front: "Customer Journey", back: "Weg eines Nutzers von der ersten Aufmerksamkeit bis zu Kauf, Bindung oder Empfehlung." },
+      { front: "Positionierung", back: "Wie eine Marke oder ein Angebot im Kopf der Zielgruppe wahrgenommen werden soll." },
+      { front: "Persona", back: "Verdichtete Beschreibung einer typischen Zielgruppenvertretung mit Zielen, Problemen und Verhalten." },
+      { front: "KPI", back: "Messgroesse zur Beurteilung, ob ein Ziel erreicht wird." },
+      { front: "T-Shaped Marketer", back: "Person mit breitem Marketingverstaendnis und Tiefe in einem Schwerpunktgebiet." },
+      { front: "Conversion", back: "Erwuenschte Handlung eines Nutzers, zum Beispiel Kauf, Lead oder Anmeldung." }
+    ],
+    exercises: [
+      "Analysiere ein Unternehmen deiner Wahl und beschreibe dessen 6P in kurzen Stichpunkten.",
+      "Skizziere eine Customer Journey mit mindestens 5 Kontaktpunkten fuer ein reales Produkt.",
+      "Leite fuer ein Marketingziel passende KPIs ab und erklaere, warum genau diese Kennzahlen sinnvoll sind."
+    ],
+    tips: [
+      "Lerne Modelle nicht nur auswendig, sondern immer mit einem Praxisbeispiel.",
+      "Verbinde jede Strategiefrage mit Zielgruppe, Ziel und Messbarkeit.",
+      "Wenn du unsicher bist, frage dich zuerst: Welches Problem loest die Massnahme fuer wen?"
+    ]
+  },
+  {
+    summary: "Website Marketing behandelt die technische und konzeptionelle Grundlage digitaler Praesenzen: Domains, DNS, URLs, Informationsarchitektur, UX, Mobile First, Responsive Design, Wireframes sowie CMS- und Hosting-Grundlagen.",
+    questions: [
+      single("Wofuer steht DNS?", ["Digital Navigation System", "Domain Name System", "Data Network Structure", "Direct Naming Service"], 1, "DNS uebersetzt Domainnamen in IP-Adressen."),
+      single("Wozu dient eine Domain?", ["Sie ersetzt das Hosting", "Sie macht eine Website ueber einen Namen erreichbar", "Sie erstellt automatisch Inhalte", "Sie ist nur fuer E-Mails relevant"], 1, "Die Domain ist die merkbare Adresse einer Website."),
+      single("Was beschreibt eine URL?", ["Nur den Domainnamen", "Die vollstaendige Webadresse einer Ressource", "Nur den Seitentitel", "Das Hostingpaket"], 1, "Die URL verweist auf eine konkrete Ressource im Web."),
+      multi("Welche Bestandteile koennen Teil einer URL sein?", ["Protokoll", "Domain", "Pfad", "Parameter"], [0, 1, 2, 3], "URLs bestehen oft aus mehreren Bausteinen."),
+      single("Was ist eine Subdomain?", ["Ein Unterordner auf dem Server", "Ein eigener Bereich vor der Hauptdomain", "Ein anderer Begriff fuer TLD", "Ein DNS-Fehler"], 1, "Beispiel: blog.beispiel.de."),
+      single("Warum ist Mobile First wichtig?", ["Weil Desktop keine Rolle mehr spielt", "Weil Nutzung und Gestaltung oft vom mobilen Kontext aus gedacht werden", "Weil dadurch Hosting unnoetig wird", "Weil es rechtlich vorgeschrieben ist"], 1, "Viele Nutzer starten mobil, daher wird die kleinste Ansicht zuerst priorisiert."),
+      single("Was ist Responsive Design?", ["Feste Desktop-Breite fuer alle", "Automatische Anpassung des Layouts an verschiedene Geraete", "Nur ein schoenes Farbschema", "Ein WordPress-Plugin"], 1, "Responsive Design sorgt fuer gute Nutzbarkeit auf verschiedenen Bildschirmgroessen."),
+      multi("Welche Faktoren gehoeren zur User Experience?", ["Verstaendlichkeit", "Navigation", "Ladezeit", "Vertrauen"], [0, 1, 2, 3], "UX umfasst das gesamte Erleben rund um die Website."),
+      single("Wofuer wird ein Wireframe genutzt?", ["Fuer die technische Serverkonfiguration", "Fuer den strukturellen Aufbau einer Seite vor dem Design", "Fuer SEO-Backlinks", "Fuer Rechnungsstellung"], 1, "Wireframes helfen, Inhalt und Struktur frueh zu planen."),
+      single("Was ist ein CMS?", ["Ein Tool zur Inhaltsverwaltung", "Nur ein Analyseprogramm", "Ein Werbenetzwerk", "Ein Browser"], 0, "CMS steht fuer Content-Management-System."),
+      multi("Welche Vorteile kann ein CMS bieten?", ["Inhalte ohne Programmierung pflegen", "Mehrere Rollen verwalten", "Plugins oder Erweiterungen nutzen", "Struktur leichter aktualisieren"], [0, 1, 2, 3], "CMS-Systeme unterstuetzen Pflege und Weiterentwicklung der Website."),
+      single("Was beschreibt Hosting?", ["Das Verfassen von Website-Texten", "Die Bereitstellung von Speicher und Infrastruktur fuer die Website", "Die Gestaltung des Logos", "Das Buchen von Anzeigen"], 1, "Hosting sorgt dafuer, dass die Website technisch erreichbar ist."),
+      multi("Welche Ziele verfolgt eine gute Startseite?", ["Orientierung geben", "Vertrauen aufbauen", "Naechste Handlung erleichtern", "Zielgruppen schnell abholen"], [0, 1, 2, 3], "Die Startseite ist oft Einstiegs- und Ueberzeugungsseite zugleich."),
+      open("Erklaere den Unterschied zwischen Domain, URL und Hosting.", "Die Domain ist der merkbare Name, die URL die komplette Adresse einer konkreten Ressource und Hosting die technische Infrastruktur, auf der die Website gespeichert und ausgeliefert wird."),
+      open("Warum sind Wireframes vor dem visuellen Design sinnvoll?", "Sie helfen, Struktur, Inhalte, Nutzerfuehrung und Prioritaeten zu klaeren, bevor Zeit in Farben, Bilder und Feindesign investiert wird."),
+      open("Nenne drei typische Gruende, warum eine Website trotz schoenem Design nicht gut funktioniert.", "Zum Beispiel unklare Navigation, schlechte Ladezeit, fehlende mobile Optimierung, zu schwache Call-to-Actions oder wenig Vertrauen." )
+    ],
+    flashcards: [
+      { front: "DNS", back: "Domain Name System: ordnet Domains den passenden IP-Adressen zu." },
+      { front: "Domain", back: "Merkbarer Name einer Website, zum Beispiel beispiel.de." },
+      { front: "URL", back: "Vollstaendige Adresse einer konkreten Ressource im Web." },
+      { front: "Subdomain", back: "Bereich vor der Hauptdomain, etwa blog.beispiel.de." },
+      { front: "Responsive Design", back: "Layout passt sich flexibel an unterschiedliche Geraete an." },
+      { front: "Mobile First", back: "Planungsansatz, bei dem mobile Nutzung zuerst gedacht wird." },
+      { front: "Wireframe", back: "Skizze fuer Seitenstruktur, Inhaltsbloecke und Nutzerfuehrung." },
+      { front: "CMS", back: "System zur Verwaltung und Pflege von Website-Inhalten." }
+    ],
+    exercises: [
+      "Skizziere den Aufbau einer Startseite fuer ein reales Unternehmen als einfaches Wireframe.",
+      "Analysiere eine Website auf Mobile First, Navigation, Ladezeit und Call-to-Actions.",
+      "Erklaere einer fachfremden Person in einfachen Worten den Unterschied zwischen Domain, URL und Hosting."
+    ],
+    tips: [
+      "Pruefe Websites immer aus Sicht eines neuen Nutzers, nicht nur aus Unternehmenssicht.",
+      "Wenn du Begriffe lernst, verknuepfe sie direkt mit einem Browserbeispiel.",
+      "Denke bei Website Marketing immer an Ziel, Zielgruppe und naechste Handlung."
+    ]
+  },
+  {
+    summary: "Dieses Modul vermittelt die rechtlichen Grundlagen im Online Marketing, etwa Impressum, Datenschutz, Einwilligung, E-Mail-Werbung, Markenrecht, Irrefuehrung und zulaessige Werbeformen. Ziel ist, typische Risiken frueh zu erkennen.",
+    questions: [
+      single("Wozu dient ein Impressum?", ["Nur zur Imagepflege", "Zur Anbieterkennzeichnung", "Nur fuer Onlineshops", "Nur fuer Vereine"], 1, "Das Impressum macht Verantwortliche und Kontaktdaten transparent."),
+      single("Wofuer steht DSGVO?", ["Digitale Sicherheits- und Grundverordnung", "Datenschutz-Grundverordnung", "Deutsche Seiten-Gesetz-Verordnung", "Daten-System-Gesetz fuer Onlineshops"], 1, "Die DSGVO regelt den Umgang mit personenbezogenen Daten."),
+      single("Wann ist E-Mail-Werbung typischerweise zulaessig?", ["Immer bei vorhandener E-Mail-Adresse", "Mit wirksamer Einwilligung oder in engen Ausnahmen", "Nur an Unternehmen", "Nur wenn sie im Spamordner landet"], 1, "Werbliche E-Mails brauchen meist eine vorherige Zustimmung."),
+      multi("Welche Informationen koennen im Impressum relevant sein?", ["Name des Anbieters", "Kontaktmoeglichkeiten", "Vertretungsberechtigte Person", "Gegebenenfalls Registerangaben"], [0, 1, 2, 3], "Welche Angaben noetig sind, haengt von der Rechtsform und dem Angebot ab."),
+      single("Was ist bei Cookies rechtlich besonders wichtig?", ["Nur die Farbe des Banners", "Transparenz und je nach Zweck eine wirksame Einwilligung", "Dass immer alle Haken vorangekreuzt sind", "Dass keine Datenschutzerklaerung existiert"], 1, "Vor allem bei nicht notwendigen Cookies sind Information und Einwilligung zentral."),
+      single("Was bedeutet Irrefuehrung in der Werbung?", ["Eine kreative Formulierung", "Eine Werbung, die falsche oder taeuschende Erwartungen weckt", "Jede humorvolle Aussage", "Jede Rabattaktion"], 1, "Werbung darf Verbraucher nicht ueber wesentliche Punkte taeuschen."),
+      multi("Welche Aussagen koennen rechtlich riskant sein?", ["Nicht belegbare Heilversprechen", "Falsche Preisvorteile", "Unklare Verfuegbarkeit", "Verschleierte Werbung"], [0, 1, 2, 3], "Rechtliches Risiko steigt, wenn wesentliche Informationen fehlen oder falsch sind."),
+      single("Was schuetzt Markenrecht?", ["Nur Domainnamen", "Kennzeichen wie Marken und Logos", "Nur Texte im Blog", "Nur Kundendaten"], 1, "Markenrecht schuetzt unterscheidungskraeftige Kennzeichen."),
+      single("Warum kann eine Domain rechtlich problematisch sein?", ["Weil jede Domain automatisch geschuetzt ist", "Weil sie Marken oder Namensrechte verletzen kann", "Weil sie immer DSGVO-pflichtig ist", "Weil Subdomains verboten sind"], 1, "Domainwahl kann mit Kennzeichenrechten kollidieren."),
+      multi("Welche Grundsaetze sollte Online Werbung rechtlich erfuellen?", ["Erkennbar sein", "Nicht irrefuehren", "Datenschutz beachten", "Einwilligungen sauber dokumentieren"], [0, 1, 2, 3], "Saubere Werbung ist transparent, fair und datenschutzkonform."),
+      single("Was bedeutet Personenbezug bei Daten?", ["Daten betreffen immer Unternehmen", "Daten koennen einer identifizierten oder identifizierbaren Person zugeordnet werden", "Nur Name und Adresse sind Daten", "Technische Daten sind nie relevant"], 1, "Personenbezogene Daten sind weiter gefasst als viele denken."),
+      single("Was ist bei Gewinnspielen wichtig?", ["Es gibt keine Regeln", "Teilnahmebedingungen und transparente Kommunikation", "Nur ein schoenes Design", "Nur ein Social-Media-Post"], 1, "Teilnahmebedingungen und faire Regeln sind wichtig."),
+      open("Warum reicht es rechtlich nicht, nur eine Datenschutzerklaerung auf die Website zu stellen?", "Neben Informationen muessen je nach Verarbeitung auch Rechtsgrundlagen, Einwilligungen, technische Massnahmen und Prozesse korrekt umgesetzt sein."),
+      open("Nenne typische Risiken bei E-Mail-Marketing aus rechtlicher Sicht.", "Fehlende Einwilligung, unklare Absender, fehlende Abmeldemoeglichkeit, mangelhafte Dokumentation oder unzulaessige werbliche Ansprache koennen problematisch sein."),
+      open("Erklaere kurz, warum verschleierte Werbung problematisch ist.", "Nutzer muessen Werbung als Werbung erkennen koennen. Wird kommerzielle Kommunikation versteckt, ist das intransparent und kann unlauter sein.")
+    ],
+    flashcards: [
+      { front: "Impressum", back: "Anbieterkennzeichnung mit wesentlichen Pflichtangaben." },
+      { front: "DSGVO", back: "Datenschutz-Grundverordnung fuer den Umgang mit personenbezogenen Daten." },
+      { front: "Einwilligung", back: "Freiwillige, informierte und nachweisbare Zustimmung zu einer Verarbeitung oder Werbung." },
+      { front: "Personenbezogene Daten", back: "Daten, die sich auf eine identifizierte oder identifizierbare Person beziehen." },
+      { front: "Irrefuehrung", back: "Werbung erzeugt falsche oder taeuschende Vorstellungen ueber wesentliche Punkte." },
+      { front: "Markenrecht", back: "Schuetzt Kennzeichen wie Marken, Namen oder Logos vor unbefugter Nutzung." },
+      { front: "Cookie-Einwilligung", back: "Je nach Zweck ist vor allem bei nicht notwendigen Cookies eine wirksame Zustimmung noetig." },
+      { front: "Werbekennzeichnung", back: "Werbung muss fuer Nutzer als Werbung erkennbar sein." }
+    ],
+    exercises: [
+      "Pruefe eine Unternehmenswebsite auf Impressum, Datenschutzerklaerung und Cookie-Banner.",
+      "Formuliere drei Werbeaussagen so um, dass sie weniger irrefuehrend und transparenter sind.",
+      "Erstelle eine Checkliste mit den wichtigsten Rechtspruefungen vor dem Start einer Kampagne."
+    ],
+    tips: [
+      "Denke bei Rechtsthemen immer an Transparenz, Nachweisbarkeit und Fairness.",
+      "Lerne nicht nur Regeln, sondern auch typische Risikofaelle aus der Praxis.",
+      "Wenn eine Aussage zu gut klingt, ist sie rechtlich oft besonders pruefenswert."
+    ]
+  },
+  {
+    summary: "Content Marketing fokussiert Inhalte mit echtem Nutzwert. Behandelt werden Definition, Ziele, Core Story, Golden Circle, Personas, AIDA, Content Pillars, Redaktionsplanung und der Aufbau langfristiger Beziehungen statt reiner Werbedruck-Kommunikation.",
+    questions: [
+      single("Was ist das Hauptziel von Content Marketing?", ["Sofortiger Abverkauf ohne Vertrauen", "Relevante Inhalte zur Gewinnung und Bindung von Zielgruppen", "Nur mehr Blogartikel", "Nur Suchmaschinenmanipulation"], 1, "Content Marketing setzt auf hilfreiche, passende Inhalte fuer definierte Zielgruppen."),
+      single("Was beschreibt eine Core Story?", ["Die technische Servergeschichte", "Die inhaltliche Klammer und Grundbotschaft einer Marke", "Nur einen einzelnen Social Post", "Die AGB eines Unternehmens"], 1, "Die Core Story verbindet Themen, Haltung und Nutzen der Marke."),
+      single("Wofuer steht der Golden Circle?", ["Why, How, What", "Who, When, Where", "Write, Host, Win", "Worth, Hype, Wow"], 0, "Der Golden Circle startet bei Sinn und Motivation."),
+      multi("Welche Fragen helfen beim Persona-Aufbau?", ["Wer ist die Person?", "Welche Ziele hat sie?", "Welche Probleme treiben sie?", "Wie informiert sie sich?"], [0, 1, 2, 3], "Gute Personas machen Verhalten, Motivation und Informationsbeduerfnisse greifbar."),
+      single("Wofuer steht AIDA?", ["Attention, Interest, Desire, Action", "Awareness, Intent, Data, Analysis", "Action, Interaction, Design, Analytics", "Attention, Integration, Decision, Answer"], 0, "AIDA beschreibt eine klassische Wirkungslogik in der Kommunikation."),
+      single("Was sind Content Pillars?", ["Zufaellige Einzelideen", "Zentrale Themenfelder, um die Inhalte organisiert werden", "Nur KPI-Spalten", "Nur Instagram Stories"], 1, "Content Pillars schaffen thematische Struktur und Wiedererkennbarkeit."),
+      multi("Welche Formate koennen Teil einer Content-Strategie sein?", ["Blogartikel", "Newsletter", "Videos", "Checklisten"], [0, 1, 2, 3], "Content Marketing arbeitet ueber mehrere Formate und Kanaele hinweg."),
+      single("Warum ist ein Redaktionsplan sinnvoll?", ["Damit Inhalte zufaellig entstehen", "Damit Themen, Timing und Ressourcen strukturiert geplant werden", "Damit keine Ziele mehr noetig sind", "Damit Personas ersetzt werden"], 1, "Ein Redaktionsplan erleichtert Kontinuitaet und Abstimmung."),
+      multi("Woran erkennt man guten Content?", ["Relevanz fuer die Zielgruppe", "Klarer Nutzen", "Passende Ansprache", "Saubere Struktur"], [0, 1, 2, 3], "Guter Content hilft, orientiert und passt zur Phase des Nutzers."),
+      single("Welche Aussage passt am besten zu Content Marketing?", ["Nur Reichweite zaehlt", "Vertrauen entsteht ueber wiederholt hilfreiche Inhalte", "Nur virale Inhalte sind gut", "Lange Inhalte sind immer besser"], 1, "Wirkung entsteht oft ueber Qualitaet, Konsistenz und Passung."),
+      single("Was ist ein haeufiger Fehler im Content Marketing?", ["Ohne klare Zielgruppe und ohne Ziel zu posten", "Inhalte zu analysieren", "Themen zu clustern", "Content wiederzuverwenden"], 0, "Beliebige Inhalte ohne Strategie verwirren mehr als sie helfen."),
+      open("Erklaere den Unterschied zwischen einer Core Story und einem einzelnen Content Piece.", "Die Core Story ist die uebergeordnete Erzaehl- und Nutzenlinie der Marke. Ein einzelnes Content Piece ist eine konkrete Umsetzung davon, etwa ein Artikel, ein Video oder ein Post."),
+      open("Warum sind Personas fuer Content Marketing so wichtig?", "Weil Inhalte nur dann wirksam sind, wenn Sprache, Themen, Probleme und Formate zur Zielgruppe passen."),
+      open("Nenne ein Beispiel, wie aus einer Content Pillar mehrere konkrete Inhalte entstehen koennen.", "Beispiel: Aus dem Pillar SEO entstehen ein Grundlagenartikel, ein Checklisten-Post, eine FAQ-Story, ein Tutorial-Video und ein Newsletter." )
+    ],
+    flashcards: [
+      { front: "Content Marketing", back: "Strategische Nutzung relevanter Inhalte zur Gewinnung, Ueberzeugung und Bindung von Zielgruppen." },
+      { front: "Core Story", back: "Inhaltliche Hauptgeschichte und Botschaft einer Marke." },
+      { front: "Golden Circle", back: "Why, How, What als Denkmodell fuer klare Marken- und Kommunikationslogik." },
+      { front: "Persona", back: "Typisierte Beschreibung eines relevanten Zielgruppensegments." },
+      { front: "AIDA", back: "Attention, Interest, Desire, Action als klassisches Wirkmodell." },
+      { front: "Content Pillars", back: "Zentrale Themenfelder, auf denen Inhalte systematisch aufbauen." },
+      { front: "Redaktionsplan", back: "Plan fuer Themen, Formate, Termine, Verantwortung und Ausspielung." },
+      { front: "Evergreen Content", back: "Inhalte mit langfristigem Nutzen, die nicht schnell veralten." }
+    ],
+    exercises: [
+      "Entwickle fuer ein Unternehmen drei Content Pillars und jeweils zwei konkrete Content-Ideen.",
+      "Formuliere eine Persona mit Zielen, Herausforderungen, Einwaenden und bevorzugten Formaten.",
+      "Erstelle einen kleinen Redaktionsplan fuer zwei Wochen mit mehreren Formaten."
+    ],
+    tips: [
+      "Lerne Content Marketing immer entlang von Zielgruppe, Nutzen und Formatwahl.",
+      "Frage dich bei jedem Inhalt: Warum sollte die Zielgruppe das wirklich konsumieren?",
+      "Gute Inhalte muessen nicht nur schoen sein, sondern ein Problem loesen oder Orientierung geben."
+    ]
+  },
+  {
+    summary: "Social Media Marketing behandelt Grundlagen sozialer Plattformen, Ziele, Strategie, SMART-Ziele, Formate, Corporate Influencer, Ressourcenplanung und kanalbezogene Unterschiede. Im Fokus steht nicht nur Reichweite, sondern strategischer Plattform-Einsatz.",
+    questions: [
+      single("Was zeichnet Social Media im Vergleich zu klassischen Medien besonders aus?", ["Einweg-Kommunikation", "Interaktion und Beteiligung", "Keine Inhalte", "Nur bezahlte Reichweite"], 1, "Social Media ist von Austausch, Reaktion und Community gepraegt."),
+      single("Was beschreibt Web 2.0 im Kern?", ["Ein rein technisches Hosting-Update", "Mehr Beteiligung, Vernetzung und nutzergenerierte Inhalte", "Nur neue Browser", "Nur den Online-Shop-Bereich"], 1, "Web 2.0 steht fuer interaktive und partizipative Webnutzung."),
+      multi("Welche Ziele kann Social Media Marketing verfolgen?", ["Reichweite", "Community-Aufbau", "Kundenservice", "Leadgenerierung"], [0, 1, 2, 3], "Social Media kann mehrere Unternehmensziele gleichzeitig unterstuetzen."),
+      single("Was ist ein SMART-Ziel?", ["Ein moeglichst allgemeines Ziel", "Ein spezifisches, messbares und termingebundenes Ziel", "Nur ein kreativer Slogan", "Ein unbegrenztes Wunschziel"], 1, "SMART hilft, Ziele konkret steuerbar zu machen."),
+      single("Warum sollte nicht jeder Kanal gleich bespielt werden?", ["Weil jeder Kanal andere Zielgruppen, Formate und Logiken hat", "Weil nur Instagram wichtig ist", "Weil Crossposting verboten ist", "Weil Inhalte immer identisch sein muessen"], 0, "Plattformen unterscheiden sich stark in Nutzung und Erwartung."),
+      multi("Welche Formate sind typisch fuer Social Media?", ["Kurzvideo", "Story", "Carousel", "Live-Format"], [0, 1, 2, 3], "Je nach Plattform variieren die Prioritaeten, aber viele Formate sind kanaltypisch."),
+      single("Was ist ein Corporate Influencer?", ["Ein Rabattcode", "Eine Person aus dem Unternehmen, die sichtbar kommuniziert", "Ein Werbebanner", "Ein CMS-Modul"], 1, "Corporate Influencer koennen Marke, Expertise und Naehe verkoerpern."),
+      multi("Welche Elemente gehoeren zu einer Social-Media-Strategie?", ["Ziele", "Zielgruppen", "Kanalauswahl", "Ressourcenplanung"], [0, 1, 2, 3], "Strategie verbindet Unternehmensziele mit operativer Umsetzbarkeit."),
+      single("Warum ist Community Management wichtig?", ["Weil Kommentare irrelevant sind", "Weil Beziehungen, Vertrauen und Dialog gepflegt werden muessen", "Weil nur Likes zaehlen", "Weil dadurch SEO entfällt"], 1, "Social Media ist kein reiner Sendekanal."),
+      single("Was ist ein typischer Fehler in Social Media Marketing?", ["Ohne Ziel, Zielgruppe und Ressourcen einfach zu posten", "Formate zu testen", "Kommentare zu beantworten", "Kanalspezifisch zu denken"], 0, "Beliebiges Posten fuehrt selten zu nachhaltigen Ergebnissen."),
+      multi("Welche Kennzahlen koennen fuer Social Media relevant sein?", ["Engagement Rate", "Reichweite", "Klicks", "Conversions"], [0, 1, 2, 3], "Abhaengig vom Ziel sind verschiedene KPIs sinnvoll."),
+      open("Erklaere den Unterschied zwischen Reichweite und Engagement.", "Reichweite beschreibt, wie viele Personen einen Inhalt sehen. Engagement beschreibt, wie stark Nutzer mit dem Inhalt interagieren, etwa ueber Likes, Kommentare, Saves oder Shares."),
+      open("Warum ist Ressourcenplanung in Social Media wichtig?", "Weil Plattformen regelmaessige Inhalte, Betreuung, Abstimmung und Reaktion erfordern. Ohne Zeit und Verantwortlichkeiten leidet die Qualitaet und Kontinuitaet."),
+      open("Nenne ein Beispiel, wie sich derselbe Inhalt fuer LinkedIn und Instagram unterscheiden sollte.", "Auf LinkedIn eher fachlicher, textstaerker und businessbezogen. Auf Instagram visueller, kompakter und emotionaler oder alltagsnaher aufbereitet." )
+    ],
+    flashcards: [
+      { front: "Web 2.0", back: "Interaktive Webnutzung mit Beteiligung, Austausch und nutzergenerierten Inhalten." },
+      { front: "SMART-Ziel", back: "Spezifisch, messbar, attraktiv, realistisch und terminiert." },
+      { front: "Engagement", back: "Interaktionen wie Likes, Kommentare, Shares, Saves oder Klicks." },
+      { front: "Community Management", back: "Aktive Pflege von Beziehungen, Kommentaren, Nachrichten und Dialogen." },
+      { front: "Corporate Influencer", back: "Sichtbare Person aus dem Unternehmen, die glaubwuerdig kommuniziert." },
+      { front: "Reach", back: "Anzahl der erreichten Personen oder Accounts." },
+      { front: "Content Format", back: "Darstellungsform eines Inhalts, etwa Reel, Story, Carousel oder Live." },
+      { front: "Kanalstrategie", back: "Bewusste Auswahl und Nutzung von Plattformen passend zu Zielen und Zielgruppen." }
+    ],
+    exercises: [
+      "Definiere fuer ein Unternehmen zwei SMART-Ziele und passende KPIs fuer Social Media.",
+      "Vergleiche zwei Plattformen hinsichtlich Zielgruppe, Formate und typischer Inhalte.",
+      "Entwirf einen Wochenplan mit Formaten fuer einen Kanal deiner Wahl."
+    ],
+    tips: [
+      "Lerne Kanaele nicht als Selbstzweck, sondern immer aus Unternehmenssicht.",
+      "Denke Social Media immer als Kombination aus Inhalt, Interaktion und Auswertung.",
+      "Wenn ein Post nicht performt, pruefe zuerst Ziel, Hook, Format und Plattform-Fit."
+    ]
+  },
+  {
+    summary: "Das SEO-Modul behandelt Suchmaschinenoptimierung im Zusammenspiel mit SEM und SEA. Wichtige Themen sind SERPs, Crawling, Indexierung, Ranking, Onpage-Optimierung, Local SEO, Relaunch-Risiken, GEO und sprachbasierte Suche.",
+    questions: [
+      single("Wofuer steht SEO?", ["Search Engine Optimization", "Search Engine Operation", "System Engine Output", "Search Experience Option"], 0, "SEO steht fuer Suchmaschinenoptimierung."),
+      single("Wie verhalten sich SEM, SEO und SEA zueinander?", ["SEO und SEA sind Teil von SEM", "SEM ist Teil von SEO", "SEA ist Teil von SEO", "Es gibt keinen Zusammenhang"], 0, "SEM ist der Oberbegriff fuer organische und bezahlte Suchmaschinenmassnahmen."),
+      single("Was sind SERPs?", ["Server Error Reporting Pages", "Suchergebnisseiten einer Suchmaschine", "Social Engagement Ranking Posts", "Keyword-Listen in Excel"], 1, "SERPs sind die Search Engine Results Pages."),
+      multi("Welche Prozesse gehoeren zur technischen Grundlage von SEO?", ["Crawling", "Indexierung", "Ranking", "Rendering"], [0, 1, 2, 3], "Suchmaschinen muessen Inhalte finden, verstehen und bewerten koennen."),
+      single("Was passiert beim Crawling?", ["Nutzer kaufen Produkte", "Suchmaschinenbots entdecken und lesen Inhalte", "Keywords werden automatisch verkauft", "Anzeigen werden gebucht"], 1, "Crawler durchsuchen Websites nach Inhalten und Verlinkungen."),
+      single("Was bedeutet Indexierung?", ["Inhalte werden in den Suchmaschinenbestand aufgenommen", "Nur die Homepage wird gespeichert", "Anzeigen werden pausiert", "Texte werden geloescht"], 0, "Nur indexierte Inhalte koennen in Suchergebnissen erscheinen."),
+      single("Was beschreibt Ranking?", ["Die Positionierung eines Dokuments fuer eine Suchanfrage", "Nur die Domainlaenge", "Das Hostingmodell", "Die Anzahl der Farben einer Website"], 0, "Ranking beschreibt die Reihenfolge in den Suchergebnissen."),
+      multi("Welche Faktoren koennen Onpage-SEO beeinflussen?", ["Title und Meta Description", "Ueberschriftenstruktur", "Interne Verlinkung", "Suchintention"], [0, 1, 2, 3], "Gute Onpage-Optimierung verbindet Technik, Inhalt und Nutzerlogik."),
+      single("Was ist Local SEO?", ["Nur Werbung fuer globale Maerkte", "Optimierung fuer lokale Suchanfragen und Sichtbarkeit", "Nur Social Media fuer kleine Unternehmen", "Ein anderes Wort fuer Hosting"], 1, "Local SEO ist besonders fuer standortbezogene Angebote relevant."),
+      multi("Welche Relaunch-Risiken sind fuer SEO typisch?", ["Verlust wichtiger URLs", "Fehlende Redirects", "Indexierungsprobleme", "Verlust von Rankings"], [0, 1, 2, 3], "Relaunches brauchen saubere SEO-Planung."),
+      single("Was bedeutet Suchintention?", ["Die Laune des Webdesigners", "Das Ziel hinter einer Suchanfrage", "Nur der CPC", "Die Farbe der SERP"], 1, "Suchintention ist zentral fuer passende Inhalte."),
+      single("Was ist GEO im Kontext des Moduls?", ["Nur Geografieunterricht", "Optimierung fuer generative Such- und Antwortsysteme", "Ein lokaler Branchenbucheintrag", "Ein Trackingpixel"], 1, "Neben klassischer Suche werden auch generative Antwortsysteme relevanter."),
+      multi("Welche Kennzahlen koennen zur SEO-Bewertung sinnvoll sein?", ["Organischer Traffic", "Sichtbarkeit", "Rankings", "Conversions"], [0, 1, 2, 3], "Nicht nur Traffic, sondern auch Zielerreichung ist wichtig."),
+      single("Warum ist Voice Search besonders relevant fuer bestimmte Suchanfragen?", ["Weil sie oft natuerlicher und frageorientierter formuliert sind", "Weil dadurch keine Inhalte mehr noetig sind", "Weil Keywords unwichtig werden", "Weil nur Videos ranken"], 0, "Sprachsuche veraendert Form und Erwartung von Suchanfragen."),
+      open("Erklaere den Unterschied zwischen Crawling, Indexierung und Ranking.", "Crawling bedeutet, dass Bots Inhalte entdecken. Indexierung bedeutet, dass diese Inhalte in den Suchmaschinenbestand aufgenommen werden. Ranking beschreibt, wie gut die Seite fuer bestimmte Suchanfragen platziert wird."),
+      open("Warum ist Suchintention fuer SEO oft wichtiger als reine Keyword-Wiederholung?", "Weil Suchmaschinen immer besser verstehen, welches Problem Nutzer loesen wollen. Inhalte muessen diese Absicht passend beantworten, statt nur Begriffe haeufig zu wiederholen."),
+      open("Nenne drei Punkte, die du vor einem Website-Relaunch aus SEO-Sicht pruefen wuerdest.", "Zum Beispiel URL-Struktur, Redirect-Konzept, Indexierungssteuerung, interne Verlinkung, Meta-Daten, Ladezeit oder bestehende Rankings." )
+    ],
+    flashcards: [
+      { front: "SEO", back: "Suchmaschinenoptimierung fuer organische Sichtbarkeit." },
+      { front: "SEM", back: "Suchmaschinenmarketing als Oberbegriff fuer SEO und SEA." },
+      { front: "SEA", back: "Bezahlte Suchmaschinenwerbung." },
+      { front: "SERP", back: "Suchergebnisseite einer Suchmaschine." },
+      { front: "Crawling", back: "Entdecken und Auslesen von Inhalten durch Bots." },
+      { front: "Indexierung", back: "Aufnahme von Inhalten in den Suchmaschinenindex." },
+      { front: "Suchintention", back: "Das Ziel oder Beduerfnis hinter einer Suchanfrage." },
+      { front: "Local SEO", back: "Optimierung fuer lokale Auffindbarkeit in der Suche." }
+    ],
+    exercises: [
+      "Analysiere eine Website auf Suchintention, Titles, Ueberschriften und interne Verlinkung.",
+      "Erstelle eine Relaunch-SEO-Checkliste mit technischen und inhaltlichen Punkten.",
+      "Vergleiche fuer drei Keywords die Suchintention und leite passende Inhaltstypen ab."
+    ],
+    tips: [
+      "Denke bei SEO nie nur in Keywords, sondern in Nutzerfragen und Seitenqualitaet.",
+      "Pruefe immer, ob Inhalte ueberhaupt gecrawlt und indexiert werden koennen.",
+      "Bei Relaunches ist saubere Vorbereitung oft wichtiger als spaetere Schadensbegrenzung."
+    ]
+  }
 ];
 
 const modules = moduleTopics.map((topic, index) => {
-  const module = {
-    id: index + 1,
-    title: `Modul ${index + 1}`,
-    topic,
-    summary:
-      "Sobald du mir die passende Praesentation gibst, fuelle ich dieses Modul mit einer Zusammenfassung, Quizfragen und praktischen Uebungen.",
-    questions: [],
-    exercises: [
-      {
-        title: "Begriffe sammeln",
-        text: "Notiere die 5 wichtigsten Begriffe aus diesem Modul und erklaere sie in eigenen Worten.",
-      },
-      {
-        title: "Mini-Zusammenfassung",
-        text: "Fasse das Modul in 4 bis 6 Saetzen zusammen, als wuerdest du es einer anderen Person erklaeren.",
-      },
-    ],
-    tips: [
-      "Hier kommen spaeter Lernhinweise, Merksaetze oder typische Pruefungsfallen hinein.",
-    ],
-  };
+  const module = baseModule(topic, index);
+  const extra = content[index];
 
-  if (index === 0) {
-    module.summary =
-      "Dieses Modul behandelt die Grundlagen der Online-Marketing-Strategie mit Fokus auf das modernere 6P-Denken, ergaenzend zur klassischen 4P-Logik. Dazu kommen Marketing im Wandel, Customer Journey, T-Shaped Marketer und die Bedeutung von Messbarkeit im digitalen Marketing.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Was versteht man im Modul unter Strategie?",
-        sampleAnswer:
-          "Strategie wird als grundsaetzliche, langfristige Verhaltensweise eines Unternehmens beschrieben. Sie dient dazu, durch passende Massnahmenkombinationen langfristige Ziele gegenueber der Umwelt zu verwirklichen.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche vier Elemente gehoeren zur klassischen 4P-Marketing-Strategie?",
-        options: [
-          "Product, Price, Place, Promotion",
-          "People, Plan, Price, Performance",
-          "Product, Process, Platform, Promotion",
-          "Price, Persona, Place, Positioning",
-        ],
-        correctIndex: 0,
-      },
-      {
-        type: "open",
-        prompt: "Warum ist im Modul das 6P-Denken aktueller als die reine 4P-Logik?",
-        sampleAnswer:
-          "Weil Marketing heute staerker auf Erlebnis, Prozesse, Menschen, Unternehmensidentitaet und weitere Einflussfaktoren schaut. Die 4P bilden die Basis, das modernere 6P- beziehungsweise erweiterte P-Denken greift jedoch die komplexere digitale Realitaet besser auf.",
-      },
-      {
-        type: "open",
-        prompt: "Was ist das Ziel der Marketer laut Praesentation, egal welche Strategie gewaehlt wird?",
-        sampleAnswer:
-          "Das Ziel ist es, das Unternehmen erfolgreich zu machen. Strategie ist also kein Selbstzweck, sondern soll den Unternehmenserfolg unterstuetzen.",
-      },
-      {
-        type: "open",
-        prompt: "Welche drei Grundformen der Produktdiversifikation werden genannt?",
-        sampleAnswer:
-          "Genannt werden horizontale, vertikale und laterale Produktdiversifikation. Horizontal bedeutet ein aehnliches Produkt in derselben Branche, vertikal die Aufnahme bisher zugekaufter Leistungen und lateral Produkte ohne direkten Zusammenhang.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche Preisstrategie startet typischerweise mit einem niedrigen Einstiegspreis und erhoeht diesen spaeter?",
-        options: [
-          "Abschoepfungsstrategie",
-          "Marktdurchdringungsstrategie",
-          "Hochpreisstrategie",
-          "Kostenfuehrerschaft ohne Einfuehrungspreis",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Welche drei Vertriebsstrukturen werden im Bereich Place/Distribution unterschieden?",
-        sampleAnswer:
-          "Die Praesentation unterscheidet die indirekte Struktur, die Multikanal-Struktur und die direkte Struktur beziehungsweise Direct-to-Consumer.",
-      },
-      {
-        type: "open",
-        prompt: "Was bedeutet Promotion im Kontext der 4P?",
-        sampleAnswer:
-          "Promotion umfasst alle Kommunikationsmassnahmen, durch die eine Zielgruppe Informationen ueber ein Produkt erhaelt. Ziel ist es, Verkauf zu foerdern und ein positives Marken- oder Unternehmensimage aufzubauen.",
-      },
-      {
-        type: "open",
-        prompt: "Was beschreibt die Customer Journey?",
-        sampleAnswer:
-          "Die Customer Journey beschreibt, wie Kundinnen und Kunden vom ersten Bedarf oder Kontakt bis zu Kauf, Service und Loyalitaet mit verschiedenen Kanaelen und Beruehrungspunkten interagieren.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche Aussage passt zum T-Shaped Marketer?",
-        options: [
-          "Er oder sie sollte nur ein einziges Spezialgebiet kennen.",
-          "Er oder sie braucht breites Wissen ueber mehrere Disziplinen und zusaetzlich Tiefe in einem oder mehreren Spezialgebieten.",
-          "Technisches Verstaendnis ist im Marketing nicht notwendig.",
-          "Strategie und Analyse sind Aufgaben, die nichts mit Marketing zu tun haben.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Welche Vorteile von digitalem Marketing nennt das Modul?",
-        sampleAnswer:
-          "Genannt werden vor allem Messbarkeit, mehr Objektivitaet in der Erfolgsbewertung und mehr Planungssicherheit durch gezielte Reichweitenplanung, genauere Zielgruppenansprache und bessere Kostenkontrolle.",
-      },
-      {
-        type: "open",
-        prompt: "Warum ist Erfolgsmessung ein fortlaufender Prozess und kein einmaliger Schritt?",
-        sampleAnswer:
-          "Weil Ziele, Messpunkte, Testlauf, Launch und Auswertung aufeinander aufbauen. Kampagnen werden laufend gemessen, angepasst und fuer kuenftige Optimierungen dokumentiert.",
-      },
-    ];
-    module.exercises = [
-      {
-        title: "4P auf ein Beispiel anwenden",
-        text: "Waehle ein Produkt oder eine Dienstleistung und beschreibe zuerst die 4P. Ergaenze danach, welche weiteren P-Aspekte im moderneren 6P-Denken relevant waeren.",
-      },
-      {
-        title: "Customer Journey skizzieren",
-        text: "Zeichne fuer ein Beispielprodukt die Phasen Awareness, Consideration, Purchase, After-Sale und Loyalty mit moeglichen Kontaktpunkten auf.",
-      },
-      {
-        title: "T-Shaped-Profil reflektieren",
-        text: "Notiere, welche Marketing-Bereiche du schon gut kannst und in welchen 1 bis 2 Bereichen du Spezialwissen aufbauen willst.",
-      },
-    ];
-    module.tips = [
-      "Merke dir die 4P als Basis, aber denke fuer aktuelle Marketingpraxis weiter in Richtung 6P beziehungsweise erweiterte P-Modelle.",
-      "Die Customer Journey hilft dir, Marketing nicht nur aus Unternehmenssicht, sondern aus Kundensicht zu denken.",
-      "Messbarkeit ist einer der groessten Vorteile von digitalem Marketing und taucht in spaeteren Modulen immer wieder auf.",
-    ];
-  }
-
-  if (index === 1) {
-    module.summary =
-      "Dieses Modul behandelt die Grundlagen von Website Marketing: technische Grundlagen des WWW, DNS und Domains, URL- und Domainkonzepte, Zielgruppen und Personas, Customer Journey Mapping, responsives Design, User Experience, Wireframes, das RETURN-Modell sowie CMS, Baukaesten und Hosting.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Wofuer steht DNS und welche Aufgabe hat es?",
-        sampleAnswer:
-          "DNS steht fuer Domain Name System. Es uebersetzt Domainnamen in die passende IP-Adresse, damit ein Computer die gewuenschte Website erreichen kann.",
-      },
-      {
-        type: "open",
-        prompt: "Wie wird das Domain Name System im Modul vereinfacht erklaert?",
-        sampleAnswer:
-          "Es wird mit einem Telefonbuch verglichen: Einer Person oder Firma ist eine Nummer zugeordnet, und ueber diese Nummer wird die Verbindung hergestellt. Bei Websites uebernimmt DNS diese Zuordnung zwischen Domain und IP-Adresse.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welches Ziel verfolgt ein gutes Domainkonzept besonders?",
-        options: [
-          "Die Domain soll moeglichst lang und technisch komplex sein.",
-          "Die Domain soll einpraegsam, kurz und zur Zielgruppe passend sein.",
-          "Die Domain sollte moeglichst viele Sonderzeichen enthalten.",
-          "Die Domain ist fuer Auffindbarkeit und Marke weitgehend unwichtig.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Welche Kriterien fuer eine gute Domain werden in der Praesentation genannt?",
-        sampleAnswer:
-          "Genannt werden unter anderem Einpraegsamkeit, moeglichst kurze Schreibweise, Beruecksichtigung von Schreibweisen, Keywords oder sprechende URLs, passende Endungen, lokale Zielgruppenansprache, Vermeidung von Zahlen und Bindestrichen, Markenschutz und Schutz der eigenen Marke durch weitere Endungen.",
-      },
-      {
-        type: "open",
-        prompt: "Warum nutzen Unternehmen eine Multi-Domain-Strategie?",
-        sampleAnswer:
-          "Zum Beispiel fuer zielgruppenspezifische Ansprache, Fokus auf bestimmte Produkte oder Leistungen, Internationalisierung und Sprachraeume, unterschiedliche Pricingstrategien, besseren Markenschutz, mehr Sichtbarkeit in Suchmaschinen und eine bessere Nutzererfahrung.",
-      },
-      {
-        type: "open",
-        prompt: "Wofuer koennen Subdomains eingesetzt werden?",
-        sampleAnswer:
-          "Subdomains koennen unterschiedliche Bereiche trennen, zum Beispiel fuer Blog, Shop, Support, Community, Produktseiten, Karrierebereiche oder APIs.",
-      },
-      {
-        type: "multiple",
-        prompt: "Was bedeutet Mobile First?",
-        options: [
-          "Die Desktop-Version wird zuerst gebaut und dann unveraendert auf Smartphones gezeigt.",
-          "Die mobile Version wird als primaere Designgrundlage betrachtet und danach fuer groessere Screens erweitert.",
-          "Mobile First bedeutet nur, dass Bilder auf Smartphones angezeigt werden.",
-          "Mobile First ist nur fuer Apps relevant, nicht fuer Websites.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Worauf sollte man bei der Planung einer responsiven Website achten?",
-        sampleAnswer:
-          "Wichtig sind unter anderem eine klare Navigation, optimierte Bildgroessen, lesbare Schriftgroessen, Priorisierung der wichtigsten Inhalte auf Mobile, Ueberlegungen zu wirklich noetigen Funktionen je Ansicht und Tests auf gaengigen Geraeten und Bildschirmgroessen.",
-      },
-      {
-        type: "open",
-        prompt: "Welche 7 Merkmale von gutem User Experience Design nennt das Modul?",
-        sampleAnswer:
-          "Genannt werden schnelle Ladezeiten, responsives Design, einfache Navigation, einfache Orientierung, klare Hierarchie der Inhalte, passende Textlaengen sowie Fehlertoleranz und Feedback fuer die Nutzer.",
-      },
-      {
-        type: "open",
-        prompt: "Warum sind Wireframes wichtig?",
-        sampleAnswer:
-          "Wireframes helfen, in kurzer Zeit einen funktionalen Entwurf zu erstellen, fruehes Feedback zu Usability und Struktur einzuholen, schnell zu iterieren und spaeter Design- und Entwicklungsressourcen zu sparen.",
-      },
-      {
-        type: "multiple",
-        prompt: "Wofuer steht das RETURN-Modell?",
-        options: [
-          "Relevance, Engagement, Technology, Usability, Reputation, Narrative",
-          "Reach, Efficiency, Trust, Uniformity, Navigation",
-          "Reporting, Testing, Updates, Ranking, Traffic, Navigation",
-          "Reputation, Experience, Tracking, User Needs",
-        ],
-        correctIndex: 0,
-      },
-      {
-        type: "open",
-        prompt: "Was sind typische Vorteile eines CMS gegenueber einem Website-Baukasten?",
-        sampleAnswer:
-          "Ein CMS bietet mehr Kontrolle ueber Inhalte und Design, mehr Flexibilitaet, unbegrenztere Anpassungsmoeglichkeiten, bessere SEO-Eingriffe und oft auch mehrsprachige oder individuelle Funktionen.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Hosting-Arten werden vorgestellt?",
-        sampleAnswer:
-          "Vorgestellt werden Shared Hosting, Unmanaged Hosting, Managed Hosting und Cloud Hosting.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Merkmale machen gutes Hosting aus?",
-        sampleAnswer:
-          "Dazu gehoeren starke Serverleistung, genug Bandbreite und Speicher, Auto-Skalierung, schneller Support, hohe Sicherheitsstandards, Backups, Erfahrung mit dem eingesetzten System und eine entwicklerfreundliche Umgebung.",
-      },
-    ];
-    module.exercises = [
-      {
-        title: "Domainkonzept entwickeln",
-        text: "Denke dir fuer ein Beispielunternehmen eine Hauptdomain, 2 sinnvolle Subdomains und optional eine Multi-Domain-Erweiterung aus und begruende deine Wahl.",
-      },
-      {
-        title: "Website-Struktur skizzieren",
-        text: "Erstelle fuer ein Projekt eine einfache Sitemap mit Startseite, Unterseiten und Navigationslogik aus Sicht der Zielgruppe.",
-      },
-      {
-        title: "RETURN-Check",
-        text: "Nimm eine bekannte Website und bewerte sie kurz nach Relevance, Engagement, Technology, Usability, Reputation und Narrative.",
-      },
-    ];
-    module.tips = [
-      "Lerne DNS, Domain, URL, Subdomain und Hosting sauber auseinanderzuhalten.",
-      "Bei Website Marketing geht es nicht nur um Design, sondern stark um Struktur, Nutzerfuehrung und Technik.",
-      "RETURN ist eine gute Denkstruktur, um Websites schnell systematisch zu bewerten.",
-    ];
-  }
-
-  if (index === 2) {
-    module.summary =
-      "Dieses Modul behandelt die rechtlichen Grundlagen im Online Marketing: rechtssichere Domainwahl, Impressumspflichten, Datenschutz nach DSGVO, Einwilligung und Datenverarbeitung, Markenrecht, Irrefuehrung, Schleichwerbung, E-Mail-Werbung, Aeusserungsrecht, Haftung fuer Inhalte und rechtliche Grenzen bei Werbeformen.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Welche rechtlichen Risiken sind bei der Wahl einer Domain besonders zu beachten?",
-        sampleAnswer:
-          "Vor allem Markenrechte, Unternehmensnamen, Titelschutz, prominente Namen, Ortsnamen, unzulaessige Werbeaussagen und Tippfehler-Domains. Die Domain darf keine fremden Rechte verletzen.",
-      },
-      {
-        type: "open",
-        prompt: "Was ist das UDRP-Verfahren?",
-        sampleAnswer:
-          "Die UDRP ist ein von der ICANN entwickeltes Schlichtungsverfahren fuer Domainstreitigkeiten. Es soll eine einfache und kostenguenstige Loesung bei Konflikten um Domainnamen ermoeglichen.",
-      },
-      {
-        type: "open",
-        prompt: "Welche drei Punkte muss ein Antragsteller in einem UDRP-Verfahren nachweisen?",
-        sampleAnswer:
-          "Er muss nachweisen, dass der Domainname identisch oder verwechslungsfaehig aehnlich zu einer geschuetzten Marke ist, dass der Registrant keine Rechte oder berechtigten Interessen daran hat und dass die Domain boesglaeubig verwendet wird.",
-      },
-      {
-        type: "multiple",
-        prompt: "Was beschreibt Cybersquatting?",
-        options: [
-          "Die Nutzung einer Domain fuer private Zwecke ohne Geschaeftsbezug",
-          "Die Registrierung bekannter Marken- oder Unternehmensnamen als Domain, um sie dem Rechteinhaber zum Kauf anzubieten",
-          "Das technische Ueberpruefen von Domains auf Ladezeit",
-          "Die rechtmaessige Verwaltung vieler eigener Produktdomains",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Wann ist ein Impressum im Online Marketing grundsaetzlich noetig?",
-        sampleAnswer:
-          "Bei jeder geschäftsmäßigen Praesentation im Internet, zum Beispiel auf Websites oder Social-Media-Profilen mit wirtschaftlichem Hintergrund. Private Homepages und manche gemeinnuetzige Angebote koennen Ausnahmen sein.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Angaben gehoeren typischerweise in ein Impressum?",
-        sampleAnswer:
-          "Vollstaendiger Name, Anschrift, bei juristischen Personen Rechtsform und vertretungsberechtigte Personen, Kontaktmoeglichkeiten wie E-Mail und Telefonnummer sowie je nach Fall Registerangaben, Umsatzsteuer-ID, Behoerdenangaben oder redaktionell Verantwortliche.",
-      },
-      {
-        type: "open",
-        prompt: "Was gilt fuer das Impressum in sozialen Netzwerken?",
-        sampleAnswer:
-          "Es muss leicht erkennbar, unmittelbar erreichbar und staendig verfuegbar sein. Praktisch bedeutet das oft eine gut sichtbare Verlinkung, die auch mobil erreichbar ist und klar als Impressum erkennbar sein muss.",
-      },
-      {
-        type: "open",
-        prompt: "Was sind personenbezogene Daten nach DSGVO?",
-        sampleAnswer:
-          "Das sind alle Angaben, die sich auf eine identifizierte oder identifizierbare natuerliche Person beziehen, zum Beispiel Name, Anschrift, E-Mail, Telefonnummer, IP-Adresse, Standortdaten oder Kundendaten.",
-      },
-      {
-        type: "open",
-        prompt: "Was versteht man unter dem Verbotsgesetz mit Erlaubnisvorbehalt im Datenschutz?",
-        sampleAnswer:
-          "Die Verarbeitung personenbezogener Daten ist grundsaetzlich verboten, es sei denn, es gibt einen gueltigen Erlaubnistatbestand wie Einwilligung, Vertragserfuellung, rechtliche Pflicht, lebenswichtige Interessen, oeffentliches Interesse oder berechtigtes Interesse.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welches Verfahren ist laut Modul rechtssicher fuer den Nachweis einer Einwilligung in E-Mail-Werbung?",
-        options: [
-          "Opt-In",
-          "Confirmed Opt-In",
-          "Double Opt-In",
-          "Stillschweigende Zustimmung",
-        ],
-        correctIndex: 2,
-      },
-      {
-        type: "open",
-        prompt: "Warum reichen Opt-In und Confirmed Opt-In als Nachweis oft nicht aus?",
-        sampleAnswer:
-          "Weil damit nicht sicher nachgewiesen werden kann, dass der Inhaber der E-Mail-Adresse die Eintragung selbst vorgenommen hat. Es besteht Missbrauchsgefahr durch Dritte.",
-      },
-      {
-        type: "open",
-        prompt: "Wann ist Werbung irrefuehrend?",
-        sampleAnswer:
-          "Wenn sie Verbraucher ueber wesentliche Umstaende taeuscht, etwa durch falsche Preisvorteile, befristete Rabatte, die in Wahrheit weiterlaufen, oder durch missverstaendliche oder objektiv nicht belegbare Aussagen.",
-      },
-      {
-        type: "open",
-        prompt: "Was sind Pruefsiegel oder Guetesiegel im rechtlichen Sinn?",
-        sampleAnswer:
-          "Das sind Kennzeichnungen, die auf einer objektiven Pruefung durch eine neutrale und fachkundige Stelle beruhen und belegen sollen, dass bestimmte Mindestanforderungen oder Qualitaetskriterien eingehalten wurden.",
-      },
-      {
-        type: "open",
-        prompt: "Was ist der Unterschied zwischen Meinung und Tatsachenbehauptung im Aeusserungsrecht?",
-        sampleAnswer:
-          "Meinungen sind subjektive Werturteile und grundsaetzlich geschuetzt. Tatsachenbehauptungen beziehen sich auf objektiv ueberpruefbare Umstaende; unwahre Tatsachenbehauptungen sind in der Regel unzulaessig.",
-      },
-      {
-        type: "open",
-        prompt: "Wann haftet ein Webseitenbetreiber fuer fremde Inhalte oder Verlinkungen?",
-        sampleAnswer:
-          "Wenn das Setzen des Links eine geschäftliche Handlung ist, sich der Betreiber die Inhalte zu Eigen macht oder von der Rechtswidrigkeit weiss und zumutbare Pruefpflichten verletzt.",
-      },
-      {
-        type: "multiple",
-        prompt: "Wann koennen Pop-ups wettbewerbsrechtlich problematisch werden?",
-        options: [
-          "Immer, weil jede Werbung unzulaessig ist",
-          "Nur wenn sie bunt gestaltet sind",
-          "Wenn sie nicht ohne grossen Aufwand geschlossen werden koennen oder staendig neue Pop-ups erscheinen",
-          "Nur auf mobilen Endgeraeten",
-        ],
-        correctIndex: 2,
-      },
-      {
-        type: "open",
-        prompt: "Unter welchen Bedingungen kann Brand Bidding mit fremden Markennamen zulaessig sein?",
-        sampleAnswer:
-          "Die Anzeige muss klar von den Suchtreffern getrennt und gekennzeichnet sein. Der fremde Markenname darf nicht in der Anzeige auftauchen und es darf keine irrefuehrende Verbindung zum Markeninhaber hergestellt werden.",
-      },
-    ];
-    module.exercises = [
-      {
-        title: "Impressum pruefen",
-        text: "Nimm eine Unternehmenswebsite oder ein Social-Media-Profil und pruefe, ob das Impressum leicht erkennbar, direkt erreichbar und inhaltlich vollstaendig ist.",
-      },
-      {
-        title: "Datenschutz-Fallbeispiel",
-        text: "Ueberlege fuer ein Online-Formular, welche personenbezogenen Daten erhoben werden, auf welcher Rechtsgrundlage das geschehen darf und ob wirklich alle Felder noetig sind.",
-      },
-      {
-        title: "Rechtlicher Werbecheck",
-        text: "Bewerte eine Rabattaktion, Newsletter-Anmeldung oder Pop-up-Werbung danach, ob sie eher unbedenklich oder rechtlich riskant ist, und begruende deine Einschaetzung.",
-      },
-    ];
-    module.tips = [
-      "Im Recht ist oft entscheidend, ob etwas klar nachweisbar, transparent und fuer Nutzer nicht irrefuehrend ist.",
-      "Praege dir fuer E-Mail-Werbung besonders das Double-Opt-In ein.",
-      "Trenne bei Fragen zum Aeusserungsrecht immer sauber zwischen Meinung und Tatsachenbehauptung.",
-    ];
-  }
-
-  if (index === 3) {
-    module.summary =
-      "Dieses Modul behandelt die Grundlagen des Content Marketings: Abgrenzung zu klassischer Werbung, Nutzen und Wirkung von Content, Core Story und Golden Circle, Zielgruppen und Personas, Storytelling, Content Wheel, AIDA, Content-Pillars, Redaktionsplanung, Community-Aufbau und Erfolgsmessung.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Wie wird Content Marketing im Modul definiert?",
-        sampleAnswer:
-          "Als informative, beratende und unterhaltsame Inhalte, mit denen eine Zielgruppe vom Unternehmen ueberzeugt werden soll.",
-      },
-      {
-        type: "open",
-        prompt: "Worin liegt der zentrale Unterschied zwischen Werbung und Content Marketing?",
-        sampleAnswer:
-          "Werbung unterbricht und verkauft direkt, waehrend Content Marketing mit relevanten Inhalten Mehrwert bietet, Vertrauen aufbaut und die Zielgruppe ueberzeugt.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welchen Nutzen von Content Marketing nennt die Praesentation ausdruecklich?",
-        options: [
-          "Weniger Sichtbarkeit in Suchmaschinen",
-          "Mehr Leads bei geringeren Kosten",
-          "Content ersetzt jede andere Marketingform vollstaendig",
-          "Content funktioniert nur mit sehr hohen Mediabudgets",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Warum ist Content Marketing kein kurzfristiges Einmalprojekt?",
-        sampleAnswer:
-          "Weil nach Learning und Setup ein laufender redaktioneller Betrieb entsteht. Content Marketing ist ein kontinuierlicher Prozess und nie wirklich fertig.",
-      },
-      {
-        type: "open",
-        prompt: "Was ist die Core Story einer Marke?",
-        sampleAnswer:
-          "Die Core Story ist die Leitidee der Marke. Von ihr ausgehend werden Inhalte und Markenstories fuer die Nutzer entwickelt.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Frage steht laut Modul hinter der Entwicklung einer Leitidee?",
-        sampleAnswer:
-          "Die zentrale Frage ist das Warum. Sie fuehrt zum Sinn und Zweck der Marke und bildet die Basis der Core Story.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche drei Ebenen umfasst der Golden Circle nach Simon Sinek?",
-        options: [
-          "Who, When, Where",
-          "Traffic, Leads, Sales",
-          "What, How, Why",
-          "Reach, Relevance, Revenue",
-        ],
-        correctIndex: 2,
-      },
-      {
-        type: "open",
-        prompt: "Warum sind Zielgruppen und Personas im Content Marketing so wichtig?",
-        sampleAnswer:
-          "Weil Inhalte nur dann relevant wirken, wenn sie auf konkrete Beduerfnisse, Motivationen und Pain Points bestimmter Personen zugeschnitten sind.",
-      },
-      {
-        type: "open",
-        prompt: "Was beschreibt das Content Wheel?",
-        sampleAnswer:
-          "Es zeigt, dass aus der Core Story Inhalte und Distribution Channels abgeleitet werden. Die Leitidee steuert also Inhalt und Ausspielung.",
-      },
-      {
-        type: "open",
-        prompt: "Wofuer kann die AIDA-Formel im Content Marketing genutzt werden?",
-        sampleAnswer:
-          "Sie hilft dabei, wiederkehrende Inhalte logisch aufzubauen, zum Beispiel ueber Aufmerksamkeit, Interesse, Wunsch und Handlungsaufforderung.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Schritte fuehren laut Modul von der ersten Idee zum fertigen Content?",
-        sampleAnswer:
-          "Ideensammlung, Content Pillars, Redaktionsplan, Erstellung der Creatives oder Designs und anschliessend Posting oder Scheduling.",
-      },
-      {
-        type: "multiple",
-        prompt: "Wozu dienen Content Pillars?",
-        options: [
-          "Sie ersetzen die Zielgruppendefinition vollstaendig.",
-          "Sie strukturieren Themenbereiche und helfen, Ideen systematisch zu planen.",
-          "Sie sind nur fuer bezahlte Werbung relevant.",
-          "Sie beschreiben ausschliesslich Designfarben.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Warum ist ein Redaktionsplan wichtig?",
-        sampleAnswer:
-          "Er bringt Struktur in Themen, Formate und Zeitpunkte, erleichtert Abstimmungen und sorgt dafuer, dass Content regelmaessig und zielgerichtet veroeffentlicht wird.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Rolle spielt Community-Aufbau im Content Marketing laut Modul?",
-        sampleAnswer:
-          "Dialog ist wichtiger als reine Likes. Es geht darum, Beziehungen aufzubauen, auf Menschen einzugehen, zuzuhören, nachzufragen und echte Verbindungen zu schaffen.",
-      },
-      {
-        type: "open",
-        prompt: "Wie kann Content Marketing gemessen werden?",
-        sampleAnswer:
-          "Zum Beispiel ueber Audience-Daten, Reichweite, Interaktionen, Views, Follower-Entwicklung und die Performance einzelner Inhalte.",
-      },
-    ];
-    module.exercises = [
-      {
-        title: "Golden Circle ausfuellen",
-        text: "Formuliere fuer ein Beispielunternehmen die drei Ebenen What, How und Why und leite daraus eine erste Core Story ab.",
-      },
-      {
-        title: "Content Pillars bauen",
-        text: "Definiere 3 bis 5 Themenbereiche fuer ein Projekt und notiere zu jedem Bereich erste konkrete Post-Ideen.",
-      },
-      {
-        title: "Redaktionsplan skizzieren",
-        text: "Plane eine Woche Content mit Format, Thema, Ziel und passendem Kanal in einer einfachen Tabelle.",
-      },
-    ];
-    module.tips = [
-      "Content Marketing wird stark, wenn es aus einer klaren Leitidee heraus gedacht wird.",
-      "Merke dir den Unterschied zwischen Core Story, Content Pillars und Redaktionsplan.",
-      "Nicht jeder gute Inhalt verkauft sofort, aber guter Content baut Relevanz und Vertrauen auf.",
-    ];
-  }
-
-  if (index === 4) {
-    module.summary =
-      "Dieses Modul behandelt Social Media Marketing von den Grundlagen bis zur Kanalstrategie: Social Media als Web-2.0-Kommunikation, Ziele und Einsatzbereiche, Chancen und Risiken, 7 Pfeiler der Strategie, SMART-Ziele, Post-Formate, Algorithmen, Corporate Influencer, Kampagnen, Kanalwahl, Ressourcenplanung und Reporting.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Was unterscheidet Web 2.0 von Web 1.0 im Kontext Social Media?",
-        sampleAnswer:
-          "Im Web 1.0 wurden Inhalte vor allem gelesen, die Kommunikation war eher einseitig. Im Web 2.0 koennen Nutzer Inhalte mitgestalten, veroeffentlichen und direkt in den Austausch treten.",
-      },
-      {
-        type: "open",
-        prompt: "Wie wird Social Media im Modul definiert?",
-        sampleAnswer:
-          "Als Oberbegriff fuer Medien, in denen Internetnutzer Meinungen, Eindruecke, Erfahrungen oder Informationen austauschen und Wissen sammeln.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche drei uebergeordneten Ziele von Social Media werden frueh im Modul genannt?",
-        options: [
-          "Dialog, Beziehung, Wertschoepfung",
-          "Rabatt, Reichweite, Remarketing",
-          "Content, Conversion, Coding",
-          "Traffic, Technik, Tracking",
-        ],
-        correctIndex: 0,
-      },
-      {
-        type: "open",
-        prompt: "Welche Einsatzbereiche von Social Media nennt die Praesentation?",
-        sampleAnswer:
-          "Zum Beispiel Marketing, Vertrieb, PR, Service und HR. Darunter fallen etwa Brand-Marketing, Social PR, Social Customer Care, Employer Branding oder Social Recruiting.",
-      },
-      {
-        type: "open",
-        prompt: "Welche weiteren Ziele von Social Media werden genannt?",
-        sampleAnswer:
-          "Unter anderem Reichweite und Sichtbarkeit, Image, Traffic, Monitoring, Networking, Relations, Direct Selling und Feedback.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Herausforderungen und Probleme bringt Social Media Marketing mit sich?",
-        sampleAnswer:
-          "Zum Beispiel schwierige Erfolgsmessung qualitativer Ziele, fehlende Kompetenzen oder Ressourcen, rechtliche Komplikationen, Angst vor Kritik und staendige Veraenderungen der Plattformen.",
-      },
-      {
-        type: "multiple",
-        prompt: "Wofuer schafft eine Social-Media-Strategie laut Modul vor allem einen Nutzen?",
-        options: [
-          "Sie macht Content-Produktion unnoetig.",
-          "Sie schafft Wiedererkennungswert und Struktur.",
-          "Sie ersetzt Zielgruppenarbeit vollstaendig.",
-          "Sie ist nur fuer bezahlte Kampagnen relevant.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Welche 7 Pfeiler einer Social-Media-Strategie werden genannt?",
-        sampleAnswer:
-          "Einleitung, IST-Analyse, Zielsetzung, Strategie, Massnahmen, Kosten und Anhang.",
-      },
-      {
-        type: "open",
-        prompt: "Warum sind SMART-Ziele in Social Media sinnvoll?",
-        sampleAnswer:
-          "Weil sie Ziele spezifisch, messbar, attraktiv beziehungsweise ausfuehrbar, realistisch und terminiert machen. Dadurch werden Planung und Erfolgskontrolle klarer.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Post-Formate werden als besonders wichtig hervorgehoben?",
-        sampleAnswer:
-          "Vor allem Reel, Carousel und Bild-Post.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Merkmale machen einen guten Social-Media-Post aus?",
-        sampleAnswer:
-          "Ein gutes Posting hat ein klares Thema und Ziel, ist einfach und kurz, zeigt Emotionen, spricht aus menschlicher Perspektive und nutzt bei Bedarf einen passenden Call-to-Action.",
-      },
-      {
-        type: "open",
-        prompt: "Was ist ein Corporate Influencer beziehungsweise PCI laut Modul?",
-        sampleAnswer:
-          "Ein Mensch als Absender der Markenkommunikation, der interpersonell kommuniziert, Community aufbaut und die Marke authentisch in sozialen Medien repraesentiert.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Vorteile bietet Corporate Influencer Marketing?",
-        sampleAnswer:
-          "Es kann Reichweiten steigern, Trust aufbauen, die Arbeitgebermarke staerken, Awareness erhoehen und durch persoenliche Naehe authentischer wirken.",
-      },
-      {
-        type: "multiple",
-        prompt: "Was ist laut Modul bei der Kanalstrategie besonders wichtig?",
-        options: [
-          "Moeglichst auf allen Kanaelen gleichzeitig aktiv sein",
-          "Lieber wenige passende Kanaele gut bespielen als viele schlecht",
-          "Nur den groessten Kanal nach Nutzerzahl auswaehlen",
-          "Jeden Content identisch auf allen Plattformen posten",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Warum ist Ressourcenplanung im Social Media Marketing wichtig?",
-        sampleAnswer:
-          "Weil Aufwand fuer Content, Community, Prozesse, Reporting und Abstimmung oft unterschaetzt wird. Eine realistische Planung hilft, Rollen, Zeit und Budget sauber zu verteilen.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Bereiche gehoeren zur Ressourcen- und Prozessplanung?",
-        sampleAnswer:
-          "Dazu gehoeren Strategie, Fuehrung, Controlling und Prozesse sowie Fragen nach Faehigkeiten, Rollen, Verantwortlichkeiten, Reportings und abteilungsuebergreifender Zusammenarbeit.",
-      },
-    ];
-    module.exercises = [
-      {
-        title: "SMART-Ziele formulieren",
-        text: "Definiere fuer ein Beispielunternehmen 3 konkrete SMART-Ziele fuer Social Media, zum Beispiel zu Reichweite, Interaktion oder Traffic.",
-      },
-      {
-        title: "Kanalstrategie ableiten",
-        text: "Waehle fuer ein Produkt 2 passende Social-Media-Kanaele aus und begruende die Auswahl mit Zielgruppe, Content-Formen und Halbwertzeit der Inhalte.",
-      },
-      {
-        title: "Mini-Kampagne planen",
-        text: "Skizziere eine kleine Social-Media-Kampagne mit Ziel, Zeitraum, Phasen, Kernidee und moeglichen Assets.",
-      },
-    ];
-    module.tips = [
-      "Social Media ist kein Selbstlaeufer, sondern braucht klare Ziele, passende Kanaele und saubere Prozesse.",
-      "Praege dir die 7 Pfeiler der Strategie und die SMART-Logik gut ein.",
-      "Lieber wenige Kanaele hochwertig bespielen als ueberall halb aktiv sein.",
-    ];
-  }
-
-  if (index === 5) {
-    module.summary =
-      "Dieses Modul behandelt Suchmaschinenoptimierung von den Grundlagen bis zu Spezialthemen: SEO, SEM und SEA, SERPs, GEO, Funktionsweise von Suchmaschinen, Crawling, Indexierung, Ranking, Rankingfaktoren, Ziele von SEO, OnPage und OffPage, Local SEO, Relaunch, Reporting sowie Amazon SEO, YouTube SEO, Bing SEO und Voice Search.";
-    module.questions = [
-      {
-        type: "open",
-        prompt: "Wie wird SEO im Modul definiert?",
-        sampleAnswer:
-          "SEO umfasst alle technischen und inhaltlichen Massnahmen auf Webseiten, mit deren Hilfe Rankings in den SERPs verbessert werden sollen. Es ist ein Teilgebiet des Suchmaschinenmarketings.",
-      },
-      {
-        type: "multiple",
-        prompt: "Wie verhalten sich SEO, SEM und SEA zueinander?",
-        options: [
-          "SEO ist ein Teil von SEM, SEA ist die bezahlte Positionierung innerhalb von SEM.",
-          "SEM ist ein Teil von SEO und SEA.",
-          "SEO und SEA bedeuten dasselbe.",
-          "SEA ist nur ein anderes Wort fuer SERP.",
-        ],
-        correctIndex: 0,
-      },
-      {
-        type: "open",
-        prompt: "Was ist eine SERP?",
-        sampleAnswer:
-          "SERP steht fuer Search Engine Results Page, also die Suchergebnisseite einer Suchmaschine.",
-      },
-      {
-        type: "open",
-        prompt: "Was bedeutet GEO und worin unterscheidet es sich von klassischem SEO?",
-        sampleAnswer:
-          "GEO steht fuer Generative Engine Optimization. Im Unterschied zu klassischem SEO geht es nicht primaer um blaue Links in Suchmaschinen, sondern darum, von KI-Systemen direkt als vertrauenswuerdige Antwortquelle zitiert zu werden.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Aufgaben haben Suchmaschinen grundsaetzlich?",
-        sampleAnswer:
-          "Sie erstellen und pflegen einen Index, verarbeiten Suchanfragen, finden und sortieren relevante Ergebnisse und bereiten diese nutzerorientiert auf.",
-      },
-      {
-        type: "open",
-        prompt: "Wie funktionieren Suchmaschinen in den Grundschritten laut Modul?",
-        sampleAnswer:
-          "Vereinfacht ueber Crawling, Indexierung und Ranking. Seiten werden gefunden, verstanden und im Index gespeichert, bevor sie fuer Suchanfragen eingeordnet werden koennen.",
-      },
-      {
-        type: "multiple",
-        prompt: "Was passiert bei der Indexierung?",
-        options: [
-          "Google verkauft Werbeplaetze an Webseitenbetreiber.",
-          "Google versucht zu verstehen, worum es auf einer Seite geht, und speichert die Informationen im Index.",
-          "Nutzer bewerten manuell jede Unterseite.",
-          "Die Website wird automatisch in Social Media gepostet.",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Welche Faktoren nennt das Modul beispielhaft als Google-Rankingfaktoren?",
-        sampleAnswer:
-          "Zum Beispiel Core Web Vitals und Ladezeit, HTTPS, technische Auslesbarkeit, Content-Qualitaet und Suchintention, Keywords, aktuelle Inhalte, interne Verlinkung, Backlinks, Mobilfreundlichkeit, E-E-A-T, Usersignale und User Experience.",
-      },
-      {
-        type: "open",
-        prompt: "Welche Ziele von SEO werden hervorgehoben?",
-        sampleAnswer:
-          "Vor allem die Erhoehung relevanter Sichtbarkeit in der Google Suche, die Steigerung des organischen Traffics und die Steigerung organischer Conversions.",
-      },
-      {
-        type: "open",
-        prompt: "Welche typischen Elemente gehoeren zur OnPage-Optimierung laut Modul?",
-        sampleAnswer:
-          "Zum Beispiel saubere URLs, Meta Title, Meta Description, Rich Snippets, technische Auslesbarkeit, interne Verlinkung und hochwertiger Content passend zur Suchintention.",
-      },
-      {
-        type: "open",
-        prompt: "Wofuer dienen interne Verlinkungen?",
-        sampleAnswer:
-          "Sie helfen Nutzern und Suchmaschinen bei Orientierung, Struktur und Themenverstaendnis und koennen wichtige Seiten innerhalb einer Website staerken.",
-      },
-      {
-        type: "multiple",
-        prompt: "Was beschreibt Local SEO?",
-        options: [
-          "Optimierung ausschliesslich fuer internationale Maerkte",
-          "Optimierung einer Website fuer lokale Suchergebnisse",
-          "Die bezahlte Schaltung lokaler Anzeigen",
-          "Nur die Optimierung von Google Maps Bildern",
-        ],
-        correctIndex: 1,
-      },
-      {
-        type: "open",
-        prompt: "Wofuer steht NAP im Local SEO?",
-        sampleAnswer:
-          "NAP steht fuer Name, Address und Phone. Diese Angaben sollten ueber alle Eintraege im Web hinweg konsistent sein.",
-      },
-      {
-        type: "open",
-        prompt: "Warum ist ein Relaunch aus SEO-Sicht heikel?",
-        sampleAnswer:
-          "Weil ein Relaunch Chancen fuer bessere Struktur und Technik bietet, aber auch gute Rankings verlieren kann, wenn wichtige SEO-Aspekte nicht sauber uebernommen werden.",
-      },
-      {
-        type: "open",
-        prompt: "Welche besondere Rolle spielen 301-Redirects beim Relaunch?",
-        sampleAnswer:
-          "Sie leiten alte URLs dauerhaft auf neue Adressen um, damit Nutzer und Suchmaschinen Inhalte weiterhin finden und bestehende SEO-Signale moeglichst erhalten bleiben.",
-      },
-      {
-        type: "open",
-        prompt: "Welche KPIs werden fuer SEO besonders genannt?",
-        sampleAnswer:
-          "Zum Beispiel Sichtbarkeitsindex, organischer Traffic, Keyword-Rankings, Conversions, Verweildauer, Backlinks und je nach Website-Typ weitere Kennzahlen wie Umsatz oder Lead-Fokus.",
-      },
-      {
-        type: "multiple",
-        prompt: "Welche Aussage passt zu Voice Search?",
-        options: [
-          "Voice Search arbeitet nur mit einzelnen Shorttail-Keywords.",
-          "Voice Search bevorzugt oft laengere, natuerliche Suchanfragen und klar verstaendliche Antworten.",
-          "Voice Search ist fuer SEO voellig irrelevant.",
-          "Voice Search funktioniert nur ohne HTTPS.",
-        ],
-        correctIndex: 1,
-      },
-    ];
-    module.exercises = [
-      {
-        title: "Mini-SEO-Check",
-        text: "Pruefe eine Website auf logischen Aufbau, klare Seitenthemen, Suchintention, Nutzerfreundlichkeit und Responsivitaet.",
-      },
-      {
-        title: "Local-SEO-Beispiel",
-        text: "Erarbeite fuer ein lokales Unternehmen 5 konkrete Local-SEO-Massnahmen, zum Beispiel rund um Google Business Profile, NAP und lokale Landingpages.",
-      },
-      {
-        title: "Relaunch-Risiken sammeln",
-        text: "Notiere, welche SEO-Risiken bei einem Website-Relaunch auftreten koennen und welche Rolle Redirects und Massnahmenplan dabei spielen.",
-      },
-    ];
-    module.tips = [
-      "Merke dir die Grundlogik Crawling, Indexierung, Ranking sehr sauber.",
-      "Trenne im Kopf organische SEO-Massnahmen klar von SEA.",
-      "Local SEO, Relaunch und Voice Search sind typische Prüfungsfelder, weil sie praxisnah sind.",
-    ];
-  }
-
-  return module;
+  return extra
+    ? {
+        ...module,
+        ...extra,
+        id: module.id,
+        title: module.title,
+        topic: module.topic,
+        color: module.color,
+        softColor: module.softColor
+      }
+    : module;
 });

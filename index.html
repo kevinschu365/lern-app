@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LernApp Module</title>
+    <meta
+      name="description"
+      content="Lern-App mit Quizfragen, Mehrfachantworten, Übungen und Karteikarten für deine Online-Marketing-Module."
+    />
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
     <link rel="stylesheet" href="styles.css" />
@@ -15,8 +19,8 @@
           <p class="eyebrow">Lernplattform</p>
           <h1>Deine Module, Quizfragen und Übungen an einem Ort</h1>
           <p class="hero-text">
-            Diese App ist so vorbereitet, dass wir für bis zu 20 Module Inhalte
-            aus deinen Präsentationen einpflegen können.
+            Diese App bündelt Quiz, offene Fragen, Mehrfachantworten,
+            Karteikarten und Übungen für deine Module.
           </p>
         </div>
         <div class="hero-stats">
@@ -29,6 +33,10 @@
             <small>Fragen insgesamt</small>
           </div>
           <div class="stat-card">
+            <span id="flashcardCount">0</span>
+            <small>Karteikarten</small>
+          </div>
+          <div class="stat-card">
             <span id="learnedCount">0</span>
             <small>Module gelernt</small>
           </div>
@@ -39,9 +47,12 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Module</h2>
-            <p>Wähle ein Modul aus, um Quiz und Übungen zu starten.</p>
+            <p>Wähle ein Modul aus, um Quiz, Karteikarten und Übungen zu starten.</p>
           </div>
-          <div id="moduleGrid" class="module-grid"></div>
+          <div class="module-picker">
+            <label class="picker-label" for="moduleSelect">Modul auswählen</label>
+            <select id="moduleSelect" class="module-select"></select>
+          </div>
         </section>
 
         <section class="panel detail-panel">
