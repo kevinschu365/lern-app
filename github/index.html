@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LernApp Module</title>
+    <link rel="icon" type="image/png" href="icon.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Lernplattform</p>
+          <h1>Deine Module, Quizfragen und Übungen an einem Ort</h1>
+          <p class="hero-text">
+            Diese App ist so vorbereitet, dass wir für bis zu 20 Module Inhalte
+            aus deinen Präsentationen einpflegen können.
+          </p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <span id="moduleCount">0</span>
+            <small>Module vorbereitet</small>
+          </div>
+          <div class="stat-card">
+            <span id="questionCount">0</span>
+            <small>Fragen insgesamt</small>
+          </div>
+          <div class="stat-card">
+            <span id="learnedCount">0</span>
+            <small>Module gelernt</small>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Module</h2>
+            <p>Wähle ein Modul aus, um Quiz und Übungen zu starten.</p>
+          </div>
+          <div id="moduleGrid" class="module-grid"></div>
+        </section>
+
+        <section class="panel detail-panel">
+          <div id="moduleDetail" class="module-detail"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="real-modules.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
