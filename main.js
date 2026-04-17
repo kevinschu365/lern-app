@@ -4,15 +4,26 @@ const moduleCount = document.getElementById("moduleCount");
 const questionCount = document.getElementById("questionCount");
 const flashcardCount = document.getElementById("flashcardCount");
 const learnedCount = document.getElementById("learnedCount");
+const randomStudyToggle = document.getElementById("randomStudyToggle");
+const randomStudyRefresh = document.getElementById("randomStudyRefresh");
+const randomStudy = document.getElementById("randomStudy");
 const appModules = window.modules || [];
 
 const SELECTED_MODULE_KEY = "lernapp-selected-module";
 const LEARNED_MODULES_KEY = "lernapp-learned-modules";
 const FLASHCARD_STATE_KEY = "lernapp-flashcards";
+const RANDOM_QUESTION_COUNT = 10;
+const RANDOM_FLASHCARD_COUNT = 10;
 
 const learnedModules = new Set(loadLearnedModules());
 const flashcardState = loadFlashcardState();
+const questionRegistry = new Map();
 let selectedModuleId = loadSelectedModuleId();
+let randomStudyOpen = false;
+let randomQuestions = [];
+let randomFlashcards = [];
+let randomFlashcardIndex = 0;
+let randomFlashcardFlipped = false;
 
 function renderModuleCards() {
   moduleSelect.innerHTML = appModules
@@ -77,7 +88,7 @@ function renderModuleDetail() {
         <p class="module-counts">${module.questions.length} Fragen - ${module.flashcards.length} Karten</p>
         ${learnedModules.has(module.id) ? '<p class="module-status">Als gelernt markiert</p>' : ""}
       </div>
-      <button class="progress-toggle" type="button" data-module-id="${module.id}">
+      <button class="progress-toggle module-progress-toggle" type="button" data-module-id="${module.id}">
         ${learnedModules.has(module.id) ? "Als offen markieren" : "Als gelernt markieren"}
       </button>
     </div>
@@ -112,12 +123,18 @@ function renderModuleDetail() {
   wireFlashcards(module);
 }
 
-function renderQuestion(question, index, color) {
+function renderQuestion(question, index, color, sourceLabel = "") {
+  const questionKey = registerQuestion(question);
+  const sourceMarkup = sourceLabel
+    ? `<div class="question-source"><span class="source-badge" style="background:${color}15; color:${color};">${sourceLabel}</span></div>`
+    : "";
+
   if (question.type === "open") {
     return `
-      <article class="quiz-card open-question">
+      <article class="quiz-card open-question" data-question-key="${questionKey}">
         <div class="question-label" style="background:${color}15; color:${color};">Frage ${index + 1}</div>
         <h4>${question.prompt}</h4>
+        ${sourceMarkup}
         <button class="sample-answer-toggle" type="button">Musterantwort anzeigen</button>
         <div class="sample-answer" hidden>
           <strong>Musterantwort:</strong>
@@ -138,9 +155,10 @@ function renderQuestion(question, index, color) {
     .join("");
 
   return `
-    <article class="quiz-card" data-question-type="${question.type}">
+    <article class="quiz-card" data-question-type="${question.type}" data-question-key="${questionKey}">
       <div class="question-label" style="background:${color}15; color:${color};">Frage ${index + 1}</div>
       <h4>${question.prompt}</h4>
+      ${sourceMarkup}
       <div class="quiz-options">${options}</div>
       <button class="check-answer" type="button">Ergebnis ansehen</button>
       <div class="quiz-result" aria-live="polite"></div>
@@ -150,6 +168,12 @@ function renderQuestion(question, index, color) {
       </div>
     </article>
   `;
+}
+
+function registerQuestion(question) {
+  const key = `question-${questionRegistry.size + 1}`;
+  questionRegistry.set(key, question);
+  return key;
 }
 
 function renderFlashcards(module) {
@@ -182,8 +206,140 @@ function renderFlashcards(module) {
   `;
 }
 
+function renderRandomStudy() {
+  if (!randomStudy) {
+    return;
+  }
+
+  if (!randomStudyOpen) {
+    randomStudy.hidden = true;
+    randomStudy.innerHTML = "";
+    randomStudyRefresh.hidden = true;
+    randomStudyToggle.textContent = "Zufallsmodus öffnen";
+    return;
+  }
+
+  if (!randomQuestions.length && !randomFlashcards.length) {
+    generateRandomStudySet();
+  }
+
+  const questionMarkup = randomQuestions.length
+    ? randomQuestions
+        .map((entry, index) => renderQuestion(entry.question, index, entry.color, entry.title))
+        .join("")
+    : `<div class="tip-box"><strong>Noch keine Zufallsfragen verfügbar.</strong></div>`;
+
+  randomStudy.hidden = false;
+  randomStudyRefresh.hidden = false;
+  randomStudyToggle.textContent = "Zufallsmodus schließen";
+  randomStudy.innerHTML = `
+    <div class="random-summary">
+      <div class="tip-box">
+        <strong>Gemischte Lernrunde</strong>
+        <p>Hier lernst du modulübergreifend. Jede Frage und jede Karte zeigt dir, aus welchem Modul sie stammt.</p>
+      </div>
+    </div>
+    <div class="random-grid">
+      <section>
+        <h3 class="section-title">10 Zufallsfragen</h3>
+        <p class="section-text">Ideal zum Wiederholen über mehrere Themen hinweg.</p>
+        ${questionMarkup}
+      </section>
+      <section class="random-sidebar">
+        <h3 class="section-title">10 Zufallskarteikarten</h3>
+        <p class="section-text">Zum schnellen Fachbegriffe-Training über mehrere Module hinweg.</p>
+        <div id="randomFlashcardArea">${renderRandomFlashcard()}</div>
+      </section>
+    </div>
+  `;
+
+  wireQuizInteractions();
+  wireRandomFlashcard();
+}
+
+function renderRandomFlashcard() {
+  if (!randomFlashcards.length) {
+    return `<div class="tip-box"><strong>Noch keine Zufallskarteikarten verfügbar.</strong></div>`;
+  }
+
+  const entry = randomFlashcards[randomFlashcardIndex];
+
+  return `
+    <div class="flashcard-wrap" style="--module-accent:${entry.color}; --module-soft:${entry.softColor};">
+      <div class="flashcard-progress">Karte ${randomFlashcardIndex + 1} von ${randomFlashcards.length}</div>
+      <span class="source-badge" style="background:${entry.color}15; color:${entry.color};">${entry.title}</span>
+      <button class="flashcard" type="button" data-random-flashcard="true">
+        <div class="flashcard-face ${randomFlashcardFlipped ? "is-hidden" : ""}">
+          <small>Vorderseite</small>
+          <h4>${entry.card.front}</h4>
+        </div>
+        <div class="flashcard-face ${randomFlashcardFlipped ? "" : "is-hidden"}">
+          <small>Rueckseite</small>
+          <p>${entry.card.back}</p>
+        </div>
+      </button>
+      <div class="flashcard-actions">
+        <button class="flashcard-nav" type="button" data-random-flashcard-action="prev">Zurueck</button>
+        <button class="flashcard-nav" type="button" data-random-flashcard-action="flip">Karte drehen</button>
+        <button class="flashcard-nav" type="button" data-random-flashcard-action="next">Weiter</button>
+      </div>
+    </div>
+  `;
+}
+
+function generateRandomStudySet() {
+  randomQuestions = sampleItems(buildQuestionPool(), RANDOM_QUESTION_COUNT);
+  randomFlashcards = sampleItems(buildFlashcardPool(), RANDOM_FLASHCARD_COUNT);
+  randomFlashcardIndex = 0;
+  randomFlashcardFlipped = false;
+}
+
+function buildQuestionPool() {
+  return readyModules().flatMap((module) =>
+    module.questions.map((question) => ({
+      question,
+      title: module.title,
+      color: module.color,
+      softColor: module.softColor
+    })),
+  );
+}
+
+function buildFlashcardPool() {
+  return readyModules().flatMap((module) =>
+    module.flashcards.map((card) => ({
+      card,
+      title: module.title,
+      color: module.color,
+      softColor: module.softColor
+    })),
+  );
+}
+
+function readyModules() {
+  return appModules.filter(
+    (module) => !module.summary.startsWith("Dieses Modul ist als Platzhalter vorbereitet."),
+  );
+}
+
+function sampleItems(items, count) {
+  const shuffled = [...items];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
 function wireQuizInteractions() {
   document.querySelectorAll(".quiz-card").forEach((card) => {
+    if (card.dataset.wired === "true") {
+      return;
+    }
+    card.dataset.wired = "true";
+
     const sampleToggle = card.querySelector(".sample-answer-toggle");
     const sampleAnswer = card.querySelector(".sample-answer");
 
@@ -206,7 +362,11 @@ function wireClosedQuestion(card) {
   const button = card.querySelector(".check-answer");
   const result = card.querySelector(".quiz-result");
   const sampleAnswer = card.querySelector(".sample-answer");
-  const question = findQuestionByPrompt(card.querySelector("h4").textContent);
+  const question = questionRegistry.get(card.dataset.questionKey);
+
+  if (!question) {
+    return;
+  }
 
   options.forEach((option) => {
     option.addEventListener("click", () => {
@@ -251,8 +411,74 @@ function wireClosedQuestion(card) {
   });
 }
 
+function wireRandomModeControls() {
+  if (!randomStudyToggle || !randomStudyRefresh || !randomStudy) {
+    return;
+  }
+
+  randomStudyToggle.addEventListener("click", () => {
+    randomStudyOpen = !randomStudyOpen;
+    if (randomStudyOpen) {
+      generateRandomStudySet();
+    }
+    renderRandomStudy();
+  });
+
+  randomStudyRefresh.addEventListener("click", () => {
+    generateRandomStudySet();
+    renderRandomStudy();
+  });
+}
+
+function wireRandomFlashcard() {
+  const randomFlashcardArea = document.getElementById("randomFlashcardArea");
+  if (!randomFlashcardArea || !randomFlashcards.length) {
+    return;
+  }
+
+  const cardButton = randomFlashcardArea.querySelector("[data-random-flashcard='true']");
+  if (cardButton) {
+    cardButton.addEventListener("click", () => {
+      randomFlashcardFlipped = !randomFlashcardFlipped;
+      updateRandomFlashcardArea();
+    });
+  }
+
+  randomFlashcardArea.querySelectorAll("[data-random-flashcard-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.randomFlashcardAction;
+
+      if (action === "prev") {
+        randomFlashcardIndex = (randomFlashcardIndex - 1 + randomFlashcards.length) % randomFlashcards.length;
+        randomFlashcardFlipped = false;
+      }
+
+      if (action === "next") {
+        randomFlashcardIndex = (randomFlashcardIndex + 1) % randomFlashcards.length;
+        randomFlashcardFlipped = false;
+      }
+
+      if (action === "flip") {
+        randomFlashcardFlipped = !randomFlashcardFlipped;
+      }
+
+      updateRandomFlashcardArea();
+    });
+  });
+}
+
+function updateRandomFlashcardArea() {
+  const randomFlashcardArea = document.getElementById("randomFlashcardArea");
+  if (!randomFlashcardArea) {
+    return;
+  }
+
+  randomFlashcardArea.innerHTML = renderRandomFlashcard();
+  wireRandomFlashcard();
+}
+
 function wireProgressToggle() {
-  const toggle = document.querySelector(".progress-toggle");
+  const toggle = document.querySelector(".module-progress-toggle");
   if (!toggle) return;
 
   toggle.addEventListener("click", () => {
@@ -316,11 +542,6 @@ function wireModuleSelect() {
   });
 }
 
-function findQuestionByPrompt(prompt) {
-  const module = appModules.find((entry) => entry.id === selectedModuleId);
-  return module.questions.find((question) => question.prompt === prompt);
-}
-
 function getModuleFlashcardState(moduleId, totalCards) {
   if (!flashcardState[moduleId]) {
     flashcardState[moduleId] = { index: 0, flipped: false };
@@ -382,4 +603,6 @@ function persistFlashcardState() {
 updateStats();
 renderModuleCards();
 renderModuleDetail();
+renderRandomStudy();
 wireModuleSelect();
+wireRandomModeControls();
