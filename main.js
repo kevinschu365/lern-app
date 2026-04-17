@@ -4,6 +4,7 @@ const moduleCount = document.getElementById("moduleCount");
 const questionCount = document.getElementById("questionCount");
 const flashcardCount = document.getElementById("flashcardCount");
 const learnedCount = document.getElementById("learnedCount");
+const appModules = window.modules || [];
 
 const SELECTED_MODULE_KEY = "lernapp-selected-module";
 const LEARNED_MODULES_KEY = "lernapp-learned-modules";
@@ -14,7 +15,7 @@ const flashcardState = loadFlashcardState();
 let selectedModuleId = loadSelectedModuleId();
 
 function renderModuleCards() {
-  moduleSelect.innerHTML = modules
+  moduleSelect.innerHTML = appModules
     .map((module) => {
       const learnedLabel = learnedModules.has(module.id) ? " - gelernt" : "";
       return `<option value="${module.id}">${module.title}${learnedLabel}</option>`;
@@ -25,7 +26,7 @@ function renderModuleCards() {
 }
 
 function renderModuleDetail() {
-  const module = modules.find((entry) => entry.id === selectedModuleId);
+  const module = appModules.find((entry) => entry.id === selectedModuleId);
 
   if (!module) {
     moduleDetail.innerHTML = `
@@ -316,7 +317,7 @@ function wireModuleSelect() {
 }
 
 function findQuestionByPrompt(prompt) {
-  const module = modules.find((entry) => entry.id === selectedModuleId);
+  const module = appModules.find((entry) => entry.id === selectedModuleId);
   return module.questions.find((question) => question.prompt === prompt);
 }
 
@@ -333,15 +334,15 @@ function getModuleFlashcardState(moduleId, totalCards) {
 }
 
 function updateStats() {
-  moduleCount.textContent = modules.length;
-  questionCount.textContent = modules.reduce((sum, module) => sum + module.questions.length, 0);
-  flashcardCount.textContent = modules.reduce((sum, module) => sum + module.flashcards.length, 0);
+  moduleCount.textContent = appModules.length;
+  questionCount.textContent = appModules.reduce((sum, module) => sum + module.questions.length, 0);
+  flashcardCount.textContent = appModules.reduce((sum, module) => sum + module.flashcards.length, 0);
   learnedCount.textContent = learnedModules.size;
 }
 
 function loadSelectedModuleId() {
   const storedValue = Number(window.localStorage.getItem(SELECTED_MODULE_KEY));
-  const moduleExists = modules.some((module) => module.id === storedValue);
+  const moduleExists = appModules.some((module) => module.id === storedValue);
   return moduleExists ? storedValue : 1;
 }
 
@@ -354,7 +355,7 @@ function loadLearnedModules() {
     const rawValue = window.localStorage.getItem(LEARNED_MODULES_KEY);
     const parsed = rawValue ? JSON.parse(rawValue) : [];
     return Array.isArray(parsed)
-      ? parsed.filter((moduleId) => modules.some((module) => module.id === moduleId))
+      ? parsed.filter((moduleId) => appModules.some((module) => module.id === moduleId))
       : [];
   } catch {
     return [];

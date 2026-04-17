@@ -542,7 +542,9 @@ const moduleOverrides = {
   }
 };
 
-modules.forEach((module) => {
+const appModules = window.modules || [];
+
+appModules.forEach((module) => {
   const override = moduleOverrides[module.id];
   if (!override) {
     module.flashcards = [...module.flashcards, ...extraCards(module.topic)];
