@@ -7,6 +7,9 @@ const learnedCount = document.getElementById("learnedCount");
 const randomStudyToggle = document.getElementById("randomStudyToggle");
 const randomStudyRefresh = document.getElementById("randomStudyRefresh");
 const randomStudy = document.getElementById("randomStudy");
+const examModeToggle = document.getElementById("examModeToggle");
+const examModeRefresh = document.getElementById("examModeRefresh");
+const examMode = document.getElementById("examMode");
 const appModules = window.modules || [];
 
 const SELECTED_MODULE_KEY = "lernapp-selected-module";
@@ -14,6 +17,8 @@ const LEARNED_MODULES_KEY = "lernapp-learned-modules";
 const FLASHCARD_STATE_KEY = "lernapp-flashcards";
 const RANDOM_QUESTION_COUNT = 10;
 const RANDOM_FLASHCARD_COUNT = 10;
+const EXAM_QUESTION_COUNT = 30;
+const EXAM_PASS_PERCENTAGE = 70;
 
 const learnedModules = new Set(loadLearnedModules());
 const flashcardState = loadFlashcardState();
@@ -24,6 +29,11 @@ let randomQuestions = [];
 let randomFlashcards = [];
 let randomFlashcardIndex = 0;
 let randomFlashcardFlipped = false;
+let examModeOpen = false;
+let examQuestions = [];
+let examSelections = {};
+let examSubmitted = false;
+let examResult = null;
 
 function renderModuleCards() {
   moduleSelect.innerHTML = appModules
@@ -294,6 +304,177 @@ function generateRandomStudySet() {
   randomFlashcardFlipped = false;
 }
 
+function renderExamMode() {
+  if (!examMode) {
+    return;
+  }
+
+  if (!examModeOpen) {
+    examMode.hidden = true;
+    examMode.innerHTML = "";
+    examModeRefresh.hidden = true;
+    examModeToggle.textContent = "Prüfung starten";
+    return;
+  }
+
+  if (!examQuestions.length) {
+    generateExamSet();
+  }
+
+  examMode.hidden = false;
+  examModeRefresh.hidden = !examSubmitted;
+  examModeToggle.textContent = "Prüfungsmodus schließen";
+
+  const wrongCount = examResult ? examResult.total - examResult.correctCount : 0;
+  const resultMarkup = examResult ? renderExamResult() : "";
+  const submitMarkup = examSubmitted
+    ? ""
+    : `
+      <div class="exam-submit-row">
+        <button id="examSubmitButton" class="progress-toggle" type="button">Prüfung auswerten</button>
+      </div>
+    `;
+
+  examMode.innerHTML = `
+    <div class="exam-summary">
+      <div class="tip-box">
+        <strong>Prüfungssimulation</strong>
+        <p>${examQuestions.length} gemischte Fragen aus mehreren Modulen. Bestanden ab ${EXAM_PASS_PERCENTAGE}% richtiger Antworten. Offene Fragen lasse ich bewusst aus, damit die Auswertung fair automatisch funktioniert.</p>
+        ${examResult ? `<p class="exam-meta">${examResult.correctCount} richtig, ${wrongCount} falsch.</p>` : ""}
+      </div>
+    </div>
+    <div class="exam-list">
+      ${examQuestions.map((entry, index) => renderExamQuestion(entry, index)).join("")}
+    </div>
+    ${submitMarkup}
+    ${resultMarkup}
+  `;
+
+  wireExamInteractions();
+}
+
+function renderExamQuestion(entry, index) {
+  const question = entry.question;
+  const selected = getExamSelection(index);
+  const correctIndices = question.type === "multi" ? question.correctIndices : [question.correctIndex];
+  const isCorrect = examSubmitted ? selectionsMatch(selected, correctIndices) : null;
+  const sourceMarkup = `<div class="question-source"><span class="source-badge" style="background:${entry.color}15; color:${entry.color};">${entry.title}</span></div>`;
+  const statusMarkup = examSubmitted
+    ? `<div class="quiz-result">${isCorrect ? "Richtig beantwortet." : "Nicht bestanden - siehe richtige Lösung unten."}</div>`
+    : "";
+
+  const optionsMarkup = question.options
+    .map((option, optionIndex) => {
+      const classNames = ["answer-option", "exam-answer-option"];
+
+      if (selected.includes(optionIndex)) {
+        classNames.push("selected");
+      }
+
+      if (examSubmitted) {
+        if (correctIndices.includes(optionIndex)) {
+          classNames.push("correct");
+        }
+        if (selected.includes(optionIndex) && !correctIndices.includes(optionIndex)) {
+          classNames.push("incorrect");
+        }
+      }
+
+      return `
+        <button
+          class="${classNames.join(" ")}"
+          type="button"
+          data-exam-question-index="${index}"
+          data-option-index="${optionIndex}"
+          ${examSubmitted ? "disabled" : ""}
+        >
+          ${option}
+        </button>
+      `;
+    })
+    .join("");
+
+  return `
+    <article class="quiz-card exam-question-card" data-exam-question-type="${question.type}" data-exam-question-index="${index}">
+      <div class="question-label" style="background:${entry.color}15; color:${entry.color};">Prüfungsfrage ${index + 1}</div>
+      <h4>${question.prompt}</h4>
+      ${sourceMarkup}
+      <div class="quiz-options">${optionsMarkup}</div>
+      ${statusMarkup}
+    </article>
+  `;
+}
+
+function renderExamResult() {
+  if (!examResult) {
+    return "";
+  }
+
+  const statusClass = examResult.passed ? "is-passed" : "is-failed";
+  const wrongAnswerMarkup = examResult.wrongAnswers.length
+    ? examResult.wrongAnswers
+        .map(
+          (entry, index) => `
+            <article class="exam-review-card">
+              <div class="question-label" style="background:${entry.color}15; color:${entry.color};">Fehler ${index + 1}</div>
+              <h4>${entry.prompt}</h4>
+              <p class="exam-review-module">Modul: ${entry.title}</p>
+              <p><strong>Deine Antwort:</strong> ${entry.selectedLabel}</p>
+              <p><strong>Richtig wäre:</strong> ${entry.correctLabel}</p>
+              <p><strong>Erklärung:</strong> ${entry.explanation}</p>
+              <p><strong>Nochmal anschauen:</strong> ${entry.title} und die zugehörigen Quiz-Erklärungen bzw. Karteikarten.</p>
+            </article>
+          `,
+        )
+        .join("")
+    : `
+      <div class="tip-box">
+        <strong>Starke Runde.</strong>
+        <p>Du hast alle Prüfungsfragen richtig beantwortet. Zur Wiederholung kannst du trotzdem Zufallsmodus und Karteikarten nutzen.</p>
+      </div>
+    `;
+
+  const moduleHintMarkup = examResult.reviewModules.length
+    ? `
+      <ul class="exam-review-list">
+        ${examResult.reviewModules
+          .map(
+            (entry) => `<li>${entry.title} - ${entry.mistakes} Fehler. Schau dir dort besonders die Erklärungen und Karteikarten nochmal an.</li>`,
+          )
+          .join("")}
+      </ul>
+    `
+    : `
+      <p>Du musst aktuell kein Modul gezielt nacharbeiten.</p>
+    `;
+
+  return `
+    <section class="exam-result">
+      <div class="tip-box exam-result-summary ${statusClass}">
+        <strong>${examResult.passed ? "Bestanden" : "Nicht bestanden"}</strong>
+        <p>Du hast ${examResult.correctCount} von ${examResult.total} Fragen richtig beantwortet. Das sind ${examResult.scorePercentage}%.</p>
+        <p>${examResult.passed ? "Stabil. Du liegst über der Bestehensgrenze." : `Für das Bestehen brauchst du mindestens ${EXAM_PASS_PERCENTAGE}%.`}</p>
+      </div>
+
+      <div class="tip-box">
+        <strong>Was du dir am besten nochmal anschaust</strong>
+        ${moduleHintMarkup}
+      </div>
+
+      <div class="exam-review-grid">
+        ${wrongAnswerMarkup}
+      </div>
+    </section>
+  `;
+}
+
+function generateExamSet() {
+  examQuestions = sampleItems(buildClosedQuestionPool(), EXAM_QUESTION_COUNT);
+  examSelections = {};
+  examSubmitted = false;
+  examResult = null;
+}
+
 function buildQuestionPool() {
   return readyModules().reduce((pool, module) => {
     module.questions.forEach((question) => {
@@ -304,6 +485,23 @@ function buildQuestionPool() {
         softColor: module.softColor
       });
     });
+
+    return pool;
+  }, []);
+}
+
+function buildClosedQuestionPool() {
+  return readyModules().reduce((pool, module) => {
+    module.questions
+      .filter((question) => question.type === "single" || question.type === "multi")
+      .forEach((question) => {
+        pool.push({
+          question,
+          title: module.title,
+          color: module.color,
+          softColor: module.softColor
+        });
+      });
 
     return pool;
   }, []);
@@ -440,6 +638,135 @@ function wireRandomModeControls() {
     generateRandomStudySet();
     renderRandomStudy();
   });
+}
+
+function wireExamModeControls() {
+  if (!examModeToggle || !examModeRefresh || !examMode) {
+    return;
+  }
+
+  examModeToggle.addEventListener("click", () => {
+    examModeOpen = !examModeOpen;
+    if (examModeOpen) {
+      generateExamSet();
+    }
+    renderExamMode();
+  });
+
+  examModeRefresh.addEventListener("click", () => {
+    generateExamSet();
+    renderExamMode();
+  });
+}
+
+function wireExamInteractions() {
+  const submitButton = document.getElementById("examSubmitButton");
+  if (submitButton) {
+    submitButton.addEventListener("click", () => {
+      evaluateExam();
+      renderExamMode();
+    });
+  }
+
+  document.querySelectorAll(".exam-answer-option").forEach((button) => {
+    if (button.dataset.wired === "true") {
+      return;
+    }
+    button.dataset.wired = "true";
+
+    button.addEventListener("click", () => {
+      if (examSubmitted) {
+        return;
+      }
+
+      const questionIndex = Number(button.dataset.examQuestionIndex);
+      const optionIndex = Number(button.dataset.optionIndex);
+      const questionEntry = examQuestions[questionIndex];
+      const selected = getExamSelection(questionIndex);
+
+      if (questionEntry.question.type === "single") {
+        examSelections[questionIndex] = [optionIndex];
+        button.closest(".quiz-options").querySelectorAll(".exam-answer-option").forEach((entry) => {
+          entry.classList.toggle("selected", Number(entry.dataset.optionIndex) === optionIndex);
+        });
+        return;
+      }
+
+      if (selected.includes(optionIndex)) {
+        examSelections[questionIndex] = selected.filter((value) => value !== optionIndex);
+        button.classList.remove("selected");
+        return;
+      }
+
+      examSelections[questionIndex] = [...selected, optionIndex].sort((left, right) => left - right);
+      button.classList.add("selected");
+    });
+  });
+}
+
+function getExamSelection(questionIndex) {
+  return Array.isArray(examSelections[questionIndex]) ? examSelections[questionIndex] : [];
+}
+
+function selectionsMatch(selected, correctIndices) {
+  return (
+    selected.length === correctIndices.length &&
+    selected.every((value) => correctIndices.includes(value))
+  );
+}
+
+function evaluateExam() {
+  const wrongAnswers = [];
+  const reviewModules = new Map();
+  let correctCount = 0;
+
+  examQuestions.forEach((entry, index) => {
+    const question = entry.question;
+    const selected = getExamSelection(index);
+    const correctIndices = question.type === "multi" ? question.correctIndices : [question.correctIndex];
+
+    if (selectionsMatch(selected, correctIndices)) {
+      correctCount += 1;
+      return;
+    }
+
+    wrongAnswers.push({
+      title: entry.title,
+      color: entry.color,
+      prompt: question.prompt,
+      selectedLabel: formatOptionList(question.options, selected),
+      correctLabel: formatOptionList(question.options, correctIndices),
+      explanation: question.explanation
+    });
+
+    const moduleStats = reviewModules.get(entry.title) || { title: entry.title, mistakes: 0 };
+    moduleStats.mistakes += 1;
+    reviewModules.set(entry.title, moduleStats);
+  });
+
+  const total = examQuestions.length;
+  const scorePercentage = total ? Math.round((correctCount / total) * 100) : 0;
+
+  examSubmitted = true;
+  examResult = {
+    correctCount,
+    total,
+    scorePercentage,
+    passed: scorePercentage >= EXAM_PASS_PERCENTAGE,
+    wrongAnswers,
+    reviewModules: [...reviewModules.values()].sort((left, right) => right.mistakes - left.mistakes)
+  };
+}
+
+function formatOptionList(options, indices) {
+  if (!indices.length) {
+    return "Keine Antwort ausgewählt.";
+  }
+
+  return indices
+    .map((index) => options[index])
+    .filter(Boolean)
+    .join(" / ");
 }
 
 function wireRandomFlashcard() {
@@ -633,5 +960,7 @@ updateStats();
 renderModuleCards();
 renderModuleDetail();
 renderRandomStudy();
+renderExamMode();
 wireModuleSelect();
 wireRandomModeControls();
+wireExamModeControls();
