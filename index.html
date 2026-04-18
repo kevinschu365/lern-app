@@ -43,6 +43,20 @@
         </div>
       </header>
 
+      <section class="panel random-panel">
+        <div class="panel-head panel-head-actions">
+          <div>
+            <h2>Zufallsmodus</h2>
+            <p>10 zufällige Fragen und 10 zufällige Karteikarten aus allen befüllten Modulen.</p>
+          </div>
+          <div class="panel-actions">
+            <button id="randomStudyRefresh" class="ghost-action" type="button" hidden>Neu mischen</button>
+            <button id="randomStudyToggle" class="progress-toggle secondary-action" type="button">Zufallsmodus öffnen</button>
+          </div>
+        </div>
+        <div id="randomStudy" class="random-study" hidden></div>
+      </section>
+
       <main class="layout">
         <section class="panel">
           <div class="panel-head">
@@ -59,20 +73,6 @@
           <div id="moduleDetail" class="module-detail"></div>
         </section>
       </main>
-
-      <section class="panel random-panel">
-        <div class="panel-head panel-head-actions">
-          <div>
-            <h2>Zufallsmodus</h2>
-            <p>10 zufällige Fragen und 10 zufällige Karteikarten aus allen befüllten Modulen.</p>
-          </div>
-          <div class="panel-actions">
-            <button id="randomStudyRefresh" class="ghost-action" type="button" hidden>Neu mischen</button>
-            <button id="randomStudyToggle" class="progress-toggle secondary-action" type="button">Zufallsmodus öffnen</button>
-          </div>
-        </div>
-        <div id="randomStudy" class="random-study" hidden></div>
-      </section>
     </div>
 
     <script src="real-modules.js?v=20260418-1"></script>
