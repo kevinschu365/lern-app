@@ -295,25 +295,33 @@ function generateRandomStudySet() {
 }
 
 function buildQuestionPool() {
-  return readyModules().flatMap((module) =>
-    module.questions.map((question) => ({
-      question,
-      title: module.title,
-      color: module.color,
-      softColor: module.softColor
-    })),
-  );
+  return readyModules().reduce((pool, module) => {
+    module.questions.forEach((question) => {
+      pool.push({
+        question,
+        title: module.title,
+        color: module.color,
+        softColor: module.softColor
+      });
+    });
+
+    return pool;
+  }, []);
 }
 
 function buildFlashcardPool() {
-  return readyModules().flatMap((module) =>
-    module.flashcards.map((card) => ({
-      card,
-      title: module.title,
-      color: module.color,
-      softColor: module.softColor
-    })),
-  );
+  return readyModules().reduce((pool, module) => {
+    module.flashcards.forEach((card) => {
+      pool.push({
+        card,
+        title: module.title,
+        color: module.color,
+        softColor: module.softColor
+      });
+    });
+
+    return pool;
+  }, []);
 }
 
 function readyModules() {
@@ -346,7 +354,11 @@ function wireQuizInteractions() {
     if (sampleToggle && sampleAnswer) {
       sampleToggle.addEventListener("click", () => {
         const isHidden = sampleAnswer.hasAttribute("hidden");
-        sampleAnswer.toggleAttribute("hidden");
+        if (isHidden) {
+          sampleAnswer.removeAttribute("hidden");
+        } else {
+          sampleAnswer.setAttribute("hidden", "");
+        }
         sampleToggle.textContent = isHidden ? "Musterantwort ausblenden" : "Musterantwort anzeigen";
       });
     }
@@ -561,43 +573,60 @@ function updateStats() {
   learnedCount.textContent = learnedModules.size;
 }
 
+function safeGetStorageItem(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    console.warn(`Storage read failed for ${key}.`, error);
+    return null;
+  }
+}
+
+function safeSetStorageItem(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (error) {
+    console.warn(`Storage write failed for ${key}.`, error);
+  }
+}
+
 function loadSelectedModuleId() {
-  const storedValue = Number(window.localStorage.getItem(SELECTED_MODULE_KEY));
+  const storedValue = Number(safeGetStorageItem(SELECTED_MODULE_KEY));
   const moduleExists = appModules.some((module) => module.id === storedValue);
   return moduleExists ? storedValue : 1;
 }
 
 function persistSelectedModule() {
-  window.localStorage.setItem(SELECTED_MODULE_KEY, String(selectedModuleId));
+  safeSetStorageItem(SELECTED_MODULE_KEY, String(selectedModuleId));
 }
 
 function loadLearnedModules() {
   try {
-    const rawValue = window.localStorage.getItem(LEARNED_MODULES_KEY);
+    const rawValue = safeGetStorageItem(LEARNED_MODULES_KEY);
     const parsed = rawValue ? JSON.parse(rawValue) : [];
     return Array.isArray(parsed)
       ? parsed.filter((moduleId) => appModules.some((module) => module.id === moduleId))
       : [];
-  } catch {
+  } catch (error) {
     return [];
   }
 }
 
 function persistLearnedModules() {
-  window.localStorage.setItem(LEARNED_MODULES_KEY, JSON.stringify([...learnedModules]));
+  safeSetStorageItem(LEARNED_MODULES_KEY, JSON.stringify([...learnedModules]));
 }
 
 function loadFlashcardState() {
   try {
-    const rawValue = window.localStorage.getItem(FLASHCARD_STATE_KEY);
+    const rawValue = safeGetStorageItem(FLASHCARD_STATE_KEY);
     return rawValue ? JSON.parse(rawValue) : {};
-  } catch {
+  } catch (error) {
     return {};
   }
 }
 
 function persistFlashcardState() {
-  window.localStorage.setItem(FLASHCARD_STATE_KEY, JSON.stringify(flashcardState));
+  safeSetStorageItem(FLASHCARD_STATE_KEY, JSON.stringify(flashcardState));
 }
 
 updateStats();
