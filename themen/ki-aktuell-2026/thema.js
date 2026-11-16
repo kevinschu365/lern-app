@@ -17,9 +17,9 @@ window.LERN_THEMEN.push({
         "<h3>Die großen Anbieter und ihre Modelle</h3>" +
         "<p>Die Anbieter bringen inzwischen alle paar Monate neue Versionen. Merke dir lieber die <strong>Familien</strong> als einzelne Versionsnummern:</p>" +
         "<ul>" +
-        "<li><strong>OpenAI (ChatGPT):</strong> Im Juli 2026 kam die GPT‑5.6-Familie, ab September 2026 laut Berichten die GPT‑6-Familie (u. a. „Astra“ als Flaggschiff). Typisch: ein großes Modell für schwierige Aufgaben, ein ausgewogenes und ein günstiges, schnelles Modell.</li>" +
-        "<li><strong>Google (Gemini):</strong> Gemini 3 (Nov. 2025), danach 3.1 Pro, mehrere schnelle „Flash“-Modelle und im Herbst 2026 erste Gemini‑4-Modelle. Gemini steckt auch in der Google-Suche (AI Overviews, AI Mode) und in Workspace.</li>" +
-        "<li><strong>Anthropic (Claude):</strong> Claude-Modelle der 5er-Generation, gestaffelt von groß (Opus) über mittel (Sonnet) bis klein und schnell (Haiku). Stark beim Schreiben, bei langen Dokumenten und beim Programmieren; Anthropic hat auch MCP erfunden.</li>" +
+        "<li><strong>OpenAI (ChatGPT):</strong> Im Juli 2026 kam die GPT‑5.6-Familie, ab September 2026 die GPT‑6-Familie (Luna, Sol und „Astra“ als Flaggschiff), danach GPT‑6.1 (Terra, Sol). Typisch: ein großes Modell für schwierige Aufgaben, ein ausgewogenes und ein günstiges, schnelles Modell.</li>" +
+        "<li><strong>Google (Gemini):</strong> Gemini 3 (Nov. 2025), danach 3.1 Pro, mehrere schnelle „Flash“-Modelle und im Herbst 2026 die ersten Gemini‑4-Modelle (Argon im Oktober, Carbon seit 10. November für alle). Gemini steckt auch in der Google-Suche (AI Overviews, AI Mode) und in Workspace.</li>" +
+        "<li><strong>Anthropic (Claude):</strong> Claude-Modelle der 5er-Generation, gestaffelt von groß (Opus 5.5) über mittel (Sonnet 5.5) bis klein und schnell (Haiku 5.5), erschienen September/Oktober 2026. Seit 9. November 2026 gibt es darüber noch Claude Fable 5.2 als teureres Spitzenmodell. Stark beim Schreiben, bei langen Dokumenten und beim Programmieren; Anthropic hat auch MCP erfunden.</li>" +
         "<li><strong>Weitere:</strong> Meta (Llama), Mistral (aus Frankreich, interessant für EU-Datenschutz), xAI (Grok) sowie chinesische Anbieter wie DeepSeek, Qwen oder Kimi, deren Modelle oft offen verfügbar sind.</li>" +
         "</ul>" +
         "<p><strong>Praxis-Tipp:</strong> Für den Alltag reicht meist das mittlere Modell. Das große lohnt sich für Analysen, lange Recherchen oder knifflige Texte; das kleine für Massenaufgaben wie Meta-Descriptions oder Alt-Texte.</p>" +
@@ -147,6 +147,67 @@ window.LERN_THEMEN.push({
         "<li><a href=\"https://digital-strategy.ec.europa.eu/en/news/commission-publishes-code-practice-marking-and-labelling-ai-generated-content\">EU-Kommission: Verhaltenskodex zur Kennzeichnung von KI-Inhalten</a></li>" +
         "<li><a href=\"https://www.lto.de/recht/nachrichten/n/42o1413924-lg-muenchen-i-gema-openai-chatgpt-songtexte-ki\">LTO: LG München I – GEMA siegt gegen OpenAI</a></li>" +
         "</ul>"
+    },
+    {
+      titel: "Neu im November 2026",
+      html:
+        "<p>Was sich von Ende Oktober bis Mitte November 2026 getan hat. Viele Angaben stammen von den Anbietern selbst oder aus Wochenrückblicken; Leistungswerte sind meist nicht unabhängig geprüft. Stand: 16.11.2026.</p>" +
+
+        "<h3>Neue Modelle</h3>" +
+        "<ul>" +
+        "<li><strong>Anthropic:</strong> Nach Claude Opus 5.5 (22.09.), Sonnet 5.5 (28.09.) und Haiku 5.5 (07.10.) kam am <strong>9. November</strong> <strong>Claude Fable 5.2</strong> – ein neues Spitzenmodell oberhalb von Opus, gedacht für schwieriges Programmieren, Recherche und Analysen. Es ist pro Token deutlich teurer als Opus 5.5; Anthropic empfiehlt für die meisten Aufgaben weiterhin Opus. Die Schwester <strong>Claude Mythos 5.2</strong> ist technisch dasselbe Modell ohne Sperren für Cybersicherheit und Biologie und nur für geprüfte Organisationen zugänglich.</li>" +
+        "<li><strong>Google:</strong> <strong>Gemini 4 Carbon</strong> ist seit 10. November für alle verfügbar, nachdem zwei Wochen lang nur ausgewählte IT-Sicherheitsfachleute Zugang hatten. Neu ist ein Agenten-Schwarm, bei dem sich mehrere Agenten eine Aufgabe aufteilen. Davor kam Gemini 4 Argon (Pro- und Ultra-Abos). Das Videomodell Gemini Omni 1.2 Flash erzeugt Clips mit Ton bis 15 Sekunden. In der Gemini-App lassen sich Dokumente, Tabellen, Präsentationen und PDFs jetzt direkt im Chat bearbeiten.</li>" +
+        "<li><strong>OpenAI:</strong> <strong>GPT‑6.1 Terra</strong> versteht Bildschirminhalte und bedient Anwendungen (z. B. Formulare ausfüllen) – in ChatGPT Work, Codex und der API. <strong>ChatGPT Images 2.6</strong> (seit 4. November) erzeugt Bilder laut OpenAI 50 % schneller und kann animierte GIFs. <strong>GPT‑6 Cyber</strong> ist ein Sicherheitsmodell nur für ausgewählte Partner. Neu ist außerdem <strong>ChatGPT Slides</strong> für Präsentationen (Export nach PowerPoint, PDF, Google Slides).</li>" +
+        "<li><strong>Europa und offene Modelle:</strong> Mistral hat <strong>Mistral Large 4</strong> (Gewichte seit 29. Oktober) und die Sprachfamilie Voxtral 3 vorgestellt, mit EU-Hosting oder Betrieb auf eigenen Servern. Meta hat die Gewichte von Muse Spark veröffentlicht, Moonshot die von Kimi K3.1 Pro. DeepL zeigt mit Aure ein Stimm-Modell, das Tonfall und Sprechtempo beim Übersetzen überträgt, auch auf Deutsch.</li>" +
+        "</ul>" +
+
+        "<h3>Agenten werden Alltag</h3>" +
+        "<ul>" +
+        "<li><strong>Claude Duet</strong> (Vorschau, USA, Deutschland noch nicht): Assistent, der morgens zusammenfasst, was in verbundenen Apps ansteht, und größere Aufgaben auf einem virtuellen Computer erledigt. Vor Senden oder Zahlen fragt er nach Freigabe.</li>" +
+        "<li><strong>Claude Sheets, Whiteboards und Meetings</strong> (Beta). Meetings nimmt sichtbar an Google-Meet-Calls teil – Aufzeichnung und Datenschutz vorher klären.</li>" +
+        "<li><strong>Adobe Max:</strong> KI-Agent für Firefly; über <strong>MCP</strong> können KI-Assistenten anderer Anbieter Photoshop-Dokumente bearbeiten.</li>" +
+        "<li><strong>Agent Skills:</strong> Anthropic hat am 22. Oktober sein Format für Agent Skills an die <strong>Agentic AI Foundation</strong> gespendet – dieselbe Stiftung, die schon MCP betreut.</li>" +
+        "<li><strong>„Businesses in ChatGPT“</strong> (Beta): Unternehmen pflegen eigene Angaben und Produktfeeds und sehen, wie oft sie in Gesprächen auftauchen. Verifizierte Business Agents vorerst nur in den USA.</li>" +
+        "</ul>" +
+
+        "<h3>Sicherheit: Lehren aus den letzten Wochen</h3>" +
+        "<ul>" +
+        "<li><strong>Coding-Agenten:</strong> Bei Claude Code sind laut Ars Technica Zugangsdaten in öffentlichen GitHub-Repositories gelandet, ausgelöst durch die Option „Nicht erneut fragen“. Lehre: Freigaben nicht pauschal abschalten, öffentliche Repositories auf Einstellungsdateien prüfen, betroffene Schlüssel austauschen.</li>" +
+        "<li><strong>PHP-Lücken:</strong> Am 21. Oktober wurden zwei kritische PHP-Sicherheitslücken samt Updates veröffentlicht, eine davon mit KI-Hilfe gefunden. Wer eine Website betreibt, sollte beim Hoster prüfen, ob die Updates eingespielt sind.</li>" +
+        "<li><strong>CERT-EU</strong> warnt vor schnelleren Angriffen mithilfe von Agenten-Frameworks.</li>" +
+        "</ul>" +
+
+        "<h3>Regeln und Recht</h3>" +
+        "<ul>" +
+        "<li><strong>Leitlinien zu Art. 50 AI Act:</strong> Die Kommission hat die finalen Leitlinien am 20. Juli 2026 angenommen; laut Berichten stehen sie seit 12. November 2026 im Amtsblatt. Wichtig für Redaktionen: Für die Ausnahme bei KI-Texten braucht es eine echte menschliche Prüfung <strong>mit Faktencheck</strong> – Rechtschreib- oder Grammatikkorrektur reicht nicht. Die Kennzeichnung durch den Verwender muss <strong>für Menschen sichtbar</strong> sein; ein unsichtbares Wasserzeichen ersetzt sie nicht. Die Leitlinien sind rechtlich unverbindlich.</li>" +
+        "<li><strong>2. Dezember 2026</strong> ist kein allgemeiner Stichtag, sondern betrifft die Übergangsfrist für maschinenlesbare Markierung bei bereits angebotenen KI-Systemen (siehe Bericht „KI im Marketing-Alltag“).</li>" +
+        "<li><strong>Signal gegen KI-Training:</strong> Ein IETF-Entwurf sieht ein einheitliches Signal in der robots.txt vor, mit dem Websites KI-Training untersagen können. OpenAI unterstützt ihn; es ist aber noch kein Standard.</li>" +
+        "<li><strong>International:</strong> Pariser Aufruf zur KI-Sicherheit (acht Staaten und mehrere KI-Firmen, ohne Sanktionen); in New York ist der RAISE Act in Kraft (Meldepflicht für schwere Vorfälle binnen 72 Stunden).</li>" +
+        "</ul>" +
+
+        "<h3>Wirtschaft und Arbeit</h3>" +
+        "<ul>" +
+        "<li>Die <strong>Bundesagentur für Arbeit</strong> schätzt, dass in Deutschland in 15 Jahren rund 800.000 Jobs durch KI wegfallen könnten – etwa ebenso viele sollen neu entstehen.</li>" +
+        "<li><strong>Anthropic</strong> hat am 26. Oktober den Börsengang beantragt (S‑1) und am 10. November die Roadshow gestartet.</li>" +
+        "</ul>" +
+
+        "<h3>Was heißt das für die Redaktion?</h3>" +
+        "<ul>" +
+        "<li>Für Texte reicht weiter das mittlere Modell; Fable oder Carbon lohnen sich nur für schwere Analysen.</li>" +
+        "<li>Faktencheck dokumentieren – das ist jetzt auch die Voraussetzung für die Ausnahme von der Kennzeichnungspflicht.</li>" +
+        "<li>Agenten nie pauschal freigeben, gerade bei Zugriff auf Konten, Code oder die Website.</li>" +
+        "</ul>" +
+
+        "<h3>Quellen</h3>" +
+        "<ul>" +
+        "<li><a href=\"https://www.anthropic.com/news\">Anthropic News (u. a. Fable 5.2, Haiku 5.5, Agent Skills, IPO)</a></li>" +
+        "<li><a href=\"https://digitaleprofis.de/die-ki-news-der-woche-vom-12-11-2026/\">Digitale Profis: KI-News der Woche vom 12.11.2026</a></li>" +
+        "<li><a href=\"https://digitaleprofis.de/die-ki-news-der-woche-vom-05-11-2026/\">Digitale Profis: KI-News der Woche vom 05.11.2026</a></li>" +
+        "<li><a href=\"https://digitaleprofis.de/die-ki-news-der-woche-vom-29-10-2026/\">Digitale Profis: KI-News der Woche vom 29.10.2026</a></li>" +
+        "<li><a href=\"https://lausen.com/art-50-ai-act-kennzeichnungspflicht-leitlinien/\">LAUSEN: Leitlinien zur Kennzeichnungspflicht nach Art. 50 AI Act</a></li>" +
+        "<li><a href=\"https://borncity.com/news/eu-ki-gesetz-kommission-veroeffentlicht-leitlinien-zu-artikel-50/\">BornCity: Kommission veröffentlicht Leitlinien zu Artikel 50</a></li>" +
+        "<li><a href=\"https://en.wikipedia.org/wiki/ChatGPT\">Wikipedia: ChatGPT (Modellübersicht GPT‑6, Images 2.6)</a></li>" +
+        "</ul>"
     }
   ],
 
@@ -188,7 +249,7 @@ window.LERN_THEMEN.push({
           { text: "Modelle & Anbieter", kinder: [
             { text: "OpenAI: GPT-5.6, GPT-6" },
             { text: "Google: Gemini 3 und 4" },
-            { text: "Anthropic: Claude (Opus, Sonnet, Haiku)" },
+            { text: "Anthropic: Claude (Fable, Opus, Sonnet, Haiku)" },
             { text: "Offene Modelle: Llama, Mistral, DeepSeek, Qwen" }
           ]},
           { text: "Agenten & Automatisierung", kinder: [
@@ -281,7 +342,22 @@ window.LERN_THEMEN.push({
     { vorne: "Was ist n8n?", hinten: "Ein Automatisierungswerkzeug (ähnlich Make oder Zapier), mit dem man Abläufe aus Bausteinen zusammensetzt – inklusive KI-Schritten, z. B. „neuer Blogartikel → Social-Post-Entwurf erstellen“." },
     { vorne: "Was bedeutet „Human in the Loop“?", hinten: "Ein Mensch prüft und gibt frei, bevor eine KI-Aktion wirksam wird – etwa bevor ein Agent eine E-Mail sendet oder einen Beitrag veröffentlicht." },
     { vorne: "Was ist Bias bei KI?", hinten: "Verzerrungen in KI-Ausgaben, die aus den Trainingsdaten stammen – etwa Klischees bei Bildern von Berufen. Deshalb Ergebnisse kritisch prüfen, besonders bei Personen-Darstellungen." },
-    { vorne: "Was ist E-E-A-T und warum ist es für KI-Suche wichtig?", hinten: "Experience, Expertise, Authoritativeness, Trust. Inhalte mit erkennbaren Experten, Belegen und eigener Erfahrung gelten als vertrauenswürdiger und werden eher als Quelle genutzt." }
+    { vorne: "Was ist E-E-A-T und warum ist es für KI-Suche wichtig?", hinten: "Experience, Expertise, Authoritativeness, Trust. Inhalte mit erkennbaren Experten, Belegen und eigener Erfahrung gelten als vertrauenswürdiger und werden eher als Quelle genutzt." },
+    { vorne: "Was ist Claude Fable 5.2?", hinten: "Anthropics neues Spitzenmodell vom 9. November 2026, oberhalb von Opus 5.5 – für schwieriges Programmieren, Recherche und Analysen. Pro Token deutlich teurer; für die meisten Aufgaben empfiehlt Anthropic weiter Opus 5.5." },
+    { vorne: "Was unterscheidet Claude Mythos 5.2 von Fable 5.2?", hinten: "Technisch dasselbe Modell, aber ohne Sperren für Cybersicherheit und Biologie. Deshalb nur für geprüfte Organisationen zugänglich." },
+    { vorne: "Welche Claude-5.5-Modelle kamen im Herbst 2026?", hinten: "Opus 5.5 (22.09.2026), Sonnet 5.5 (28.09.2026) und Haiku 5.5 (07.10.2026) – groß, mittel und klein/schnell." },
+    { vorne: "Was ist Gemini 4 Carbon?", hinten: "Googles stärkstes Gemini-4-Modell, seit 10. November 2026 für alle verfügbar (vorher zwei Wochen nur für IT-Sicherheitsfachleute). Neu: ein Agenten-Schwarm, bei dem sich mehrere Agenten eine Aufgabe teilen." },
+    { vorne: "Was kann GPT‑6.1 Terra?", hinten: "Bildschirminhalte verstehen und Anwendungen bedienen, etwa Formulare ausfüllen oder Rechnungsdaten übertragen. Läuft in ChatGPT Work, Codex und der API, nicht im normalen Chat." },
+    { vorne: "Was ist neu an ChatGPT Images 2.6?", hinten: "Seit 4. November 2026: laut OpenAI 50 % schnellere Bilderzeugung, animierte GIFs und bessere Wiedererkennung von Figuren und Produkten bei mehrfachen Bearbeitungen." },
+    { vorne: "Was ist GPT‑6 Cyber?", hinten: "Ein OpenAI-Modell speziell für das Finden und Abwehren von Sicherheitslücken, nur für ausgewählte Partner. OpenAI meldet damit u. a. 81 schwere Lücken in Firefox." },
+    { vorne: "Was ist Claude Duet?", hinten: "Ein Assistent (Vorschau, USA), der morgens zusammenfasst, was in verbundenen Apps ansteht, und größere Aufgaben auf einem virtuellen Computer erledigt. Vor Senden oder Zahlungen holt er die Freigabe ein. In Deutschland noch nicht verfügbar." },
+    { vorne: "Was hat Anthropic am 22. Oktober 2026 an die Agentic AI Foundation gespendet?", hinten: "Das Format für Agent Skills – also wiederverwendbare Anleitungen für KI-Agenten. Die Stiftung betreut bereits MCP." },
+    { vorne: "Reicht eine Rechtschreibkorrektur, um einen KI-Text von der Kennzeichnung zu befreien?", hinten: "Nein. Laut den Leitlinien zu Art. 50 AI Act braucht die redaktionelle Ausnahme eine echte menschliche Prüfung mit mindestens einem Faktencheck." },
+    { vorne: "Ersetzt ein unsichtbares Wasserzeichen die sichtbare KI-Kennzeichnung?", hinten: "Nein. Die Kennzeichnung durch den Verwender (z. B. bei Deepfakes) muss für Menschen ohne Hilfsmittel erkennbar sein. Maschinenlesbare Markierung ist eine zusätzliche Pflicht der Anbieter." },
+    { vorne: "Was ist das geplante robots.txt-Signal gegen KI-Training?", hinten: "Ein IETF-Entwurf für ein einheitliches Signal, mit dem Websites KI-Training zentral untersagen können. OpenAI unterstützt ihn, ein Standard ist er noch nicht." },
+    { vorne: "Welche Lehre gibt es aus den Datenlecks bei Coding-Agenten im November 2026?", hinten: "Freigaben nicht pauschal mit „Nicht erneut fragen“ abschalten. Öffentliche Repositories auf Einstellungsdateien prüfen und betroffene Schlüssel austauschen." },
+    { vorne: "Was ist Mistral Large 4?", hinten: "Das neue große Modell des französischen Anbieters Mistral (Gewichte seit 29.10.2026). Nutzbar mit EU-Hosting oder auf eigenen Servern – interessant für Datenschutz." },
+    { vorne: "Wie viele Jobs könnten laut Bundesagentur für Arbeit in Deutschland durch KI wegfallen?", hinten: "Rund 800.000 in 15 Jahren, also etwa 53.000 pro Jahr. Ungefähr genauso viele neue Stellen sollen entstehen." }
   ],
 
   quiz: [
@@ -476,6 +552,28 @@ window.LERN_THEMEN.push({
       optionen: ["Ein Mensch prüft und gibt frei, bevor eine KI-Aktion wirksam wird", "Die KI ersetzt alle Menschen", "Ein Mensch tippt jede Antwort selbst", "Eine Schleife, die nie endet"],
       richtig: [0],
       erklaerung: "Besonders bei Senden, Veröffentlichen oder Löschen sollte ein Mensch die letzte Entscheidung treffen."
-    }
+    },
+
+    // ---- Neue Fragetypen (Ausbau 16.11.2026) ----
+    { typ: "wahrfalsch", aussage: "Die Search-Console-Einstellung zum Ausschluss aus KI-Funktionen gilt auch für ChatGPT und Perplexity.", richtig: false, erklaerung: "Sie betrifft nur Googles KI-Funktionen: AI Overviews, AI Mode und KI in Discover.", quelle: "KI-Suche: Was AI Overviews, AI Mode & Co. für Websites bedeuten" },
+    { typ: "wahrfalsch", aussage: "Der EU AI Act ist seit 1. August 2024 in Kraft, gilt aber stufenweise.", richtig: true, erklaerung: "Verbote seit Februar 2025, GPAI-Pflichten seit August 2025, Transparenzpflichten seit 2. August 2026, Hochrisiko später.", quelle: "KI im Marketing-Alltag: Prompting, Recht und Risiken" },
+    { typ: "wahrfalsch", aussage: "Rein KI-generierte Bilder sind in Deutschland in der Regel urheberrechtlich geschützt.", richtig: false, erklaerung: "Es fehlt die persönliche menschliche Schöpfung. Je mehr eigene Gestaltung, desto eher entsteht Schutz.", quelle: "KI im Marketing-Alltag: Prompting, Recht und Risiken" },
+    { typ: "wahrfalsch", aussage: "Lokale und transaktionale Suchen wie „Anwalt Arbeitsrecht [Stadt]“ sind von AI Overviews weniger betroffen als reine Wissensfragen.", richtig: true, erklaerung: "Informative „Was ist …?“-Fragen beantwortet die KI direkt, lokale Suchen führen eher noch zum Klick.", quelle: "KI-Suche: Was AI Overviews, AI Mode & Co. für Websites bedeuten" },
+    { typ: "wahrfalsch", aussage: "Laut den Leitlinien zu Art. 50 reicht eine Rechtschreibkorrektur durch einen Menschen, damit ein KI-Text nicht gekennzeichnet werden muss.", richtig: false, erklaerung: "Die redaktionelle Ausnahme verlangt eine echte Prüfung mit mindestens einem Faktencheck.", quelle: "Neu im November 2026" },
+    { typ: "wahrfalsch", aussage: "Claude Fable 5.2 ist pro Token günstiger als Claude Opus 5.5.", richtig: false, erklaerung: "Fable liegt oberhalb von Opus und ist deutlich teurer. Anthropic empfiehlt für die meisten Aufgaben weiter Opus 5.5.", quelle: "Neu im November 2026" },
+    { typ: "luecke", text: "Anthropic hat MCP im Dezember 2025 an die ___ unter dem Dach der Linux Foundation übergeben.", optionen: ["Agentic AI Foundation", "Mozilla Foundation", "EU-Kommission", "OpenAI Foundation"], richtig: [0], erklaerung: "Die Agentic AI Foundation betreut MCP und seit Oktober 2026 auch das Format für Agent Skills.", quelle: "Überblick: Was ist neu in der KI?" },
+    { typ: "luecke", text: "Bei verbotenen KI-Praktiken drohen bis zu 35 Mio. Euro oder ___ des weltweiten Jahresumsatzes.", optionen: ["7 %", "1 %", "3 %", "20 %"], richtig: [0], erklaerung: "Für verbotene Praktiken gilt der höchste Rahmen, je nachdem, was höher ist.", quelle: "Lernkarten" },
+    { typ: "luecke", text: "Nach § 44b UrhG ist Text und Data Mining erlaubt, solange der Rechteinhaber nicht ___ widersprochen hat.", optionen: ["maschinenlesbar", "mündlich", "per Einschreiben", "vor Gericht"], richtig: [0], erklaerung: "Der Nutzungsvorbehalt (Opt-out) muss maschinenlesbar erklärt werden, etwa in der robots.txt oder in Metadaten.", quelle: "Lernkarten" },
+    { typ: "luecke", text: "Der Web-Crawler von OpenAI heißt ___ und lässt sich über die robots.txt steuern.", optionen: ["GPTBot", "Googlebot", "Bingbot", "ClaudeCrawler"], richtig: [0], erklaerung: "In der robots.txt kann man festlegen, welche KI-Crawler die Website abrufen dürfen.", quelle: "KI-Suche: Was AI Overviews, AI Mode & Co. für Websites bedeuten" },
+    { typ: "luecke", text: "Gemini 4 ___ ist seit 10. November 2026 für alle verfügbar und bringt einen Agenten-Schwarm mit.", optionen: ["Carbon", "Argon", "Flash", "Nano Banana"], richtig: [0], erklaerung: "Carbon war vorher zwei Wochen nur für Sicherheitsfachleute zugänglich. Argon kam etwa zwei Wochen früher.", quelle: "Neu im November 2026" },
+    { typ: "zuordnen", frage: "Ordne die Begriffe ihrer Bedeutung zu.", paare: [["RAG", "KI holt sich Wissen aus einer Quelle und antwortet darauf gestützt"], ["Halluzination", "Überzeugend klingende, aber erfundene Angabe"], ["Token", "Texteinheit, mit der ein Modell rechnet"], ["Kontextfenster", "Textmenge, die ein Modell gleichzeitig im Blick hat"]], erklaerung: "Diese vier Grundbegriffe tauchen in fast jeder KI-Diskussion auf.", quelle: "Lernkarten" },
+    { typ: "zuordnen", frage: "Ordne die Werkzeuge ihrem Einsatzzweck zu.", paare: [["Perplexity", "Recherche mit Quellen"], ["NotebookLM", "Eigene Dokumente zusammenfassen"], ["ElevenLabs", "Audio und Stimme"], ["Google Veo", "Video"], ["n8n", "Automatisierung"]], erklaerung: "So steht es in der Tabelle der KI-Werkzeuge nach Einsatzzweck.", quelle: "KI-Werkzeuge nach Einsatzzweck im Marketing" },
+    { typ: "zuordnen", frage: "Ordne die Stichtage des AI Act zu.", paare: [["2. Februar 2025", "Verbotene KI-Praktiken"], ["2. August 2025", "Pflichten für GPAI-Anbieter"], ["2. August 2026", "Transparenzpflichten nach Art. 50"], ["2. Dezember 2027", "Hochrisiko-KI nach Anhang III"]], erklaerung: "Der Digital Omnibus hat vor allem die Hochrisiko-Fristen verschoben.", quelle: "KI im Marketing-Alltag: Prompting, Recht und Risiken" },
+    { typ: "zuordnen", frage: "Klassische Suche oder KI-Suche? Ordne zu.", paare: [["Liste mit Links", "Ergebnis der klassischen Suche"], ["Zusammengefasste Antwort mit Quellen", "Ergebnis der KI-Suche"], ["Ranking-Position", "Ziel der klassischen Optimierung"], ["Als Quelle zitiert werden", "Ziel der KI-Optimierung"]], erklaerung: "Siehe Tabelle „Klassische Suche vs. KI-Suche“.", quelle: "Klassische Suche vs. KI-Suche" },
+    { typ: "zuordnen", frage: "Ordne die Neuheiten aus Herbst 2026 dem Anbieter zu.", paare: [["Claude Fable 5.2", "Anthropic"], ["Gemini 4 Carbon", "Google"], ["GPT‑6.1 Terra", "OpenAI"], ["Mistral Large 4", "Mistral"]], erklaerung: "Fable kam am 9.11., Carbon am 10.11. für alle, Terra bedient Anwendungen, Mistral Large 4 ist aus Europa.", quelle: "Neu im November 2026" },
+    { typ: "reihenfolge", frage: "Bring die Prompting-Schritte in eine sinnvolle Reihenfolge.", schritte: ["Rolle und Ziel festlegen", "Kontext geben (Zielgruppe, Ton, Keyword)", "Beispiele zeigen", "Ausgabeformat festlegen", "Unsichere Aussagen markieren lassen"], erklaerung: "Erst Rahmen und Kontext, dann Muster und Format, zum Schluss die Selbstprüfung.", quelle: "KI im Marketing-Alltag: Prompting, Recht und Risiken" },
+    { typ: "reihenfolge", frage: "Bring die AI-Act-Stufen in die zeitliche Reihenfolge.", schritte: ["Inkrafttreten (1. August 2024)", "Verbote und KI-Kompetenz (2. Februar 2025)", "GPAI-Pflichten (2. August 2025)", "Transparenzpflichten Art. 50 (2. August 2026)", "Hochrisiko Anhang III (2. Dezember 2027)", "Hochrisiko Anhang I (2. August 2028)"], erklaerung: "Der AI Act gilt stufenweise; die Hochrisiko-Pflichten wurden durch den Omnibus verschoben.", quelle: "KI im Marketing-Alltag: Prompting, Recht und Risiken" },
+    { typ: "reihenfolge", frage: "So arbeitet ein KI-Agent. Bring die Schritte in die richtige Reihenfolge.", schritte: ["Ziel bekommen", "Schritte planen", "Werkzeuge nutzen (Suche, Browser, Dateien)", "Zwischenergebnisse prüfen", "Mensch gibt kritische Aktion frei"], erklaerung: "Agenten bekommen ein Ziel statt einer Frage. Bei Senden, Veröffentlichen oder Löschen gibt ein Mensch frei.", quelle: "Überblick: Was ist neu in der KI?" },
+    { typ: "reihenfolge", frage: "Bring die Claude-Veröffentlichungen im Herbst 2026 in die zeitliche Reihenfolge.", schritte: ["Claude Opus 5.5", "Claude Sonnet 5.5", "Claude Haiku 5.5", "Claude Fable 5.2"], erklaerung: "22.09., 28.09., 07.10. und 09.11.2026.", quelle: "Neu im November 2026" }
   ]
 });

@@ -21,13 +21,13 @@ window.LERN_THEMEN.push({
         "<p>Im Mai 2026 hat Google einen Leitfaden zur Optimierung für generative KI-Funktionen veröffentlicht. Kernaussage laut Berichten: Die KI-Funktionen beruhen auf den normalen Ranking- und Qualitätssystemen. Spezielles KI-Markup, künstliches „Chunking“ oder eine ideale Textlänge brauche es nicht. Für ChatGPT, Perplexity und Co. gelten andere Systeme, aber auch dort helfen klare, zitierfähige Antworten und eine bekannte Marke.</p>" +
 
         "<h3>3. Search Console zeigt KI-Sichtbarkeit (teilweise)</h3>" +
-        "<p>Seit Juni 2026 gibt es einen eigenen Bericht für generative KI-Funktionen (AI Overviews, AI Mode, KI in Discover). Er zeigt bisher nur <strong>Impressionen</strong>, keine Klicks, keine Suchanfragen, Daten ab dem 18. Mai 2026. Ob er schon für alle deutschen Properties freigeschaltet ist, war in den Quellen nicht eindeutig.</p>" +
+        "<p>Seit Juni 2026 gibt es einen eigenen Bericht für generative KI-Funktionen (AI Overviews, AI Mode, KI in Discover). Er zeigt bisher nur <strong>Impressionen</strong>, keine Klicks, keine Suchanfragen, Daten ab dem 18. Mai 2026. Laut Search Engine Land ist er seit Ende August 2026 weltweit ausgerollt; Google kündigt weitere Kennzahlen „im Laufe der Zeit“ an.</p>" +
 
         "<h3>4. Werbung in KI-Chats ist angekommen</h3>" +
         "<p>Seit dem 24. August 2026 zeigt ChatGPT auch in Deutschland Anzeigen, und zwar nur in den Tarifen Free und Go, als gekennzeichnete Karte unter der Antwort. Zum Start ohne Personalisierung aus früheren Chats. Für Werbetreibende ist das ein neuer Kanal, der sich gerade erst entwickelt.</p>" +
 
         "<h3>5. E-E-A-T wird zur Pflicht für KI-gestützten Content</h3>" +
-        "<p>Google betont, dass KI-unterstützte Inhalte von Menschen geprüft werden sollen, auch Titel, strukturierte Daten und Alt-Texte. E-E-A-T ist kein einzelner Rankingfaktor, sondern beschreibt, was die Systeme belohnen sollen: echte Erfahrung, nachweisbare Fachleute, Transparenz. 2026 gab es mehrere Core Updates (u. a. März und Mai).</p>" +
+        "<p>Google betont, dass KI-unterstützte Inhalte von Menschen geprüft werden sollen, auch Titel, strukturierte Daten und Alt-Texte. E-E-A-T ist kein einzelner Rankingfaktor, sondern beschreibt, was die Systeme belohnen sollen: echte Erfahrung, nachweisbare Fachleute, Transparenz. 2026 gab es drei Core Updates: März, Mai und seit 10. November das November Core Update.</p>" +
 
         "<h3>6. Social: Menschen schlagen Marken</h3>" +
         "<p>Trendreports (Hootsuite Social Trends 2026, HubSpot) zeigen: Creator-Partnerschaften werden langfristiger, Mitarbeiter-Programme (Employee Advocacy) wachsen, LinkedIn wird zur Creator-Plattform. Kurzvideo bleibt auf TikTok, Instagram und Facebook das stärkste Format. Entscheidend ist zunehmend der nachweisbare Ertrag statt Reichweite.</p>" +
@@ -77,7 +77,7 @@ window.LERN_THEMEN.push({
         "<ul>" +
         "<li><strong>Antwort zuerst:</strong> Jede Ratgeberseite beginnt mit zwei bis drei Sätzen, die die Frage direkt beantworten. Diese Passagen werden in KI-Antworten am ehesten übernommen.</li>" +
         "<li><strong>Info-Traffic geht zurück, Mandats-Traffic bleibt:</strong> Reine Definitionsfragen („Was ist ein Erbschein?“) beantwortet die KI selbst. Seiten mit regionalem Bezug, konkretem Ablauf, Kosten und Kontaktweg werden wichtiger.</li>" +
-        "<li><strong>Search Console doppelt lesen:</strong> Impressionen steigen, Klicks fallen? Das ist oft kein Ranking-Verlust, sondern Zero-Click. Den KI-Bericht beobachten, sobald er verfügbar ist.</li>" +
+        "<li><strong>Search Console doppelt lesen:</strong> Impressionen steigen, Klicks fallen? Das ist oft kein Ranking-Verlust, sondern Zero-Click. Den KI-Bericht (bisher nur Impressionen) regelmäßig mitlesen.</li>" +
         "<li><strong>Markenname stärken:</strong> KI-Systeme nennen bevorzugt Marken, über die an mehreren Stellen konsistent berichtet wird (Kammer-Verzeichnisse, Presse, Fachportale, Google-Unternehmensprofil).</li>" +
         "</ul>" +
 
@@ -158,6 +158,65 @@ window.LERN_THEMEN.push({
         "<li><a href='https://www.emarketer.com/content/mmm--incrementality--other-measurement-trends-that-will-define-2026' target='_blank' rel='noopener'>eMarketer: MMM und Inkrementalität 2026</a></li>" +
         "<li><a href='https://www.seo-kreativ.de/blog/google-gen-ai-performance-reports-search-console/' target='_blank' rel='noopener'>SEO-Kreativ: Was die neuen GSC-KI-Daten taugen</a></li>" +
         "</ul>"
+    },
+    {
+      titel: "Neu im November 2026",
+      html:
+        "<p>Was sich von Anfang Oktober bis Mitte November 2026 im Online-Marketing bewegt hat. Viele Meldungen stammen aus Wochenrückblicken und Fachblogs; Zahlen aus Studien von Anbietern sind mit Vorsicht zu lesen. Stand: 16.11.2026.</p>" +
+
+        "<h3>Google-Suche</h3>" +
+        "<ul>" +
+        "<li><strong>November 2026 Core Update:</strong> Start am 10. November, weltweit und für alle Sprachen, Dauer bis zu zwei Wochen. Es ist das dritte Core Update 2026 nach März und Mai. Google nennt keine neuen Ratschläge, sondern verweist auf hilfreiche, vertrauenswürdige Inhalte. Empfehlung: während des Rollouts nichts hektisch umbauen und frühestens eine Woche nach Abschluss auswerten.</li>" +
+        "<li><strong>Spam Update:</strong> Vom 24. September bis 8. Oktober lief bereits ein Spam Update.</li>" +
+        "<li><strong>Irreführende Autorenschaft:</strong> Google hat seine Hinweise zu hilfreichen Inhalten im Oktober verschärft: Erfundene Personas, gefälschte Kurzprofile und irreführende Autorenzeilen gelten als Täuschung. Für Fachartikel heißt das: nur echte Autoren und echte prüfende Anwälte nennen.</li>" +
+        "<li><strong>KI-Bericht in der Search Console:</strong> weiterhin nur Impressionen, keine Klicks. Google hat weitere Kennzahlen angekündigt, aber keinen Termin.</li>" +
+        "</ul>" +
+
+        "<h3>Google Ads</h3>" +
+        "<ul>" +
+        "<li><strong>Anzeigen im AI Mode:</strong> Am 28. Oktober hat Google angekündigt, sie auf zehn weitere Länder auszuweiten (u. a. Australien, Kanada, Indien, Singapur); Großbritannien, Brasilien und Mexiko sollen im vierten Quartal folgen. Für Deutschland, Österreich und die Schweiz gibt es noch keinen Termin.</li>" +
+        "<li><strong>Display wird Demand Gen:</strong> Ab Anfang 2027 überführt Google die verbliebenen Display-Kampagnen in Demand Gen. Mehr Reichweite über YouTube, Discover und Gmail, aber weniger Kontrolle über Zielgruppen.</li>" +
+        "</ul>" +
+
+        "<h3>Werbung in ChatGPT</h3>" +
+        "<ul>" +
+        "<li><strong>Creative Enhancements:</strong> Seit 30. Oktober standardmäßig für alle neuen und bestehenden Kampagnen aktiv. Das System kann Überschriften, Texte, Bilder und sogar Ziel-URLs <strong>ohne Freigabe</strong> ändern. Abschalten lässt es sich auf Konto- oder Kampagnenebene – für Kanzleien mit berufsrechtlichen Grenzen wichtig.</li>" +
+        "<li><strong>Neue Gebotslogik:</strong> Seit 9. November nutzen neue Conversion-Kampagnen Ziel-CPA und neue Klick-Kampagnen Ziel-CPC.</li>" +
+        "<li><strong>Erste Leistungsdaten:</strong> Ein Arbeitspapier fand für ChatGPT-Anzeigen eine Conversion-Rate von 0,37 % gegenüber 1,17 % bei Google Ads. Ein einzelnes Papier, aber ein Hinweis: noch kein Pflichtkanal für kleine Budgets.</li>" +
+        "<li><strong>„Businesses in ChatGPT“</strong> (Beta): Unternehmen pflegen eigene Angaben und Produktfeeds und sehen, wie oft sie in Gesprächen auftauchen. Verifizierte Business Agents gibt es vorerst nur in den USA.</li>" +
+        "</ul>" +
+
+        "<h3>Social Media</h3>" +
+        "<ul>" +
+        "<li><strong>Meta:</strong> Platzierungs-Ausschlüsse auf Anzeigengruppenebene fallen in weiteren Kampagnentypen weg – die KI entscheidet noch mehr selbst. Neue Markenformate wie Reels Trending Ads. Meta hat neue Geschäftsbedingungen, die das Crawlen von Unternehmenswebsites erlaubt hätten, vorerst pausiert; die britische CMA ermittelt.</li>" +
+        "<li><strong>Instagram:</strong> testet „Features“ für lange Videos bis 90 Minuten (Podcasts, Vlogs, Interviews). Edits gibt es jetzt auch für macOS.</li>" +
+        "<li><strong>LinkedIn:</strong> neue Creator-Analysen (Leistungstabelle je Beitrag, Speichern und Senden, Follower je Beitrag), digitale Visitenkarten und ein Network-Feed. Außerdem geht LinkedIn gegen generische KI-Kommentare vor.</li>" +
+        "<li><strong>TikTok:</strong> MCP-Connector für KI-Assistenten wie Claude oder Perplexity, neue Kennzahlen für Suchanzeigen (Impression Share), Test eines Abos „TikTok Shop Plus“ in den USA.</li>" +
+        "</ul>" +
+
+        "<h3>Recht</h3>" +
+        "<ul>" +
+        "<li><strong>Leitlinien zu Art. 50 KI-Verordnung:</strong> Für die Ausnahme bei KI-Texten braucht es eine menschliche Prüfung mit Faktencheck – Rechtschreibkorrektur reicht nicht. Die Kennzeichnung muss für Menschen sichtbar sein und darf nicht in AGB oder Untermenüs versteckt werden. Laut Berichten sind die Leitlinien seit 12. November im Amtsblatt.</li>" +
+        "<li><strong>2. Dezember 2026:</strong> Ende der Übergangsfrist für maschinenlesbare Markierung bei bestehenden KI-Systemen. Das betrifft die Anbieter der Tools, nicht die sichtbare Kennzeichnung durch dich.</li>" +
+        "</ul>" +
+
+        "<h3>Was heißt das für die Kanzlei-Website?</h3>" +
+        "<ul>" +
+        "<li>Rankings bis Ende November nur beobachten, nicht umbauen; danach mit der Search Console vergleichen.</li>" +
+        "<li>Autorenboxen prüfen: echte Namen, echte Qualifikation, Prüfdatum.</li>" +
+        "<li>Falls ChatGPT-Anzeigen getestet werden: Creative Enhancements abschalten oder jede Änderung prüfen.</li>" +
+        "<li>Faktencheck bei KI-Texten dokumentieren.</li>" +
+        "</ul>" +
+
+        "<h3>Quellen</h3><ul>" +
+        "<li><a href='https://almcorp.com/news/google-starts-rolling-out-its-november-2026-core-update/' target='_blank' rel='noopener'>ALM Corp: Google startet das November 2026 Core Update</a></li>" +
+        "<li><a href='https://ignitevisibility.com/digital-marketing-news/' target='_blank' rel='noopener'>Ignite Visibility: Digital Marketing News (Oktober/November 2026)</a></li>" +
+        "<li><a href='https://pasqualepillitteri.it/de/news/28843/google-ai-mode-anzeigen-10-laender' target='_blank' rel='noopener'>Pillitteri: Anzeigen im AI Mode in zehn weiteren Ländern</a></li>" +
+        "<li><a href='https://digitaleprofis.de/die-ki-news-der-woche-vom-12-11-2026/' target='_blank' rel='noopener'>Digitale Profis: KI-News der Woche vom 12.11.2026 (Businesses in ChatGPT)</a></li>" +
+        "<li><a href='https://www.finnpartners.com/news-insights/boom-scroll-november-2026-social-media-updates/' target='_blank' rel='noopener'>FINN Partners: Social-Media-Updates November 2026</a></li>" +
+        "<li><a href='https://lausen.com/art-50-ai-act-kennzeichnungspflicht-leitlinien/' target='_blank' rel='noopener'>LAUSEN: Leitlinien zur Kennzeichnungspflicht nach Art. 50</a></li>" +
+        "<li><a href='https://searchengineland.com/google-search-console-ai-performance-reports-and-controls-to-block-your-content-in-ai-responses-479298' target='_blank' rel='noopener'>Search Engine Land: KI-Berichte in der Search Console</a></li>" +
+        "</ul>"
     }
   ],
 
@@ -179,7 +238,7 @@ window.LERN_THEMEN.push({
       ]
     },
     {
-      titel: "Wichtige Stichtage 2025/2026",
+      titel: "Wichtige Stichtage 2025–2027",
       spalten: ["Datum", "Was", "Bedeutung für Marketing"],
       zeilen: [
         ["5. Mai 2025", "Microsoft setzt Absenderregeln für Massenversender durch", "Nach Gmail und Yahoo nun auch Outlook.com"],
@@ -190,7 +249,11 @@ window.LERN_THEMEN.push({
         ["30. Juli 2026", "BGH I ZR 130/25 zu Ärzte-Siegeln", "Strenge Maßstäbe an bezahlte Siegel, mögliche Folgen für Anwälte"],
         ["2. August 2026", "Art. 50 KI-Verordnung (Transparenz)", "KI-Chatbots und Deepfakes müssen erkennbar sein"],
         ["24. August 2026", "ChatGPT-Werbung in Deutschland", "Neuer Werbekanal in Free- und Go-Tarif"],
-        ["27. September 2026", "UWG-Änderung zur EmpCo-Richtlinie", "Pauschale Umweltaussagen weitgehend unzulässig"]
+        ["27. September 2026", "UWG-Änderung zur EmpCo-Richtlinie", "Pauschale Umweltaussagen weitgehend unzulässig"],
+        ["30. Oktober 2026", "ChatGPT-Anzeigen: „Creative Enhancements“ standardmäßig an", "System darf Texte, Bilder und Ziel-URLs ändern, Opt-out prüfen"],
+        ["10. November 2026", "Google November 2026 Core Update", "Drittes Core Update des Jahres, Auswertung frühestens eine Woche nach Abschluss"],
+        ["2. Dezember 2026", "AI Act: Übergangsfrist maschinenlesbare Markierung", "Betrifft Anbieter bestehender KI-Systeme, nicht die sichtbare Kennzeichnung"],
+        ["Anfang 2027", "Display-Kampagnen wechseln zu Demand Gen", "Mehr Reichweite (YouTube, Discover, Gmail), weniger Targeting-Kontrolle"]
       ]
     }
   ],
@@ -265,7 +328,7 @@ window.LERN_THEMEN.push({
     { vorne: "Ist E-E-A-T ein Rankingfaktor?", hinten: "Nicht als einzelner, messbarer Faktor. E-E-A-T beschreibt, welche Qualitäten Googles Systeme belohnen sollen: Erfahrung, Fachwissen, Autorität und Vertrauen." },
     { vorne: "Was verlangt Google bei KI-gestützten Inhalten?", hinten: "Menschliche Prüfung auf Richtigkeit, auch bei Titeln, strukturierten Daten und Alt-Texten. Masseninhalte ohne Mehrwert gelten als Spam, egal ob von Mensch oder KI." },
     { vorne: "Wie zeigt man „Experience“ in einem Fachartikel?", hinten: "Durch Einblicke, die nur aus der Praxis kommen: typische Fälle, häufige Fehler, echte Abläufe, eigene Fotos oder Daten." },
-    { vorne: "Was ist ein Core Update?", hinten: "Eine größere Änderung an Googles Kern-Rankingsystemen. 2026 gab es u. a. im März und im Mai solche Updates." },
+    { vorne: "Was ist ein Core Update?", hinten: "Eine größere Änderung an Googles Kern-Rankingsystemen. 2026 gab es drei: im März, im Mai und ab 10. November." },
     { vorne: "Was ist Employee Advocacy?", hinten: "Mitarbeitende teilen und erstellen Inhalte über ihr Unternehmen auf eigenen Profilen. Persönliche Accounts erreichen oft mehr Vertrauen und Reichweite als Firmenseiten." },
     { vorne: "Was ist Creator-Marketing?", hinten: "Zusammenarbeit mit Content-Creatorn, die für eine Marke Inhalte für ihre eigene Community produzieren. 2026 geht der Trend zu langfristigen statt einmaligen Kooperationen." },
     { vorne: "Was sind In-house-Creator?", hinten: "Eigene Mitarbeitende, die gezielt als Gesichter und Content-Produzenten der Marke auftreten, statt externe Influencer zu buchen." },
@@ -302,7 +365,21 @@ window.LERN_THEMEN.push({
     { vorne: "Was ist Meridian?", hinten: "Googles Open-Source-Werkzeug für Marketing-Mix-Modelling auf Basis bayesscher Statistik." },
     { vorne: "Was ist ein Inkrementalitätstest?", hinten: "Ein Experiment, bei dem eine Gruppe Werbung sieht und eine Kontrollgruppe nicht. Der Unterschied zeigt den echten Zusatzeffekt der Kampagne." },
     { vorne: "Warum ist die Einwilligungsrate eine wichtige Kennzahl?", hinten: "Sie bestimmt, welcher Anteil der Nutzer überhaupt gemessen werden kann, und damit, wie belastbar Analytics- und Werbedaten sind." },
-    { vorne: "Was sind „qualifizierte Anfragen“ als KPI?", hinten: "Kontakte, die wirklich zum Angebot passen (z. B. Mandatsanfragen im eigenen Rechtsgebiet). Bei sinkendem Traffic wichtiger als reine Besucherzahlen." }
+    { vorne: "Was sind „qualifizierte Anfragen“ als KPI?", hinten: "Kontakte, die wirklich zum Angebot passen (z. B. Mandatsanfragen im eigenen Rechtsgebiet). Bei sinkendem Traffic wichtiger als reine Besucherzahlen." },
+    { vorne: "Wann startete das Google November 2026 Core Update?", hinten: "Am 10. November 2026, weltweit und für alle Sprachen, mit bis zu zwei Wochen Rollout. Es ist das dritte Core Update des Jahres nach März und Mai." },
+    { vorne: "Wann sollte man die Folgen eines Core Updates auswerten?", hinten: "Frühestens etwa eine Woche nach Abschluss des Rollouts. Während des Rollouts besser nichts hektisch umbauen." },
+    { vorne: "Was gilt bei Google seit Oktober 2026 als irreführende Autorenschaft?", hinten: "Erfundene Personas, gefälschte Kurzprofile und irreführende Autorenzeilen. Fachartikel nur mit echten Autoren und echten Prüfern veröffentlichen." },
+    { vorne: "Gibt es Anzeigen im Google AI Mode in Deutschland?", hinten: "Stand Mitte November 2026 nein. Google weitet sie seit 28. Oktober auf zehn weitere Länder aus (u. a. Australien, Kanada, Indien), Großbritannien, Brasilien und Mexiko folgen im vierten Quartal. Für die DACH-Region gibt es keinen Termin." },
+    { vorne: "Was passiert ab Anfang 2027 mit Display-Kampagnen in Google Ads?", hinten: "Sie werden in Demand Gen überführt: mehr Reichweite über YouTube, Discover und Gmail, aber weniger Kontrolle über Zielgruppen." },
+    { vorne: "Was sind „Creative Enhancements“ bei ChatGPT-Anzeigen?", hinten: "Seit 30. Oktober 2026 standardmäßig aktiv: Das System darf Überschriften, Texte, Bilder und Ziel-URLs ohne Freigabe ändern. Abschaltbar auf Konto- oder Kampagnenebene." },
+    { vorne: "Wie schnitten ChatGPT-Anzeigen in einem ersten Arbeitspapier ab?", hinten: "Conversion-Rate 0,37 % gegenüber 1,17 % bei Google Ads. Ein einzelnes Papier – aber ein Hinweis, dass der Kanal noch jung ist." },
+    { vorne: "Welche Gebotsstrategien nutzen neue ChatGPT-Kampagnen seit 9. November 2026?", hinten: "Conversion-Kampagnen Ziel-CPA, Klick-Kampagnen Ziel-CPC." },
+    { vorne: "Was ist „Businesses in ChatGPT“?", hinten: "Eine Beta von OpenAI: Unternehmen pflegen eigene Angaben und Produktfeeds und sehen, wie oft sie in Gesprächen auftauchen. Verifizierte Business Agents vorerst nur in den USA." },
+    { vorne: "Was testet Instagram mit „Features“?", hinten: "Ein Format für lange Videos bis 90 Minuten, z. B. Podcasts, Vlogs oder Interviews." },
+    { vorne: "Was ist neu in den LinkedIn-Creator-Analysen?", hinten: "Eine Leistungstabelle je Beitrag, Zahlen zu Speichern und Senden, welche Mitglieder durch einen Beitrag gefolgt sind und Reichweite im und außerhalb des eigenen Netzwerks." },
+    { vorne: "Was hat Meta im Oktober 2026 bei Platzierungen geändert?", hinten: "Ausschlüsse von Platzierungen auf Anzeigengruppenebene fallen in weiteren Kampagnentypen weg (u. a. Leads, Sales). Die KI entscheidet noch mehr selbst." },
+    { vorne: "Was verlangen die Leitlinien zu Art. 50 für die Ausnahme bei KI-Texten?", hinten: "Eine echte menschliche Prüfung mit mindestens einem Faktencheck. Rechtschreib- oder Grammatikkorrektur reicht nicht." },
+    { vorne: "Wo darf die KI-Kennzeichnung nicht versteckt werden?", hinten: "Nicht in AGB oder Untermenüs. Sie muss für Menschen klar sichtbar sein; ein unsichtbares Wasserzeichen reicht dafür nicht." }
   ],
 
   quiz: [
@@ -497,6 +574,26 @@ window.LERN_THEMEN.push({
       optionen: ["Qualifizierte Mandatsanfragen", "Reine Seitenaufrufe", "Marken-Suchvolumen", "Anzahl veröffentlichter Wörter"],
       richtig: [0, 2],
       erklaerung: "Weniger, aber passendere Besucher: Anfragen und Markennachfrage zeigen den echten Erfolg besser als Seitenaufrufe."
-    }
+    },
+
+    // ---- Neue Fragetypen (Ausbau 16.11.2026) ----
+    { typ: "wahrfalsch", aussage: "Serverseitiges Tracking macht die Einwilligung der Nutzer überflüssig.", richtig: false, erklaerung: "Server-Tracking verbessert Kontrolle und Datenqualität, ändert aber nichts an der Einwilligungspflicht.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "wahrfalsch", aussage: "Drittanbieter-Cookies sind in Chrome seit Oktober 2025 abgeschaltet.", richtig: false, erklaerung: "Google hat die Privacy Sandbox eingestellt; Drittanbieter-Cookies bleiben in Chrome standardmäßig erlaubt.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "wahrfalsch", aussage: "Laut Googles Leitfaden vom Mai 2026 braucht man für AI Overviews kein spezielles KI-Markup.", richtig: true, erklaerung: "Die KI-Funktionen beruhen auf den normalen Ranking- und Qualitätssystemen. Gutes SEO bleibt die Basis.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "wahrfalsch", aussage: "ChatGPT zeigt in Deutschland auch im Plus- und Pro-Tarif Anzeigen.", richtig: false, erklaerung: "Anzeigen gibt es seit 24.08.2026 nur in den Tarifen Free und Go.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "wahrfalsch", aussage: "Das November 2026 Core Update ist das dritte Core Update des Jahres.", richtig: true, erklaerung: "Nach März und Mai startete am 10. November das dritte.", quelle: "Neu im November 2026" },
+    { typ: "wahrfalsch", aussage: "Anzeigen im Google AI Mode laufen seit Oktober 2026 auch in Deutschland.", richtig: false, erklaerung: "Die Ausweitung vom 28. Oktober betrifft u. a. Australien, Kanada und Indien. Für die DACH-Region gibt es noch keinen Termin.", quelle: "Neu im November 2026" },
+    { typ: "luecke", text: "Wo eine AI Overview erscheint, fällt die Klickrate auf Position 1 laut SISTRIX von rund 27 % auf rund ___.", optionen: ["11 %", "20 %", "2 %", "25 %"], richtig: [0], erklaerung: "Ein Rückgang um fast 60 %. Über alle Keywords verliert Google-SEO im Schnitt etwa 6,6 % der Klicks.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "luecke", text: "Gmail und Yahoo verlangen, dass Abmeldungen innerhalb von ___ umgesetzt werden.", optionen: ["zwei Tagen", "einer Stunde", "30 Tagen", "einer Woche"], richtig: [0], erklaerung: "Dazu kommen SPF, DKIM, DMARC und die One-Click-Abmeldung nach RFC 8058.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "luecke", text: "Googles Open-Source-Werkzeug für Marketing-Mix-Modelling heißt ___.", optionen: ["Meridian", "Andromeda", "Performance Max", "Topics"], richtig: [0], erklaerung: "Meridian arbeitet mit bayesscher Statistik und funktioniert ohne Cookies. Andromeda ist Metas Anzeigen-System.", quelle: "Kennzahlen, die 2026 zählen" },
+    { typ: "luecke", text: "Seit dem 27. September 2026 sind pauschale Umweltaussagen wie „klimaneutral“ wegen der ___ ohne Nachweis praktisch nicht mehr möglich.", optionen: ["EmpCo-Richtlinie", "DSGVO", "KI-Verordnung", "BORA"], richtig: [0], erklaerung: "Deutschland hat die EU-Richtlinie 2024/825 im UWG umgesetzt.", quelle: "Die 10 wichtigsten Veränderungen 2026" },
+    { typ: "luecke", text: "Ab Anfang 2027 überführt Google die Display-Kampagnen in ___.", optionen: ["Demand Gen", "Performance Max", "AI Max", "Discovery Ads"], richtig: [0], erklaerung: "Mehr Reichweite über YouTube, Discover und Gmail, aber weniger Kontrolle über Zielgruppen.", quelle: "Neu im November 2026" },
+    { typ: "zuordnen", frage: "Ordne die Mail-Begriffe ihrer Bedeutung zu.", paare: [["SPF", "Legt fest, welche Server für die Domain senden dürfen"], ["DKIM", "Digitale Signatur, die Herkunft und Unverändertheit belegt"], ["DMARC", "Regel, was mit Mails passiert, die die Prüfungen nicht bestehen"], ["RFC 8058", "One-Click-Abmeldung per Header"]], erklaerung: "Diese vier Punkte gehören zu den Absenderregeln von Gmail, Yahoo und Microsoft.", quelle: "Lernkarten" },
+    { typ: "zuordnen", frage: "Ordne die Messmethoden ihrer Beschreibung zu.", paare: [["Attribution", "Kurzfristig und kleinteilig, aber lückenhaft ohne Cookies"], ["Marketing-Mix-Modelling", "Statistisches Modell über alle Kanäle, langfristige Sicht"], ["Inkrementalitätstest", "Experiment mit Test- und Kontrollgruppe"]], erklaerung: "Laut Google nutzen nur 44 % der Befragten alle drei Methoden zusammen.", quelle: "Kennzahlen, die 2026 zählen" },
+    { typ: "zuordnen", frage: "Ordne den Bereich der passenden Kennzahl für 2026 zu.", paare: [["Marke", "Share of Search"], ["E-Mail", "Spam-Beschwerderate"], ["Tracking", "Einwilligungsrate"], ["Werbung", "Inkrementeller Effekt"], ["KI-Sichtbarkeit", "Share of Model"]], erklaerung: "So steht es in der Kennzahlen-Tabelle des Berichts.", quelle: "Kennzahlen, die 2026 zählen" },
+    { typ: "zuordnen", frage: "Ordne das Datum dem Ereignis zu.", paare: [["30. Juli 2026", "BGH-Urteil zu Ärzte-Siegeln"], ["2. August 2026", "Transparenzpflichten nach Art. 50"], ["24. August 2026", "Start der ChatGPT-Werbung in Deutschland"], ["27. September 2026", "UWG-Änderung zu Umweltaussagen"], ["10. November 2026", "Start des November Core Updates"]], erklaerung: "Siehe Tabelle der wichtigen Stichtage.", quelle: "Wichtige Stichtage 2025–2027" },
+    { typ: "reihenfolge", frage: "Bring die Stichtage in die zeitliche Reihenfolge.", schritte: ["Microsoft setzt Absenderregeln durch (Mai 2025)", "Google stellt die Privacy Sandbox ein (Oktober 2025)", "Neue Fassung von § 6 BORA (Dezember 2025)", "Search-Console-Bericht für generative KI (Juni 2026)", "ChatGPT-Werbung in Deutschland (August 2026)"], erklaerung: "Die Termine stehen in der Tabelle der wichtigen Stichtage.", quelle: "Wichtige Stichtage 2025–2027" },
+    { typ: "reihenfolge", frage: "Newsletter-Zustellung absichern: Bring die Schritte in eine sinnvolle Reihenfolge.", schritte: ["SPF, DKIM und DMARC der Versanddomain einrichten", "One-Click-Abmeldung aktivieren", "Abmeldungen sofort umsetzen", "Inaktive Empfänger bereinigen", "Klicks, Antworten und Spam-Rate auswerten"], erklaerung: "Erst die Technik, dann die Listenpflege, zum Schluss die Messung mit belastbaren Kennzahlen.", quelle: "Was heißt das konkret für eine Kanzlei-Website?" },
+    { typ: "reihenfolge", frage: "Ein Core Update läuft. Bring dein Vorgehen in die richtige Reihenfolge.", schritte: ["Rollout-Start im Search Status Dashboard bemerken", "Während des Rollouts nichts hektisch umbauen", "Abschluss des Rollouts abwarten", "Eine Woche später Search-Console-Daten vergleichen", "Schwächere Seiten gezielt verbessern"], erklaerung: "Google rät, frühestens eine Woche nach Abschluss auszuwerten.", quelle: "Neu im November 2026" }
   ]
 });

@@ -15,7 +15,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link rel="stylesheet" href="styles.css?v=20261116-5" />
+    <link rel="stylesheet" href="styles.css?v=2.4" />
   </head>
   <body>
     <header class="topbar">
@@ -25,6 +25,7 @@
           <span class="back-label">Zurück</span>
         </a>
         <nav id="crumbs" class="crumbs" aria-label="Navigation"></nav>
+        <a id="focusPill" class="focus-pill" href="#/fokus" aria-label="Fokus-Timer" hidden></a>
         <a class="topbar-btn" href="#/suche" aria-label="Suche">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         </a>
@@ -39,11 +40,17 @@
     <script src="module-learningcard-imports.js?v=20261116-2"></script>
 
     <!-- Themen-Bereiche: pro Thema eine Zeile (Format siehe themen/FORMAT.md) -->
-    <script src="themen/seo-tutorial-2026/thema.js?v=20261116-2"></script>
-    <script src="themen/ki-aktuell-2026/thema.js?v=20261116-1"></script>
-    <script src="themen/marketing-trends-2026/thema.js?v=20261116-1"></script>
+    <script src="themen/seo-tutorial-2026/thema.js?v=2.4"></script>
+    <script src="themen/ki-aktuell-2026/thema.js?v=2.4"></script>
+    <script src="themen/marketing-trends-2026/thema.js?v=2.4"></script>
+    <script src="themen/prompt-werkstatt/thema.js?v=2.4"></script>
+    <script src="themen/social-kurzvideo-2026/thema.js?v=2.4"></script>
+    <script src="themen/analytics-kennzahlen/thema.js?v=2.4"></script>
+    <script src="themen/recht-datenschutz-2026/thema.js?v=2.4"></script>
 
-    <script src="main.js?v=20261116-5"></script>
+    <!-- Versionen & Neuigkeiten (neueste Version oben in changelog.js eintragen) -->
+    <script src="changelog.js?v=2.4"></script>
+    <script src="main.js?v=2.4"></script>
     <script>
       if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
         navigator.serviceWorker.register("sw.js").catch(() => {});

@@ -17,6 +17,8 @@ Persönliche Lern-App (statisch, läuft auf GitHub Pages und auf dem iPhone).
 
 ## Veröffentlichen
 
+Vor dem Veröffentlichen neuer Funktionen in `changelog.js` oben einen neuen Eintrag (Version, Datum, Neuerungen) ergänzen und in `index.html` die `?v=`-Nummer von `changelog.js` und `main.js` auf die neue Version setzen. Die App zeigt die Neuerungen nach dem Update einmal automatisch an.
+
 Doppelklick auf `Veroeffentlichen.cmd`. Das Skript kopiert die App-Dateien aus diesem Ordner nach `Dokumente\GitHub\lern-app`, macht einen Commit und lädt alles auf GitHub hoch. Nach 1–2 Minuten ist die neue Version unter https://kevinschu365.github.io/lern-app/ online.
 
 Dieser Ordner ist die einzige Quelle. Im Git-Ordner wird nie von Hand gearbeitet, er wird bei jedem Veröffentlichen komplett überschrieben.

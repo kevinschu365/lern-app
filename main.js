@@ -136,7 +136,7 @@ function readyModules() {
   return wbModules.filter((m) => !String(m.summary || "").startsWith("Dieses Modul ist als Platzhalter"));
 }
 
-/* Fragen aus beiden Formaten (Weiterbildung + Themen) vereinheitlichen. */
+/* Fragen aus allen Formaten (Weiterbildung + Themen inkl. neuer Typen) vereinheitlichen. */
 function normalizeQuestion(q) {
   if (!q) return null;
   if (q.type === "open") return { type: "open", prompt: q.prompt, sample: q.sampleAnswer || "" };
@@ -146,10 +146,60 @@ function normalizeQuestion(q) {
   if (q.type === "multi") {
     return { type: "multi", prompt: q.prompt, options: q.options, correct: q.correctIndices || [], explanation: q.explanation || "" };
   }
+  const quelle = q.quelle ? String(q.quelle) : "";
+  const explanation = esc(q.erklaerung || "");
+  switch (q.typ) {
+    case "wahrfalsch":
+      if (!q.aussage) return null;
+      return {
+        type: "single",
+        kind: "tf",
+        prompt: esc(q.aussage),
+        options: ["Richtig", "Falsch"],
+        correct: [q.richtig === true || q.richtig === "richtig" || q.richtig === 0 ? 0 : 1],
+        explanation,
+        quelle
+      };
+    case "luecke": {
+      if (!q.text || !Array.isArray(q.optionen)) return null;
+      const correct = (Array.isArray(q.richtig) ? q.richtig : [q.richtig]).map(Number);
+      return {
+        type: correct.length > 1 ? "multi" : "single",
+        kind: "gap",
+        prompt: esc(q.text).replace(/_{3,}/, '<span class="gap">______</span>'),
+        options: q.optionen.map(esc),
+        correct,
+        explanation,
+        quelle
+      };
+    }
+    case "zuordnen":
+      if (!Array.isArray(q.paare) || q.paare.length < 2) return null;
+      return {
+        type: "match",
+        kind: "match",
+        prompt: esc(q.frage || "Ordne richtig zu."),
+        pairs: q.paare.map((p) => [esc(p[0]), esc(p[1])]),
+        explanation,
+        quelle
+      };
+    case "reihenfolge":
+      if (!Array.isArray(q.schritte) || q.schritte.length < 2) return null;
+      return {
+        type: "order",
+        kind: "order",
+        prompt: esc(q.frage || "Bring die Schritte in die richtige Reihenfolge."),
+        steps: q.schritte.map(esc),
+        explanation,
+        quelle
+      };
+    default:
+      break;
+  }
   if (q.frage) {
     const prompt = esc(q.frage);
     if (!Array.isArray(q.optionen) || !q.optionen.length) {
-      return { type: "open", prompt, sample: esc(q.antwort || q.erklaerung || "") };
+      return { type: "open", prompt, sample: esc(q.antwort || q.erklaerung || ""), quelle };
     }
     const correct = (Array.isArray(q.richtig) ? q.richtig : [q.richtig]).map(Number);
     return {
@@ -157,10 +207,25 @@ function normalizeQuestion(q) {
       prompt,
       options: q.optionen.map(esc),
       correct,
-      explanation: esc(q.erklaerung || "")
+      explanation,
+      quelle
     };
   }
   return null;
+}
+
+/* Ob eine Frage automatisch per Antwort-Auswahl auswertbar ist (für Prüfungen). */
+function isChoice(q) {
+  return !!q && (q.type === "single" || q.type === "multi");
+}
+
+/* Lösungstext einer Frage (für Suche, Fehleranzeige). */
+function solutionText(q) {
+  if (!q) return "";
+  if (q.type === "open") return q.sample || "";
+  if (q.type === "match") return q.pairs.map((p) => `${p[0]} → ${p[1]}`).join(" · ");
+  if (q.type === "order") return q.steps.map((s, i) => `${i + 1}. ${s}`).join(" · ");
+  return (q.correct || []).map((i) => q.options[i]).filter(Boolean).join(" / ");
 }
 
 function sameSelection(a, b) {
@@ -227,13 +292,13 @@ function allQuestions() {
   wbModules.forEach((m) =>
     m.questions.forEach((q) => {
       const n = normalizeQuestion(q);
-      if (n) list.push({ q: n, label: m.title, color: m.color, href: `#/weiterbildung/modul/${m.id}/quiz` });
+      if (n) list.push({ q: n, label: m.title, group: m.title, color: m.color, href: `#/weiterbildung/modul/${m.id}/quiz` });
     })
   );
   themen.forEach((t) =>
     (t.quiz || []).forEach((q) => {
       const n = normalizeQuestion(q);
-      if (n) list.push({ q: n, label: t.titel, color: t.farbe || "#0891b2", href: `#/thema/${encodeURIComponent(t.id)}/quiz` });
+      if (n) list.push({ q: n, label: t.titel, group: t.titel, themeId: t.id, color: t.farbe || "#0891b2", href: `#/thema/${encodeURIComponent(t.id)}/quiz` });
     })
   );
   questionIndexCache = list;
@@ -252,6 +317,7 @@ function allCards() {
       list.push({ front: esc(k.vorne), back: esc(k.hinten), label: t.titel, color: t.farbe || "#ea580c", href: `#/thema/${encodeURIComponent(t.id)}/lernkarten` })
     )
   );
+  ownCards().forEach((c) => list.push({ front: esc(c.front), back: esc(c.back), label: "Meine Karten", color: "#0d9488", href: "#/eigene" }));
   return list;
 }
 
@@ -498,6 +564,10 @@ function render() {
     else if (route[0] === "suche") view = viewSearch(route[1] || "");
     else if (route[0] === "statistik") view = viewStats();
     else if (route[0] === "heute") view = viewToday();
+    else if (route[0] === "neuigkeiten") view = viewNews();
+    else if (route[0] === "eigene") view = viewOwn();
+    else if (route[0] === "fokus") view = viewFocus();
+    else if (route[0] === "vortest") view = viewPretest(route[1], route[2]);
     else view = viewNotFound();
   } catch (error) {
     console.error(error);
@@ -514,6 +584,7 @@ function render() {
     saveJSON(LAST_KEY, { hash: location.hash, label: view.title, sub: view.lastSub || "" });
   }
   renderChrome(view);
+  updateFocusUI();
   closeOverlay();
   stopSpeaking();
   const crumbs = view.crumbs || [];
@@ -610,7 +681,16 @@ function viewHome() {
         iconName: "sparkle",
         chips: themaSections(t).map((s) => s.short)
       })
-    )
+    ),
+    topicCard({
+      href: "#/eigene",
+      title: "Meine Karten",
+      subtitle: "Selbst gemacht",
+      text: "Eigene Karteikarten und Merksätze anlegen und lernen.",
+      color: "#0d9488",
+      iconName: "pencil",
+      chips: [plural(ownCards().length, "Karte", "Karten")]
+    })
   ].join("");
 
   const last = loadJSON(LAST_KEY, null);
@@ -648,8 +728,11 @@ function viewHome() {
       <div class="topic-grid">${cards}</div>
       <nav class="home-footer">
         <a href="#/statistik">${icon("chart")} Statistik &amp; Sicherung</a>
+        <a href="#/fokus">${icon("target")} Fokus-Timer</a>
+        <a href="#/eigene">${icon("pencil")} Meine Karten</a>
         <a href="#/suche">${icon("search")} Suche</a>
-      </nav>`
+      </nav>
+      ${versionFooter()}`
   };
 }
 
@@ -725,11 +808,13 @@ function viewWbHub() {
 }
 
 function viewWbModules() {
+  const healthByGroup = new Map(allGroupHealth().map((r) => [r.group, r]));
   const cards = wbModules
     .map((m) => {
       const done = learnedModules.has(m.id);
       return `
         <a class="module-tile ${done ? "is-done" : ""}" href="#/weiterbildung/modul/${m.id}" style="--c:${m.color}; --c-soft:${m.softColor};">
+          ${healthDot((healthByGroup.get(m.title) || {}).health || { status: "grau", label: "" })}
           <span class="module-num">${m.id}</span>
           <span class="module-info">
             <strong>${m.topic}</strong>
@@ -754,6 +839,7 @@ const MODULE_TABS = [
   { key: "quiz", label: "Quiz", iconName: "quiz" },
   { key: "karten", label: "Karteikarten", iconName: "cards" },
   { key: "uebungen", label: "Übungen", iconName: "pencil" },
+  { key: "training", label: "Training", iconName: "shuffle" },
   { key: "tipps", label: "Lerntipps", iconName: "bulb" }
 ];
 
@@ -763,7 +849,7 @@ function viewWbModule(id, tab) {
   if (!m) return viewNotFound();
   const activeTab = MODULE_TABS.some((t) => t.key === tab) ? tab : "quiz";
   const done = learnedModules.has(m.id);
-  const counts = { quiz: m.questions.length, karten: m.flashcards.length, uebungen: m.exercises.length, tipps: m.tips.length };
+  const counts = { quiz: m.questions.length, karten: m.flashcards.length, training: 10, uebungen: m.exercises.length, tipps: m.tips.length };
 
   const tabs = MODULE_TABS.map(
     (t) => `
@@ -806,6 +892,7 @@ function viewWbModule(id, tab) {
         color: m.color,
         aside: `<button class="btn ${done ? "btn-soft" : "btn-primary"}" id="learnedToggle" type="button">${done ? `${icon("check")} Gelernt` : "Als gelernt markieren"}</button>`
       })}
+      ${pretestBanner("modul", m.id)}
       <nav class="tabs" style="--c:${m.color}; --c-soft:${m.softColor};">${tabs}</nav>
       <section class="tab-body">${body}</section>
       ${pager}`,
@@ -816,10 +903,17 @@ function viewWbModule(id, tab) {
         saveJSON(LEARNED_KEY, [...learnedModules]);
         render();
       });
+      wirePretestSkip(root);
       const mountEl = root.querySelector("#tabMount");
       if (!mountEl) return;
       if (activeTab === "quiz") {
-        mountQuiz(mountEl, m.questions.map((q) => ({ q: normalizeQuestion(q), color: m.color })), { color: m.color });
+        mountQuiz(
+          mountEl,
+          m.questions.map((q) => ({ q: normalizeQuestion(q), color: m.color, group: m.title, href: `#/weiterbildung/modul/${m.id}/karten` })),
+          { color: m.color }
+        );
+      } else if (activeTab === "training") {
+        mountTraining(mountEl, m.flashcards.map((c) => ({ front: c.front, back: c.back })), m.color);
       } else {
         mountDeck(mountEl, m.flashcards.map((c) => ({ front: c.front, back: c.back })), {
           key: `modul-${m.id}`,
@@ -930,6 +1024,7 @@ function mountExam(el, getPool = weiterbildungExamPool, count = EXAM_QUESTION_CO
       total: questions.length,
       pct,
       passed: pct >= EXAM_PASS_PERCENTAGE,
+      _ok: pct >= EXAM_PASS_PERCENTAGE && (saveJSON(SUCCESS_KEY, { ...loadJSON(SUCCESS_KEY, {}), pruefung: true }), checkBadgesSoon(), true),
       wrong,
       wbModules: [...byModule.entries()].sort((a, b) => b[1] - a[1])
     };
@@ -1028,8 +1123,17 @@ function mountExam(el, getPool = weiterbildungExamPool, count = EXAM_QUESTION_CO
    Quiz (eine Frage nach der anderen)
    ========================================================================== */
 
-function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
-  const base = rawItems.filter((item) => item.q);
+const KIND_LABELS = {
+  tf: "Richtig oder falsch?",
+  gap: "Lückentext",
+  match: "Zuordnen",
+  order: "Reihenfolge",
+  fit: "Passt das zusammen?",
+  pick: "Welche Erklärung passt?"
+};
+
+function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true, onFinish = null } = {}) {
+  const base = rawItems.filter((item) => item && item.q);
   let items = base;
   let index = 0;
   let answers = {};
@@ -1039,6 +1143,25 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
     return;
   }
 
+  const newAnswer = (q) => {
+    const a = { selected: [], checked: false, correct: false, revealed: false, conf: "", text: "", why: "", whyOpen: false };
+    if (q.type === "match") {
+      a.match = {};
+      a.rightOrder = shuffle(q.pairs.map((_, i) => i));
+    }
+    if (q.type === "order") {
+      let order = shuffle(q.steps.map((_, i) => i));
+      let guard = 0;
+      while (order.every((v, i) => v === i) && guard < 10) {
+        order = shuffle(order);
+        guard += 1;
+      }
+      a.order = order;
+    }
+    return a;
+  };
+  const current = () => answers[index] || (answers[index] = newAnswer(items[index].q));
+
   const restart = (list) => {
     items = list;
     index = 0;
@@ -1046,30 +1169,81 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
     draw();
   };
 
-  const closedCount = () => items.filter((it) => it.q.type !== "open").length;
+  const scorable = (it) => it.q.type !== "open";
+  const closedCount = () => items.filter(scorable).length;
   const correctCount = () => Object.values(answers).filter((a) => a.checked && a.correct).length;
 
-  const draw = () => {
-    if (index >= items.length) return drawSummary();
-    const item = items[index];
-    const q = item.q;
-    const a = answers[index] || { selected: [], checked: false, correct: false, revealed: false };
-    const progress = Math.round((index / items.length) * 100);
-    const source = item.label ? `<span class="source" style="--c:${item.color || color};">${item.label}</span>` : "";
+  const isReady = (q, a) => {
+    if (q.type === "match") return q.pairs.every((_, i) => a.match[i] !== undefined);
+    if (q.type === "order") return true;
+    return a.selected.length > 0;
+  };
 
-    let body = "";
-    let actions = "";
+  const evaluate = (q, a) => {
+    if (q.type === "match") return q.pairs.every((_, i) => a.match[i] === i);
+    if (q.type === "order") return a.order.every((v, i) => v === i);
+    return sameSelection(a.selected, q.correct);
+  };
+
+  const confRow = (a) =>
+    `<div class="conf"><span>Wie sicher bist du?</span>${[
+      ["geraten", "Geraten"],
+      ["unsicher", "Unsicher"],
+      ["sicher", "Sicher"]
+    ]
+      .map(([v, l]) => `<button type="button" data-conf="${v}" class="${a.conf === v ? "is-active" : ""}">${l}</button>`)
+      .join("")}</div>`;
+
+  const bodyFor = (q, a) => {
     if (q.type === "open") {
-      body = `
+      return `
         <p class="hint">Offene Frage: Formuliere deine Antwort selbst, dann vergleiche.</p>
-        ${a.revealed
-          ? `${a.text && a.text.trim() ? `<div class="answer-box own"><strong>Deine Antwort</strong><p>${esc(a.text)}</p></div>` : ""}<div class="answer-box"><strong>Musterantwort</strong><p>${q.sample}</p></div>`
-          : `<textarea class="own-answer" data-own rows="3" placeholder="Deine Antwort (optional) …">${esc(a.text || "")}</textarea>`}`;
-      actions = a.revealed
-        ? `<button class="btn btn-primary" data-action="next" type="button">Weiter ${icon("arrowRight")}</button>`
-        : `<button class="btn btn-primary" data-action="reveal" type="button">Musterantwort zeigen</button>`;
+        ${
+          a.revealed
+            ? `${a.text.trim() ? `<div class="answer-box own"><strong>Deine Antwort</strong><p>${esc(a.text)}</p></div>` : ""}<div class="answer-box"><strong>Musterantwort</strong><p>${q.sample}</p></div>`
+            : `<textarea class="own-answer" data-own rows="3" placeholder="Deine Antwort (optional) …">${esc(a.text)}</textarea>`
+        }`;
+    }
+
+    let main = "";
+    if (q.type === "match") {
+      main = `<div class="match">${q.pairs
+        .map((p, li) => {
+          const state = a.checked ? (a.match[li] === li ? "is-correct" : "is-wrong") : "";
+          return `
+            <div class="match-row ${state}">
+              <span class="match-left">${p[0]}</span>
+              <select data-match="${li}" ${a.checked ? "disabled" : ""} aria-label="Zuordnung für ${stripTags(p[0])}">
+                <option value="">– bitte wählen –</option>
+                ${a.rightOrder.map((ri) => `<option value="${ri}" ${a.match[li] === ri ? "selected" : ""}>${stripTags(q.pairs[ri][1])}</option>`).join("")}
+              </select>
+              ${a.checked && a.match[li] !== li ? `<span class="match-fix">Richtig: ${q.pairs[li][1]}</span>` : ""}
+            </div>`;
+        })
+        .join("")}</div>`;
+    } else if (q.type === "order") {
+      const last = a.order.length - 1;
+      main = `<ol class="order">${a.order
+        .map((si, pos) => {
+          const state = a.checked ? (si === pos ? "is-correct" : "is-wrong") : "";
+          return `
+            <li class="order-item ${state}">
+              <span class="order-num">${pos + 1}</span>
+              <span class="order-text">${q.steps[si]}</span>
+              ${
+                a.checked
+                  ? ""
+                  : `<span class="order-btns">
+                      <button class="icon-btn" type="button" data-move="${pos}:-1" ${pos === 0 ? "disabled" : ""} aria-label="Nach oben">↑</button>
+                      <button class="icon-btn" type="button" data-move="${pos}:1" ${pos === last ? "disabled" : ""} aria-label="Nach unten">↓</button>
+                    </span>`
+              }
+            </li>`;
+        })
+        .join("")}</ol>
+        ${a.checked && !a.correct ? `<div class="answer-box"><strong>Richtige Reihenfolge</strong><p>${q.steps.map((s, i) => `${i + 1}. ${s}`).join("<br />")}</p></div>` : ""}`;
     } else {
-      body = `<div class="options">${q.options
+      main = `<div class="options ${q.kind === "tf" || q.kind === "fit" ? "options-tf" : ""}">${q.options
         .map((opt, oi) => {
           const cls = ["option"];
           if (a.selected.includes(oi)) cls.push("is-selected");
@@ -1077,15 +1251,61 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
           if (a.checked && a.selected.includes(oi) && !q.correct.includes(oi)) cls.push("is-wrong");
           return `<button class="${cls.join(" ")}" type="button" data-o="${oi}" ${a.checked ? "disabled" : ""}>${opt}</button>`;
         })
-        .join("")}</div>
-        ${
-          a.checked
-            ? `<div class="answer-box ${a.correct ? "is-pass" : "is-fail"}"><strong>${a.correct ? "Richtig!" : "Nicht ganz. Grün markiert ist die richtige Lösung."}</strong>${!a.correct && a.conf === "sicher" ? `<p class="conf-note">Sicherer Irrtum! Genau solche Fehler merkt man sich nach der Korrektur besonders gut. Lies die Erklärung in Ruhe.</p>` : ""}${a.correct && a.conf === "geraten" ? `<p class="conf-note">Gut geraten! Die Frage kommt bald nochmal, damit sie wirklich sitzt.</p>` : ""}${q.explanation ? `<p>${q.explanation}</p>` : ""}</div>`
-            : `<p class="hint">Es können eine oder mehrere Antworten richtig sein.</p>${a.selected.length ? `<div class="conf"><span>Wie sicher bist du?</span>${[["geraten", "Geraten"], ["unsicher", "Unsicher"], ["sicher", "Sicher"]].map(([v, l]) => `<button type="button" data-conf="${v}" class="${a.conf === v ? "is-active" : ""}">${l}</button>`).join("")}</div>` : ""}`
-        }`;
+        .join("")}</div>`;
+    }
+
+    if (!a.checked) {
+      const hint =
+        q.type === "match"
+          ? "Wähle zu jedem Begriff die passende Erklärung."
+          : q.type === "order"
+            ? "Verschiebe die Schritte mit den Pfeilen."
+            : q.kind
+              ? ""
+              : "Es können eine oder mehrere Antworten richtig sein.";
+      return `${main}${hint ? `<p class="hint">${hint}</p>` : ""}${isReady(q, a) ? confRow(a) : ""}`;
+    }
+
+    const confNote =
+      !a.correct && a.conf === "sicher"
+        ? `<p class="conf-note">Sicherer Irrtum! Genau solche Fehler merkt man sich nach der Korrektur besonders gut. Lies die Erklärung in Ruhe.</p>`
+        : a.correct && a.conf === "geraten"
+          ? `<p class="conf-note">Gut geraten! Die Frage kommt bald nochmal, damit sie wirklich sitzt.</p>`
+          : "";
+    const verdict = a.correct
+      ? "Richtig!"
+      : q.type === "match" || q.type === "order"
+        ? "Nicht ganz. Rot markiert ist, was noch nicht stimmt."
+        : "Nicht ganz. Grün markiert ist die richtige Lösung.";
+    return `
+      ${main}
+      <div class="answer-box ${a.correct ? "is-pass" : "is-fail"}"><strong>${verdict}</strong>${confNote}${q.explanation ? `<p>${q.explanation}</p>` : ""}</div>
+      ${
+        a.whyOpen
+          ? `<textarea class="own-answer" data-why rows="2" placeholder="Warum ist das so? Erklär es dir in eigenen Worten …">${esc(a.why)}</textarea>`
+          : `<button class="link-btn" type="button" data-action="why">${icon("pencil")} Warum ist das so? In eigenen Worten erklären</button>`
+      }
+      ${a.correct ? "" : relatedHtml(items[index], q)}`;
+  };
+
+  const draw = () => {
+    if (index >= items.length) return drawSummary();
+    const item = items[index];
+    const q = item.q;
+    const a = current();
+    const progress = Math.round((index / items.length) * 100);
+    const source = item.label ? `<span class="source" style="--c:${item.color || color};">${item.label}</span>` : "";
+    const kind = q.kindLabel || KIND_LABELS[q.kind] || "";
+
+    let actions;
+    if (q.type === "open") {
+      actions = a.revealed
+        ? `<button class="btn btn-primary" data-action="next" type="button">Weiter ${icon("arrowRight")}</button>`
+        : `<button class="btn btn-primary" data-action="reveal" type="button">Musterantwort zeigen</button>`;
+    } else {
       actions = a.checked
         ? `<button class="btn btn-primary" data-action="next" type="button">${index === items.length - 1 ? "Auswertung" : "Weiter"} ${icon("arrowRight")}</button>`
-        : `<button class="btn btn-primary" data-action="check" type="button" ${a.selected.length ? "" : "disabled"}>Ergebnis ansehen</button>`;
+        : `<button class="btn btn-primary" data-action="check" type="button" ${isReady(q, a) ? "" : "disabled"}>Ergebnis ansehen</button>`;
     }
 
     el.innerHTML = `
@@ -1099,9 +1319,9 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
         </div>
         <div class="bar"><span style="width:${progress}%"></span></div>
         <article class="card question">
-          ${source ? `<div class="q-meta">${source}</div>` : ""}
+          ${source || kind ? `<div class="q-meta">${kind ? `<span class="kind">${kind}</span>` : ""}${source}</div>` : ""}
           <h3>${q.prompt}</h3>
-          ${body}
+          ${bodyFor(q, a)}
         </article>
         <div class="quiz-nav">
           <button class="btn btn-ghost" data-action="prev" type="button" ${index === 0 ? "disabled" : ""}>Zurück</button>
@@ -1114,39 +1334,59 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
     const total = closedCount();
     const right = correctCount();
     const pct = total ? Math.round((right / total) * 100) : 0;
-    const wrongItems = items.filter((it, i) => it.q.type !== "open" && !(answers[i] && answers[i].correct));
+    const wrongItems = items.filter((it, i) => scorable(it) && !(answers[i] && answers[i].correct));
     el.innerHTML = `
       <div class="quiz" style="--c:${color};">
         <div class="bar"><span style="width:100%"></span></div>
         <div class="result-banner ${pct >= EXAM_PASS_PERCENTAGE ? "is-pass" : "is-fail"}">
           <span class="result-score">${pct} %</span>
-          <div><strong>Runde geschafft</strong><p>${right} von ${total} Auswahlfragen richtig.</p></div>
+          <div><strong>Runde geschafft</strong><p>${right} von ${total} Fragen richtig.</p></div>
         </div>
         <div class="quiz-nav wrap">
           ${wrongItems.length ? `<button class="btn btn-primary" data-action="wrong" type="button">${plural(wrongItems.length, "Fehler", "Fehler")} wiederholen</button>` : ""}
           <button class="btn btn-soft" data-action="again" type="button">Nochmal von vorn</button>
           <button class="btn btn-ghost" data-action="shuffle" type="button">${icon("shuffle")} Neu mischen</button>
         </div>
+        <div class="quiz-extra"></div>
       </div>`;
+    if (onFinish) onFinish({ right, total, pct, extra: el.querySelector(".quiz-extra") });
   };
 
   el.oninput = (event) => {
-    if (!event.target.matches("[data-own]")) return;
-    const a = answers[index] || (answers[index] = { selected: [], checked: false, correct: false, revealed: false });
-    a.text = event.target.value;
+    if (index >= items.length) return;
+    const a = current();
+    if (event.target.matches("[data-own]")) a.text = event.target.value;
+    if (event.target.matches("[data-why]")) a.why = event.target.value;
+  };
+
+  el.onchange = (event) => {
+    const sel = event.target.closest("[data-match]");
+    if (!sel || index >= items.length) return;
+    const a = current();
+    if (a.checked) return;
+    const li = Number(sel.dataset.match);
+    if (sel.value === "") delete a.match[li];
+    else a.match[li] = Number(sel.value);
+    draw();
   };
 
   el.onclick = (event) => {
     const btn = event.target.closest("button");
     if (!btn) return;
     const q = items[index] && items[index].q;
-    const a = answers[index] || (answers[index] = { selected: [], checked: false, correct: false, revealed: false });
+    const a = q ? current() : null;
 
-    if (btn.dataset.conf && q && !a.checked) {
+    if (q && btn.dataset.conf && !a.checked) {
       a.conf = a.conf === btn.dataset.conf ? "" : btn.dataset.conf;
       return draw();
     }
-    if (btn.dataset.o !== undefined && q && !a.checked) {
+    if (q && btn.dataset.move && !a.checked) {
+      const [pos, dir] = btn.dataset.move.split(":").map(Number);
+      const target = pos + dir;
+      if (target >= 0 && target < a.order.length) [a.order[pos], a.order[target]] = [a.order[target], a.order[pos]];
+      return draw();
+    }
+    if (q && btn.dataset.o !== undefined && !a.checked) {
       const oi = Number(btn.dataset.o);
       if (q.type === "single") a.selected = a.selected[0] === oi ? [] : [oi];
       else a.selected = a.selected.includes(oi) ? a.selected.filter((v) => v !== oi) : [...a.selected, oi];
@@ -1154,16 +1394,26 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
     }
     switch (btn.dataset.action) {
       case "check":
+        if (!isReady(q, a)) return;
         a.checked = true;
-        a.correct = sameSelection(a.selected, q.correct);
-        recordAnswer(q, a.correct, a.conf || "");
+        a.correct = evaluate(q, a);
+        if (record) recordAnswer(q, a.correct, a.conf || "");
+        else trackActivity("frage", a.correct);
+        checkBadgesSoon();
         return draw();
       case "reveal":
         a.revealed = true;
         return draw();
+      case "why":
+        a.whyOpen = true;
+        draw();
+        el.querySelector("[data-why]")?.focus();
+        return;
       case "speak": {
-        const parts = [q.prompt];
+        const parts = [stripTags(q.prompt).replace(/_{3,}/g, "Lücke")];
         if (q.options) q.options.forEach((opt, oi) => parts.push(`Antwort ${oi + 1}: ${opt}`));
+        if (q.pairs) q.pairs.forEach((p) => parts.push(p[0]));
+        if (q.steps) a.order.forEach((si, pos) => parts.push(`${pos + 1}: ${q.steps[si]}`));
         if (a.checked && q.explanation) parts.push(q.explanation);
         if (a.revealed && q.sample) parts.push(`Musterantwort: ${q.sample}`);
         return toggleSpeak(parts.join(". "), btn);
@@ -1178,7 +1428,7 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
       case "again":
         return restart(items);
       case "wrong":
-        return restart(items.filter((it, i) => it.q.type !== "open" && !(answers[i] && answers[i].correct)));
+        return restart(items.filter((it, i) => scorable(it) && !(answers[i] && answers[i].correct)));
       case "shuffle":
         if (onReshuffle) return onReshuffle();
         return restart(shuffle(base));
@@ -1470,7 +1720,7 @@ function renderSearchResults(query) {
 
   const cards = allCards().filter((c) => matches(`${c.front} ${c.back}`));
   const questions = allQuestions().filter((e) =>
-    matches(`${e.q.prompt} ${(e.q.options || []).join(" ")} ${e.q.explanation || ""} ${e.q.sample || ""}`)
+    matches(`${e.q.prompt} ${(e.q.options || []).join(" ")} ${solutionText(e.q)} ${e.q.explanation || ""}`)
   );
 
   if (!cards.length && !questions.length) {
@@ -1499,7 +1749,7 @@ function renderSearchResults(query) {
       const answer =
         q.type === "open"
           ? q.sample
-          : `<strong>Richtig:</strong> ${q.correct.map((i) => q.options[i]).join(" / ")}${q.explanation ? `<br />${q.explanation}` : ""}`;
+          : `<strong>Richtig:</strong> ${solutionText(q)}${q.explanation ? `<br />${q.explanation}` : ""}`;
       return `
         <details class="card hit">
           <summary>
@@ -1538,10 +1788,11 @@ const THEMA_SECTIONS = [
     iconName: "award",
     color: "#0f766e",
     items: (t) => {
-      const closed = (t.quiz || []).filter((q) => Array.isArray(q.optionen) && q.optionen.length);
+      const closed = (t.quiz || []).filter((q) => isChoice(normalizeQuestion(q)));
       return closed.length >= 5 ? closed : [];
     }
   },
+  { key: "training", title: "Training", short: "Training", iconName: "shuffle", color: "#9333ea", items: (t) => ((t.lernkarten || []).length >= 4 ? t.lernkarten : []) },
   { key: "tabelle", title: "Datentabelle", short: "Tabelle", iconName: "table", color: "#4f46e5", items: (t) => t.tabellen || [] },
   { key: "berichte", title: "Berichte", short: "Berichte", iconName: "report", color: "#475569", items: (t) => t.berichte || [] }
 ];
@@ -1558,6 +1809,8 @@ function sectionMeta(section, items) {
       return plural(items.length, "Frage", "Fragen");
     case "pruefung":
       return `${Math.min(items.length, EXAM_QUESTION_COUNT)} Fragen, ab ${EXAM_PASS_PERCENTAGE} %`;
+    case "training":
+      return "10 gemischte Aufgaben";
     case "tabelle":
       return items.length === 1 ? `${(items[0].zeilen || []).length} Zeilen` : plural(items.length, "Tabelle", "Tabellen");
     default: {
@@ -1597,8 +1850,10 @@ function viewThema(id, sectionKey) {
       crumbs: [...baseCrumbs, { label: t.titel }],
       html: `
         ${pageHead({ eyebrow: t.untertitel || "Thema", title: esc(t.titel), text: esc(t.beschreibung || ""), color })}
+        ${pretestBanner("thema", t.id)}
         ${tiles ? `<div class="tile-grid">${tiles}</div>` : `<div class="empty">Für dieses Thema sind noch keine Inhalte hinterlegt.</div>`}
-        ${t.quelle ? `<p class="source-note">Quelle: ${esc(t.quelle)}</p>` : ""}`
+        ${t.quelle ? `<p class="source-note">Quelle: ${esc(t.quelle)}</p>` : ""}`,
+      mount: wirePretestSkip
     };
   }
 
@@ -1732,7 +1987,11 @@ function renderSection(t, section, items) {
       return {
         html: `<div id="quizMount"></div>`,
         mount(root) {
-          mountQuiz(root.querySelector("#quizMount"), items.map((q) => ({ q: normalizeQuestion(q) })), { color: section.color });
+          mountQuiz(
+            root.querySelector("#quizMount"),
+            items.map((q) => ({ q: normalizeQuestion(q), group: t.titel, themeId: t.id })),
+            { color: section.color }
+          );
         }
       };
 
@@ -1745,6 +2004,14 @@ function renderSection(t, section, items) {
             () => items.map((q) => ({ q: normalizeQuestion(q), title: t.titel, color: t.farbe || "#0f766e" })),
             Math.min(items.length, EXAM_QUESTION_COUNT)
           );
+        }
+      };
+
+    case "training":
+      return {
+        html: `<p class="lead exam-intro">Automatisch gemischte Aufgaben aus den Lernkarten: zuordnen, passt/passt nicht und die richtige Erklärung wählen. Jede Runde ist anders.</p><div id="trainingMount"></div>`,
+        mount(root) {
+          mountTraining(root.querySelector("#trainingMount"), items.map((k) => ({ front: esc(k.vorne), back: esc(k.hinten) })), section.color);
         }
       };
 
@@ -1816,6 +2083,8 @@ function trackActivity(kind, right) {
   if (kind === "frage") {
     entry.f += 1;
     if (right) entry.r += 1;
+  } else if (kind === "fokus") {
+    entry.p = (entry.p || 0) + 1;
   } else {
     entry.k += 1;
   }
@@ -1878,7 +2147,9 @@ function viewStats() {
     [totalQuestions, "Fragen beantwortet"],
     [`${rate} %`, "richtig"],
     [knownCards.size, "Karten gewusst"],
-    [mistakeEntries().length, "offene Fehler"]
+    [mistakeEntries().length, "offene Fehler"],
+    [entries.reduce((s, e) => s + (e.p || 0), 0), "Fokus-Einheiten"],
+    [`${loadJSON(BADGE_KEY, []).length}/${BADGES.length}`, "Abzeichen"]
   ]
     .map(([n, l]) => `<div class="stat"><strong>${n}</strong><span>${l}</span></div>`)
     .join("");
@@ -1944,6 +2215,13 @@ function viewStats() {
         <div class="bars">${bars}</div>
         <p class="hint">Gezählt werden beantwortete Fragen und bewertete Karteikarten.</p>
       </article>
+      <h2 class="section-title spaced">${icon("target")} Stärken &amp; Schwächen</h2>
+      <div class="card prog-list">${allGroupHealth()
+        .sort((a, b) => ["rot", "gelb", "grau", "gruen"].indexOf(a.health.status) - ["rot", "gelb", "grau", "gruen"].indexOf(b.health.status))
+        .map((r) => `<a class="health-row" href="${r.href}" style="--c:${r.color};">${healthDot(r.health)}<span class="prog-name">${r.name}</span><span class="health-label">${r.health.label}</span></a>`)
+        .join("")}</div>
+      <h2 class="section-title spaced">${icon("award")} Abzeichen</h2>
+      ${badgesHtml()}
       <h2 class="section-title spaced">${icon("cards")} Karteikarten gewusst</h2>
       <div class="card prog-list">${rows}</div>
 
@@ -2438,6 +2716,658 @@ function mountMedia(root) {
   );
 }
 
+/* ==========================================================================
+   Von der Frage zur Quelle: passende Karteikarte / Bericht zum Nachlesen
+   ========================================================================== */
+
+const STOPWORDS = new Set(
+  "der die das den dem des und ist ein eine mit von zum zur bei aus auf fuer wie was wer wo man sich auch nur noch als hat sie ihr ihm wir uns welche welcher welches wird werden wurde nicht diese dieser dieses einer einem eines einen durch sowie beim dabei oder haben immer gibt sind warum wieso wofuer womit dafuer damit dass deren denen ihrer ihren unter ueber gegen zwischen innerhalb ausserhalb bitte richtig falsch beide andere anderen mehrere welchen".split(" ")
+);
+let cardsByGroup = null;
+
+function cardsForGroup(group) {
+  if (!cardsByGroup) {
+    cardsByGroup = new Map();
+    allCards().forEach((c) => {
+      if (!cardsByGroup.has(c.label)) cardsByGroup.set(c.label, []);
+      cardsByGroup.get(c.label).push(c);
+    });
+  }
+  return cardsByGroup.get(group) || [];
+}
+
+function wordSet(text) {
+  return new Set(
+    foldText(text)
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length >= 3 && !STOPWORDS.has(w))
+  );
+}
+
+function findRelatedCard(group, q) {
+  const cards = cardsForGroup(group);
+  if (!cards.length) return null;
+  const words = wordSet(`${q.prompt} ${solutionText(q)}`);
+  if (!words.size) return null;
+  let best = null;
+  let bestScore = 0;
+  cards.forEach((c) => {
+    const front = wordSet(c.front);
+    const back = wordSet(c.back);
+    let score = 0;
+    words.forEach((w) => {
+      if (front.has(w)) score += 3;
+      else if (back.has(w)) score += 1;
+    });
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  });
+  return bestScore >= 3 ? best : null;
+}
+
+function relatedHtml(item, q) {
+  const group = item.group || item.label;
+  const parts = [];
+  if (q.quelle && item.themeId) {
+    parts.push(
+      `<a class="hit-link" href="#/thema/${encodeURIComponent(item.themeId)}/berichte">${icon("report")} Nachlesen im Bericht „${esc(q.quelle)}“</a>`
+    );
+  }
+  const card = group ? findRelatedCard(group, q) : null;
+  if (card) {
+    parts.unshift(`
+      <div class="related-card">
+        <small>Passende Karteikarte</small>
+        <strong>${card.front}</strong>
+        <p>${card.back}</p>
+      </div>`);
+  }
+  if (!parts.length && item.href) parts.push(`<a class="hit-link" href="${item.href}">Zum Thema ${icon("arrowRight")}</a>`);
+  return parts.length ? `<div class="related">${parts.join("")}</div>` : "";
+}
+
+/* ==========================================================================
+   Training aus Karteikarten: abwechslungsreiche Aufgaben automatisch
+   ========================================================================== */
+
+function cutText(text, max) {
+  const clean = stripTags(text).replace(/\s+/g, " ").trim();
+  return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()} …` : clean;
+}
+
+function buildTraining(cards, count = 10) {
+  const pool = cards.filter((c) => stripTags(c.front).length <= 180 && stripTags(c.back).length >= 8);
+  if (pool.length < 4) return [];
+  const pickOthers = (card, n) => sample(pool.filter((c) => c !== card && c.back !== card.back), n);
+  const tasks = [];
+  const kinds = shuffle(["pick", "fit", "match", "pick", "fit", "match", "pick", "fit", "pick", "match"]).slice(0, count);
+  kinds.forEach((kind) => {
+    if (kind === "match") {
+      const set = sample(pool, Math.min(4, pool.length));
+      tasks.push({
+        q: {
+          type: "match",
+          kind: "match",
+          prompt: "Ordne jedem Begriff die passende Erklärung zu.",
+          pairs: set.map((c) => [cutText(c.front, 90), cutText(c.back, 110)]),
+          explanation: ""
+        }
+      });
+      return;
+    }
+    const card = pool[Math.floor(Math.random() * pool.length)];
+    if (kind === "pick") {
+      const others = pickOthers(card, 3);
+      const options = shuffle([card, ...others]);
+      tasks.push({
+        q: {
+          type: "single",
+          kind: "pick",
+          prompt: cutText(card.front, 180),
+          options: options.map((c) => cutText(c.back, 160)),
+          correct: [options.indexOf(card)],
+          explanation: ""
+        }
+      });
+      return;
+    }
+    const isTrue = Math.random() < 0.5;
+    const other = pickOthers(card, 1)[0] || card;
+    tasks.push({
+      q: {
+        type: "single",
+        kind: "fit",
+        prompt: `<span class="fit-term">${cutText(card.front, 140)}</span><span class="fit-def">${cutText(isTrue ? card.back : other.back, 220)}</span>`,
+        options: ["Passt", "Passt nicht"],
+        correct: [isTrue ? 0 : 1],
+        explanation: isTrue ? "" : `Richtig wäre: ${cutText(card.back, 260)}`
+      }
+    });
+  });
+  return tasks;
+}
+
+function mountTraining(el, cards, color) {
+  const tasks = buildTraining(cards);
+  if (!tasks.length) {
+    el.innerHTML = `<div class="empty small">Für das Training braucht es mindestens 4 Karteikarten.</div>`;
+    return;
+  }
+  mountQuiz(el, tasks, { color, record: false, onReshuffle: () => mountTraining(el, cards, color) });
+}
+
+/* ==========================================================================
+   Vortest: 5 Fragen, bevor man ein Modul / Thema durcharbeitet
+   ========================================================================== */
+
+const PRETEST_KEY = "lernapp-vortest";
+
+function pretestPool(kind, id) {
+  if (kind === "modul") {
+    const m = wbModules.find((x) => String(x.id) === String(id));
+    if (!m) return null;
+    return {
+      title: m.topic,
+      color: m.color,
+      href: `#/weiterbildung/modul/${m.id}/quiz`,
+      items: m.questions.map(normalizeQuestion).filter(isChoice)
+    };
+  }
+  const t = themen.find((x) => x.id === id);
+  if (!t) return null;
+  return {
+    title: t.titel,
+    color: t.farbe || "#0f766e",
+    href: `#/thema/${encodeURIComponent(t.id)}`,
+    items: (t.quiz || []).map(normalizeQuestion).filter(isChoice)
+  };
+}
+
+function pretestBanner(kind, id) {
+  const done = loadJSON(PRETEST_KEY, {});
+  const key = `${kind}:${id}`;
+  if (done[key]) return "";
+  const pool = pretestPool(kind, id);
+  if (!pool || pool.items.length < 5) return "";
+  if (pool.items.some((q) => srs[questionId(q)])) return "";
+  return `
+    <div class="pretest" data-pretest="${esc(key)}">
+      <span class="quick-icon" style="--c:#7c3aed;">${icon("target")}</span>
+      <span class="quick-body">
+        <strong>Erst mal raten? Vortest mit 5 Fragen</strong>
+        <small>Wer vorher kurz testet, lernt danach nachweislich mehr, auch wenn die Antworten noch falsch sind.</small>
+      </span>
+      <span class="pretest-actions">
+        <a class="btn btn-primary" style="--c:#7c3aed;" href="#/vortest/${encodeURIComponent(kind)}/${encodeURIComponent(id)}">Start</a>
+        <button class="btn btn-ghost" type="button" data-pretest-skip>Später</button>
+      </span>
+    </div>`;
+}
+
+function wirePretestSkip(root) {
+  root.querySelectorAll("[data-pretest-skip]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const box = btn.closest("[data-pretest]");
+      const done = loadJSON(PRETEST_KEY, {});
+      done[box.dataset.pretest] = "übersprungen";
+      saveJSON(PRETEST_KEY, done);
+      box.remove();
+    })
+  );
+}
+
+function viewPretest(kind, id) {
+  const pool = pretestPool(kind, id);
+  if (!pool) return viewNotFound();
+  return {
+    title: `Vortest · ${stripTags(pool.title)}`,
+    back: pool.href.replace(/\/quiz$/, ""),
+    crumbs: [{ label: "Start", href: "#/" }, { label: stripTags(pool.title), href: pool.href.replace(/\/quiz$/, "") }, { label: "Vortest" }],
+    html: `
+      ${pageHead({
+        eyebrow: "Vortest",
+        title: pool.title,
+        text: "5 Fragen, bevor du loslegst. Rate ruhig! Falsche Antworten zählen hier nicht als Fehler, sie machen dich nur neugierig auf die Lösung.",
+        color: "#7c3aed"
+      })}
+      <div id="pretestMount"></div>`,
+    mount(root) {
+      mountQuiz(root.querySelector("#pretestMount"), sample(pool.items, 5).map((q) => ({ q })), {
+        color: "#7c3aed",
+        record: false,
+        onFinish: ({ extra }) => {
+          const done = loadJSON(PRETEST_KEY, {});
+          done[`${kind}:${id}`] = todayStr();
+          saveJSON(PRETEST_KEY, done);
+          if (extra) extra.innerHTML = `<a class="btn btn-primary" style="--c:${pool.color};" href="${pool.href}">Jetzt richtig lernen ${icon("arrowRight")}</a>`;
+        }
+      });
+    }
+  };
+}
+
+/* ==========================================================================
+   Schwachstellen-Ampel
+   ========================================================================== */
+
+function groupHealth(ids, mistakeCount) {
+  const seen = ids.filter((id) => srs[id]);
+  if (!seen.length && !mistakeCount) return { status: "grau", label: "Noch nicht begonnen", coverage: 0 };
+  const avg = seen.reduce((s, id) => s + (srs[id].box || 0), 0) / Math.max(seen.length, 1);
+  const coverage = seen.length / Math.max(ids.length, 1);
+  if (mistakeCount >= 5 || (seen.length >= 5 && avg < 1.8)) return { status: "rot", label: "Hier hakt es noch", coverage, avg };
+  if (coverage >= 0.6 && avg >= 3) return { status: "gruen", label: "Sitzt gut", coverage, avg };
+  return { status: "gelb", label: "Auf gutem Weg", coverage, avg };
+}
+
+function allGroupHealth() {
+  const mistakeByGroup = new Map();
+  mistakeEntries().forEach((e) => mistakeByGroup.set(e.label, (mistakeByGroup.get(e.label) || 0) + 1));
+  const rows = wbModules.map((m) => ({
+    name: m.topic,
+    group: m.title,
+    color: m.color,
+    href: `#/weiterbildung/modul/${m.id}/quiz`,
+    health: groupHealth(
+      [...m.flashcards.map(cardId), ...m.questions.map((q) => questionId(normalizeQuestion(q)))],
+      mistakeByGroup.get(m.title) || 0
+    )
+  }));
+  themen.forEach((t) => {
+    const ids = [
+      ...(t.lernkarten || []).map((k) => cardId({ front: esc(k.vorne), back: esc(k.hinten) })),
+      ...(t.quiz || []).map(normalizeQuestion).filter(Boolean).map(questionId)
+    ];
+    rows.push({ name: esc(t.titel), group: t.titel, color: t.farbe || "#0f766e", href: `#/thema/${encodeURIComponent(t.id)}`, health: groupHealth(ids, mistakeByGroup.get(t.titel) || 0) });
+  });
+  return rows;
+}
+
+function healthDot(health) {
+  return `<span class="health health-${health.status}" title="${esc(health.label)}" aria-label="${esc(health.label)}"></span>`;
+}
+
+/* ==========================================================================
+   Eigene Karten & Merksätze
+   ========================================================================== */
+
+const OWN_KEY = "lernapp-eigene";
+
+function ownCards() {
+  return loadJSON(OWN_KEY, []);
+}
+
+function viewOwn() {
+  const cards = ownCards();
+  return {
+    title: "Meine Karten",
+    back: "#/",
+    crumbs: [{ label: "Start", href: "#/" }, { label: "Meine Karten" }],
+    html: `
+      ${pageHead({
+        eyebrow: "Selbst gemacht",
+        title: "Meine Karten",
+        text: "Eigene Karteikarten und Merksätze, z. B. aus deinem Arbeitsalltag. Sie laufen auch in „Heute dran“, in der Suche und in der Sicherung mit.",
+        color: "#0d9488"
+      })}
+      <form class="card own-form" id="ownForm">
+        <label>Vorderseite (Begriff oder Frage)<input id="ownFront" type="text" maxlength="200" required placeholder="z. B. Was ist ein Canonical-Tag?" /></label>
+        <label>Rückseite (Erklärung oder Merksatz)<textarea id="ownBack" rows="3" maxlength="800" required placeholder="z. B. Zeigt Google die Original-URL bei doppelten Inhalten."></textarea></label>
+        <button class="btn btn-primary" type="submit" style="--c:#0d9488;">${icon("plus")} Karte speichern</button>
+        <p class="backup-msg" aria-live="polite"></p>
+      </form>
+      ${
+        cards.length
+          ? `<h2 class="section-title spaced">${icon("cards")} Lernen <small class="count">${cards.length}</small></h2>
+             <div id="ownDeck"></div>
+             <details class="card own-list">
+               <summary>Alle Karten verwalten (${cards.length})</summary>
+               <ul>${cards
+                 .map(
+                   (c) => `<li><span><strong>${esc(c.front)}</strong><small>${esc(c.back)}</small></span><button class="icon-btn" type="button" data-own-delete="${esc(c.id)}" aria-label="Löschen">${icon("x")}</button></li>`
+                 )
+                 .join("")}</ul>
+             </details>`
+          : `<div class="empty small">Noch keine eigenen Karten. Leg oben deine erste an.</div>`
+      }`,
+    mount(root) {
+      root.querySelector("#ownForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const front = root.querySelector("#ownFront").value.trim();
+        const back = root.querySelector("#ownBack").value.trim();
+        if (!front || !back) return;
+        const list = ownCards();
+        list.unshift({ id: `e${Date.now().toString(36)}`, front, back, datum: todayStr() });
+        saveJSON(OWN_KEY, list);
+        cardsByGroup = null;
+        checkBadgesSoon();
+        render();
+        toast("Karte gespeichert", "check");
+      });
+      root.querySelectorAll("[data-own-delete]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          if (!window.confirm("Diese Karte wirklich löschen?")) return;
+          saveJSON(OWN_KEY, ownCards().filter((c) => c.id !== btn.dataset.ownDelete));
+          cardsByGroup = null;
+          render();
+        })
+      );
+      const deck = root.querySelector("#ownDeck");
+      if (deck) mountDeck(deck, cards.map((c) => ({ front: esc(c.front), back: esc(c.back) })), { key: "eigene", color: "#0d9488" });
+    }
+  };
+}
+
+/* ==========================================================================
+   Fokus-Timer (Pomodoro): 25 Minuten lernen, 5 Minuten Pause
+   ========================================================================== */
+
+const FOCUS_DURATION = { lernen: 25 * 60, pause: 5 * 60 };
+const focusState = { running: false, mode: "lernen", remaining: FOCUS_DURATION.lernen, endsAt: 0, timer: null };
+
+function formatClock(sec) {
+  const s = Math.max(0, Math.round(sec));
+  return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+}
+
+function focusTick() {
+  if (!focusState.running) return;
+  focusState.remaining = Math.max(0, (focusState.endsAt - Date.now()) / 1000);
+  if (focusState.remaining <= 0) focusComplete();
+  updateFocusUI();
+}
+
+function focusStart() {
+  focusState.running = true;
+  focusState.endsAt = Date.now() + focusState.remaining * 1000;
+  clearInterval(focusState.timer);
+  focusState.timer = setInterval(focusTick, 1000);
+  updateFocusUI();
+}
+
+function focusPause() {
+  if (focusState.running) focusState.remaining = Math.max(0, (focusState.endsAt - Date.now()) / 1000);
+  focusState.running = false;
+  clearInterval(focusState.timer);
+  updateFocusUI();
+}
+
+function focusReset(mode = focusState.mode) {
+  focusPause();
+  focusState.mode = mode;
+  focusState.remaining = FOCUS_DURATION[mode];
+  updateFocusUI();
+}
+
+function focusComplete() {
+  focusState.running = false;
+  clearInterval(focusState.timer);
+  playChime();
+  if (focusState.mode === "lernen") {
+    trackActivity("fokus");
+    toast("Fokus-Einheit geschafft! Gönn dir 5 Minuten Pause.", "check");
+    focusState.mode = "pause";
+  } else {
+    toast("Pause vorbei. Weiter geht's!", "play");
+    focusState.mode = "lernen";
+  }
+  focusState.remaining = FOCUS_DURATION[focusState.mode];
+  checkBadgesSoon();
+}
+
+function playChime() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    [660, 880, 990].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const t = ctx.currentTime + i * 0.22;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      osc.start(t);
+      osc.stop(t + 0.4);
+    });
+  } catch (error) {
+    /* kein Ton möglich */
+  }
+}
+
+function updateFocusUI() {
+  const pill = document.getElementById("focusPill");
+  const active = focusState.running || focusState.remaining < FOCUS_DURATION[focusState.mode];
+  if (pill) {
+    pill.hidden = !active;
+    pill.classList.toggle("is-pause", focusState.mode === "pause");
+    pill.innerHTML = `${icon(focusState.running ? "flame" : "stop")}<span>${formatClock(focusState.remaining)}</span>`;
+  }
+  const page = document.querySelector("[data-focus-page]");
+  if (!page) return;
+  const total = FOCUS_DURATION[focusState.mode];
+  page.style.setProperty("--p", `${(1 - focusState.remaining / total) * 100}%`);
+  page.querySelector("[data-focus-time]").textContent = formatClock(focusState.remaining);
+  page.querySelector("[data-focus-mode]").textContent = focusState.mode === "lernen" ? "Lernzeit" : "Pause";
+  page.classList.toggle("is-pause", focusState.mode === "pause");
+  page.querySelector("[data-focus-toggle]").innerHTML = focusState.running ? `${icon("stop")} Pausieren` : `${icon("play")} ${focusState.remaining < total ? "Weiter" : "Starten"}`;
+  page.querySelectorAll("[data-focus-mode-btn]").forEach((b) => b.classList.toggle("is-active", b.dataset.focusModeBtn === focusState.mode));
+}
+
+function viewFocus() {
+  const today = loadJSON(ACTIVITY_KEY, {})[todayStr()] || {};
+  return {
+    title: "Fokus-Timer",
+    back: "#/",
+    crumbs: [{ label: "Start", href: "#/" }, { label: "Fokus-Timer" }],
+    html: `
+      ${pageHead({ eyebrow: "Konzentriert lernen", title: "Fokus-Timer", text: "25 Minuten lernen, 5 Minuten Pause. Der Timer läuft weiter, während du in der App lernst. Oben siehst du die Restzeit.", color: "#dc2626" })}
+      <div class="focus" data-focus-page>
+        <div class="focus-ring"><div class="focus-inner"><span data-focus-mode>Lernzeit</span><strong data-focus-time>25:00</strong></div></div>
+        <div class="seg focus-modes">
+          <button type="button" data-focus-mode-btn="lernen">Lernen 25</button>
+          <button type="button" data-focus-mode-btn="pause">Pause 5</button>
+        </div>
+        <div class="focus-actions">
+          <button class="btn btn-primary btn-wide" type="button" data-focus-toggle style="--c:#dc2626;">Starten</button>
+          <button class="btn btn-ghost" type="button" data-focus-reset>Zurücksetzen</button>
+        </div>
+        <p class="hint center">Heute geschafft: ${plural(today.p || 0, "Fokus-Einheit", "Fokus-Einheiten")}</p>
+        <a class="btn btn-soft" href="#/heute">${icon("play")} Direkt mit „Heute dran“ loslegen</a>
+      </div>`,
+    mount(root) {
+      root.querySelector("[data-focus-toggle]").addEventListener("click", () => (focusState.running ? focusPause() : focusStart()));
+      root.querySelector("[data-focus-reset]").addEventListener("click", () => focusReset());
+      root.querySelectorAll("[data-focus-mode-btn]").forEach((b) => b.addEventListener("click", () => focusReset(b.dataset.focusModeBtn)));
+      updateFocusUI();
+    }
+  };
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) focusTick();
+});
+
+/* ==========================================================================
+   Abzeichen & kleine Hinweise (Toast)
+   ========================================================================== */
+
+const BADGE_KEY = "lernapp-abzeichen";
+const SUCCESS_KEY = "lernapp-erfolge";
+
+const BADGES = [
+  { id: "serie3", title: "Dranbleiber", text: "3 Tage in Folge gelernt", icon: "flame", test: (s) => s.best >= 3 },
+  { id: "serie7", title: "Wochen-Serie", text: "7 Tage in Folge gelernt", icon: "flame", test: (s) => s.best >= 7 },
+  { id: "serie30", title: "Lern-Gewohnheit", text: "30 Tage in Folge gelernt", icon: "flame", test: (s) => s.best >= 30 },
+  { id: "karten10", title: "Erste Schritte", text: "10 Karten gewusst", icon: "cards", test: (s) => s.known >= 10 },
+  { id: "karten100", title: "Kartenprofi", text: "100 Karten gewusst", icon: "cards", test: (s) => s.known >= 100 },
+  { id: "karten500", title: "Wissensspeicher", text: "500 Karten gewusst", icon: "cards", test: (s) => s.known >= 500 },
+  { id: "fragen50", title: "Neugierig", text: "50 Fragen beantwortet", icon: "quiz", test: (s) => s.questions >= 50 },
+  { id: "fragen250", title: "Quizmaster", text: "250 Fragen beantwortet", icon: "quiz", test: (s) => s.questions >= 250 },
+  { id: "fragen1000", title: "Tausender", text: "1.000 Fragen beantwortet", icon: "quiz", test: (s) => s.questions >= 1000 },
+  { id: "fokus1", title: "Fokussiert", text: "Erste Fokus-Einheit geschafft", icon: "target", test: (s) => s.focus >= 1 },
+  { id: "fokus10", title: "Tiefenarbeit", text: "10 Fokus-Einheiten geschafft", icon: "target", test: (s) => s.focus >= 10 },
+  { id: "pruefung", title: "Bestanden!", text: "Eine Prüfung bestanden", icon: "award", test: (s) => s.examPassed },
+  { id: "eigene", title: "Selbermacher", text: "Eigene Karte angelegt", icon: "pencil", test: (s) => s.own >= 1 },
+  { id: "fehlerfrei", title: "Aufgeräumt", text: "Alle Fehler abgearbeitet (nach mind. 20 Fragen)", icon: "check", test: (s) => s.questions >= 20 && s.mistakes === 0 }
+];
+
+function badgeStats() {
+  const act = loadJSON(ACTIVITY_KEY, {});
+  const days = Object.values(act);
+  return {
+    best: Math.max(bestStreak(act), currentStreak(act)),
+    known: knownCards.size,
+    questions: days.reduce((s, e) => s + (e.f || 0), 0),
+    focus: days.reduce((s, e) => s + (e.p || 0), 0),
+    examPassed: !!loadJSON(SUCCESS_KEY, {}).pruefung,
+    own: ownCards().length,
+    mistakes: mistakes.length
+  };
+}
+
+let badgeTimer = null;
+function checkBadgesSoon() {
+  clearTimeout(badgeTimer);
+  badgeTimer = setTimeout(checkBadges, 400);
+}
+
+function checkBadges() {
+  const unlocked = new Set(loadJSON(BADGE_KEY, []));
+  const stats = badgeStats();
+  const fresh = BADGES.filter((b) => !unlocked.has(b.id) && b.test(stats));
+  if (!fresh.length) return;
+  fresh.forEach((b) => unlocked.add(b.id));
+  saveJSON(BADGE_KEY, [...unlocked]);
+  fresh.forEach((b, i) => setTimeout(() => toast(`Abzeichen freigeschaltet: ${b.title}`, b.icon, true), i * 1800));
+}
+
+function badgesHtml() {
+  const unlocked = new Set(loadJSON(BADGE_KEY, []));
+  return `<div class="badges">${BADGES.map(
+    (b) => `
+      <div class="badge-item ${unlocked.has(b.id) ? "is-on" : ""}" title="${esc(b.text)}">
+        <span class="badge-icon">${icon(b.icon)}</span>
+        <strong>${esc(b.title)}</strong>
+        <small>${esc(b.text)}</small>
+      </div>`
+  ).join("")}</div>`;
+}
+
+function toast(message, iconName = "check", special = false) {
+  const el = document.createElement("div");
+  el.className = `toast ${special ? "is-special" : ""}`;
+  el.setAttribute("role", "status");
+  el.innerHTML = `${icon(iconName)}<span>${esc(message)}</span>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.classList.add("is-out"), 3200);
+  setTimeout(() => el.remove(), 3700);
+}
+
+/* ==========================================================================
+   Version & Neuigkeiten
+   ========================================================================== */
+
+const CHANGELOG = Array.isArray(window.LERN_CHANGELOG) ? window.LERN_CHANGELOG : [];
+const APP_VERSION = CHANGELOG.length ? CHANGELOG[0].version : "";
+const VERSION_SEEN_KEY = "lernapp-version-gesehen";
+/* Wer die App schon vor der Versionsanzeige hatte, bekommt die Neuigkeiten ab hier gezeigt. */
+const VERSION_FALLBACK_SEEN = "2.1";
+
+function compareVersions(a, b) {
+  const pa = String(a).split(".").map(Number);
+  const pb = String(b).split(".").map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i += 1) {
+    const d = (pa[i] || 0) - (pb[i] || 0);
+    if (d) return d;
+  }
+  return 0;
+}
+
+function changelogEntryHtml(entry, open = true) {
+  return `
+    <article class="card news-entry">
+      <div class="news-head">
+        <span class="news-version">Version ${esc(entry.version)}</span>
+        <span class="news-date">${esc(entry.datum || "")}</span>
+      </div>
+      ${entry.titel ? `<h3>${esc(entry.titel)}</h3>` : ""}
+      ${open ? `<ul class="news-list">${(entry.neu || []).map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
+    </article>`;
+}
+
+function viewNews() {
+  return {
+    title: "Was ist neu?",
+    back: "#/",
+    crumbs: [{ label: "Start", href: "#/" }, { label: "Was ist neu?" }],
+    html: `
+      ${pageHead({
+        eyebrow: APP_VERSION ? `Aktuell: Version ${APP_VERSION}` : "Versionen",
+        title: "Was ist neu?",
+        text: "Alle Updates der Lernwelt, das neueste zuerst.",
+        color: "#4f46e5"
+      })}
+      <div class="stack">${CHANGELOG.map((e) => changelogEntryHtml(e)).join("")}</div>`
+  };
+}
+
+function versionFooter() {
+  if (!APP_VERSION) return "";
+  return `<a class="version-tag" href="#/neuigkeiten">Lernwelt · Version ${esc(APP_VERSION)} · Was ist neu?</a>`;
+}
+
+function showWhatsNewIfUpdated() {
+  if (!APP_VERSION) return;
+  let seen = null;
+  try {
+    seen = window.localStorage.getItem(VERSION_SEEN_KEY);
+  } catch (error) {
+    return;
+  }
+  const markSeen = () => {
+    try {
+      window.localStorage.setItem(VERSION_SEEN_KEY, APP_VERSION);
+    } catch (error) {
+      /* egal */
+    }
+  };
+  const baseline = seen || VERSION_FALLBACK_SEEN;
+  const fresh = CHANGELOG.filter((e) => compareVersions(e.version, baseline) > 0);
+  if (!fresh.length) {
+    if (seen !== APP_VERSION) markSeen();
+    return;
+  }
+
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.innerHTML = `
+    <div class="modal-card">
+      <div class="modal-badge">${icon("sparkle")}</div>
+      <p class="eyebrow">Update installiert</p>
+      <h2>Neu in Version ${esc(APP_VERSION)}</h2>
+      <div class="modal-scroll">${fresh.map((e) => changelogEntryHtml(e)).join("")}</div>
+      <button class="btn btn-primary btn-wide" type="button" data-modal-close>Alles klar</button>
+    </div>`;
+  const close = () => {
+    markSeen();
+    modal.remove();
+    document.body.classList.remove("has-overlay");
+  };
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.closest("[data-modal-close]")) close();
+  });
+  document.body.appendChild(modal);
+  document.body.classList.add("has-overlay");
+}
+
 /* ---------- Start ---------- */
 
 window.addEventListener("hashchange", render);
@@ -2446,3 +3376,4 @@ appEl.addEventListener("click", (event) => {
   if (lead) lead.classList.toggle("is-open");
 });
 render();
+showWhatsNewIfUpdated();
