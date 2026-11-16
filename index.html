@@ -15,13 +15,14 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link rel="stylesheet" href="styles.css?v=20261116-3" />
+    <link rel="stylesheet" href="styles.css?v=20261116-5" />
   </head>
   <body>
     <header class="topbar">
       <div class="topbar-inner">
         <a id="backBtn" class="back" href="#/" aria-label="Zurück" hidden>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          <span class="back-label">Zurück</span>
         </a>
         <nav id="crumbs" class="crumbs" aria-label="Navigation"></nav>
         <a class="topbar-btn" href="#/suche" aria-label="Suche">
@@ -39,8 +40,10 @@
 
     <!-- Themen-Bereiche: pro Thema eine Zeile (Format siehe themen/FORMAT.md) -->
     <script src="themen/seo-tutorial-2026/thema.js?v=20261116-2"></script>
+    <script src="themen/ki-aktuell-2026/thema.js?v=20261116-1"></script>
+    <script src="themen/marketing-trends-2026/thema.js?v=20261116-1"></script>
 
-    <script src="main.js?v=20261116-3"></script>
+    <script src="main.js?v=20261116-5"></script>
     <script>
       if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
         navigator.serviceWorker.register("sw.js").catch(() => {});

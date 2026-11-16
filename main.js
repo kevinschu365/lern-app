@@ -63,7 +63,18 @@ const ICONS = {
   sparkle: '<path d="M12 3v4m0 10v4M3 12h4m10 0h4M5.6 5.6l2.8 2.8m7.2 7.2 2.8 2.8m0-12.8-2.8 2.8m-7.2 7.2-2.8 2.8"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
-  x: '<path d="M18 6 6 18M6 6l12 12"/>'
+  x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  arrowLeft: '<path d="M19 12H5m6-6-6 6 6 6"/>',
+  chevLeft: '<path d="m15 18-6-6 6-6"/>',
+  chevRight: '<path d="m9 18 6-6-6-6"/>',
+  volume: '<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  maximize: '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.3 1.4 1.2 2.7 2.5 2.7z"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 16v-4m5 4V8m5 8v-6"/>',
+  save: '<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 21h14"/>'
 };
 
 function icon(name, cls = "icon") {
@@ -180,9 +191,12 @@ function cardId(card) {
   return `c${hashText(`${card.front}|${card.back}`)}`;
 }
 
-function recordAnswer(q, correct) {
+function recordAnswer(q, correct, confidence = "") {
   if (!q || q.type === "open") return;
+  trackActivity("frage", correct);
   const id = questionId(q);
+  if (correct) srsRate(id, confidence === "geraten" ? 2 : confidence === "sicher" ? 4 : 3);
+  else srsRate(id, 1, 1);
   const has = mistakes.includes(id);
   if (!correct && !has) mistakes.push(id);
   else if (correct && has) mistakes = mistakes.filter((x) => x !== id);
@@ -252,6 +266,214 @@ function mistakeEntries() {
   });
 }
 
+
+/* ---------- Wiederholung mit Abstand (Leitner-System, 5 Fächer) ----------
+   Jede Karte und jede Frage hat ein Fach (1–5) und ein Fälligkeitsdatum.
+   Gewusst = ein Fach weiter, längerer Abstand. Nicht gewusst = zurück in Fach 1. */
+
+const SRS_KEY = "lernapp-srs";
+const SRS_DAYS = [0, 2, 4, 8, 16, 35];
+const NEW_CARDS_PER_DAY = 10;
+const NEW_QUESTIONS_PER_DAY = 5;
+let srs = loadJSON(SRS_KEY, {});
+let srsMigrated = false;
+
+function addDays(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return dayKey(d);
+}
+
+function todayStr() {
+  return dayKey(new Date());
+}
+
+/* Karten, die schon als „Weiß ich“ markiert waren, starten in Fach 2. */
+function ensureSrsMigrated() {
+  if (srsMigrated) return;
+  srsMigrated = true;
+  let changed = false;
+  knownCards.forEach((id) => {
+    if (!srs[id]) {
+      srs[id] = { box: 2, due: addDays(3), n: 1, first: "migriert" };
+      changed = true;
+    }
+  });
+  if (changed) saveJSON(SRS_KEY, srs);
+}
+
+function isDue(id) {
+  const e = srs[id];
+  return !e || e.due <= todayStr();
+}
+
+function isDueReview(id) {
+  const e = srs[id];
+  return !!e && e.due <= todayStr();
+}
+
+function nextBox(id, rating) {
+  const box = (srs[id] && srs[id].box) || 0;
+  if (rating === 1) return 1;
+  if (rating === 2) return Math.max(1, box);
+  if (rating === 3) return Math.min(5, box + 1);
+  return Math.min(5, box + 2);
+}
+
+function previewDays(id, rating) {
+  if (rating === 1) return 0;
+  if (rating === 2) return 1;
+  return SRS_DAYS[nextBox(id, rating)];
+}
+
+function srsRate(id, rating, overrideDays = null) {
+  const e = srs[id] || {};
+  const box = nextBox(id, rating);
+  const days = overrideDays !== null ? overrideDays : previewDays(id, rating);
+  srs[id] = { box, due: addDays(days), n: (e.n || 0) + 1, first: e.first || todayStr() };
+  saveJSON(SRS_KEY, srs);
+}
+
+function daysLabel(n) {
+  if (n <= 0) return "gleich nochmal";
+  if (n === 1) return "morgen";
+  if (n < 30) return `in ${n} Tagen`;
+  return `in ${Math.round(n / 30)} Mon.`;
+}
+
+function nextDueLabel(ids) {
+  const dates = ids.map((id) => srs[id] && srs[id].due).filter(Boolean).sort();
+  const next = dates.find((d) => d > todayStr());
+  if (!next) return "";
+  const diff = Math.round((new Date(`${next}T12:00:00`) - new Date(`${todayStr()}T12:00:00`)) / 86400000);
+  return daysLabel(diff);
+}
+
+function introducedToday(prefix) {
+  const today = todayStr();
+  return Object.entries(srs).filter(([id, e]) => id.startsWith(prefix) && e.first === today).length;
+}
+
+/* ---------- „Heute dran“: die tägliche Lernrunde ---------- */
+
+function pickNew(list, idOf, limit) {
+  if (limit <= 0) return [];
+  const groups = new Map();
+  list.forEach((item) => {
+    const g = groups.get(item.label) || { seen: 0, total: 0, fresh: [] };
+    g.total += 1;
+    if (srs[idOf(item)]) g.seen += 1;
+    else g.fresh.push(item);
+    groups.set(item.label, g);
+  });
+  const ordered = [...groups.values()].filter((g) => g.fresh.length).sort((a, b) => a.seen / a.total - b.seen / b.total);
+  const picked = [];
+  let round = 0;
+  while (picked.length < limit && ordered.some((g) => g.fresh.length > round)) {
+    ordered.slice(0, 4).forEach((g) => {
+      if (picked.length < limit && g.fresh[round]) picked.push(g.fresh[round]);
+    });
+    round += 1;
+    if (round > 50) break;
+  }
+  return picked;
+}
+
+function buildTodaySession() {
+  ensureSrsMigrated();
+  const cards = allCards();
+  const dueCards = shuffle(cards.filter((c) => isDueReview(cardId(c)))).slice(0, 40);
+  const newCards = pickNew(cards, cardId, NEW_CARDS_PER_DAY - introducedToday("c"));
+
+  const seen = new Set();
+  const take = (entry) => {
+    const id = questionId(entry.q);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  };
+  const closed = allQuestions().filter((e) => e.q.type !== "open");
+  const mistakeQs = mistakeEntries().filter((e) => e.q.type !== "open" && take(e)).slice(0, 5);
+  const dueQs = shuffle(closed.filter((e) => isDueReview(questionId(e.q)) && take(e))).slice(0, 10);
+  const newQs = pickNew(closed.filter((e) => !seen.has(questionId(e.q))), (e) => questionId(e.q), NEW_QUESTIONS_PER_DAY - introducedToday("q"));
+
+  const questions = shuffle([...mistakeQs, ...dueQs, ...newQs]);
+  const cardList = [...dueCards, ...newCards];
+  const minutes = Math.max(1, Math.round(cardList.length * 0.3 + questions.length * 0.6));
+  return { cards: cardList, questions, minutes };
+}
+
+function todayCta() {
+  const s = buildTodaySession();
+  const total = s.cards.length + s.questions.length;
+  if (!total) {
+    return `
+      <a class="today-cta is-done" href="#/statistik">
+        <span class="today-icon">${icon("check")}</span>
+        <span class="quick-body"><strong>Für heute alles erledigt</strong><small>Morgen warten neue Wiederholungen auf dich.</small></span>
+      </a>`;
+  }
+  return `
+    <a class="today-cta" href="#/heute">
+      <span class="today-icon">${icon("play")}</span>
+      <span class="quick-body">
+        <strong>Heute dran</strong>
+        <small>${plural(s.cards.length, "Karte", "Karten")} · ${plural(s.questions.length, "Frage", "Fragen")} · ca. ${s.minutes} Min.</small>
+      </span>
+      <span class="today-go">Los ${icon("arrowRight")}</span>
+    </a>`;
+}
+
+function viewToday() {
+  const s = buildTodaySession();
+  return {
+    title: "Heute dran",
+    back: "#/",
+    crumbs: [{ label: "Start", href: "#/" }, { label: "Heute dran" }],
+    html: `
+      ${pageHead({
+        eyebrow: "Tägliche Lernrunde",
+        title: "Heute dran",
+        text: `Fällige Wiederholungen, ein paar neue Inhalte und deine Fehler, gemischt aus allen Themen. Ca. ${s.minutes} Minuten.`,
+        color: "#2563eb"
+      })}
+      <nav class="tabs today-tabs" style="--c:#2563eb;">
+        <button class="tab is-active" type="button" data-step="karten">${icon("cards")}<span>1 · Karten</span><small>${s.cards.length}</small></button>
+        <button class="tab" type="button" data-step="fragen">${icon("quiz")}<span>2 · Fragen</span><small>${s.questions.length}</small></button>
+      </nav>
+      <section id="todayCards"></section>
+      <section id="todayQuestions" hidden></section>`,
+    mount(root) {
+      const cardsEl = root.querySelector("#todayCards");
+      const questionsEl = root.querySelector("#todayQuestions");
+      const tabs = root.querySelectorAll("[data-step]");
+      const show = (step) => {
+        tabs.forEach((t) => t.classList.toggle("is-active", t.dataset.step === step));
+        cardsEl.hidden = step !== "karten";
+        questionsEl.hidden = step !== "fragen";
+      };
+      tabs.forEach((t) => t.addEventListener("click", () => show(t.dataset.step)));
+      mountDeck(cardsEl, s.cards, {
+        session: true,
+        color: "#2563eb",
+        onDone: () => {
+          if (s.questions.length) {
+            cardsEl.insertAdjacentHTML(
+              "beforeend",
+              `<div class="quiz-nav"><span></span><button class="btn btn-primary" type="button" data-go-questions>Weiter zu den Fragen ${icon("arrowRight")}</button></div>`
+            );
+            const go = cardsEl.querySelector("[data-go-questions]");
+            if (go) go.addEventListener("click", () => show("fragen"));
+          }
+        }
+      });
+      if (s.questions.length) mountQuiz(questionsEl, s.questions, { color: "#2563eb" });
+      else questionsEl.innerHTML = `<div class="empty small">Heute keine Fragen fällig.</div>`;
+      if (!s.cards.length && s.questions.length) show("fragen");
+    }
+  };
+}
+
 /* ==========================================================================
    Router
    ========================================================================== */
@@ -274,6 +496,8 @@ function render() {
     else if (route[0] === "thema") view = viewThema(route[1], route[2]);
     else if (route[0] === "fehler") view = viewMistakes();
     else if (route[0] === "suche") view = viewSearch(route[1] || "");
+    else if (route[0] === "statistik") view = viewStats();
+    else if (route[0] === "heute") view = viewToday();
     else view = viewNotFound();
   } catch (error) {
     console.error(error);
@@ -290,7 +514,13 @@ function render() {
     saveJSON(LAST_KEY, { hash: location.hash, label: view.title, sub: view.lastSub || "" });
   }
   renderChrome(view);
-  appEl.innerHTML = view.html;
+  closeOverlay();
+  stopSpeaking();
+  const crumbs = view.crumbs || [];
+  const backLabel = crumbs.length >= 2 ? crumbs[crumbs.length - 2].label : "Start";
+  appEl.innerHTML =
+    view.html +
+    (view.back ? `<a class="page-back" href="${view.back}">${icon("arrowLeft")} Zurück zu ${esc(backLabel)}</a>` : "");
   appEl.classList.remove("is-entering");
   void appEl.offsetWidth;
   appEl.classList.add("is-entering");
@@ -412,8 +642,14 @@ function viewHome() {
         <h1>Was lernst du heute?</h1>
         <p class="lead">Wähle ein Thema. Dahinter findest du alles, was dazu gehört.</p>
       </section>
+      ${todayCta()}
+      ${streakStrip()}
       ${quickLinks ? `<div class="quick-row">${quickLinks}</div>` : ""}
-      <div class="topic-grid">${cards}</div>`
+      <div class="topic-grid">${cards}</div>
+      <nav class="home-footer">
+        <a href="#/statistik">${icon("chart")} Statistik &amp; Sicherung</a>
+        <a href="#/suche">${icon("search")} Suche</a>
+      </nav>`
   };
 }
 
@@ -650,19 +886,23 @@ function viewWbExam() {
   };
 }
 
-function mountExam(el) {
+function weiterbildungExamPool() {
+  const pool = [];
+  readyModules().forEach((m) =>
+    m.questions
+      .filter((q) => q.type === "single" || q.type === "multi")
+      .forEach((q) => pool.push({ q: normalizeQuestion(q), title: m.title, color: m.color }))
+  );
+  return pool;
+}
+
+function mountExam(el, getPool = weiterbildungExamPool, count = EXAM_QUESTION_COUNT) {
   let questions = [];
   let selections = {};
   let result = null;
 
   const start = () => {
-    const pool = [];
-    readyModules().forEach((m) =>
-      m.questions
-        .filter((q) => q.type === "single" || q.type === "multi")
-        .forEach((q) => pool.push({ q: normalizeQuestion(q), title: m.title, color: m.color }))
-    );
-    questions = sample(pool, EXAM_QUESTION_COUNT);
+    questions = sample(getPool(), count);
     selections = {};
     result = null;
     draw();
@@ -821,8 +1061,10 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
     let actions = "";
     if (q.type === "open") {
       body = `
-        <p class="hint">Offene Frage: Überleg dir deine Antwort, dann vergleiche.</p>
-        ${a.revealed ? `<div class="answer-box"><strong>Musterantwort</strong><p>${q.sample}</p></div>` : ""}`;
+        <p class="hint">Offene Frage: Formuliere deine Antwort selbst, dann vergleiche.</p>
+        ${a.revealed
+          ? `${a.text && a.text.trim() ? `<div class="answer-box own"><strong>Deine Antwort</strong><p>${esc(a.text)}</p></div>` : ""}<div class="answer-box"><strong>Musterantwort</strong><p>${q.sample}</p></div>`
+          : `<textarea class="own-answer" data-own rows="3" placeholder="Deine Antwort (optional) …">${esc(a.text || "")}</textarea>`}`;
       actions = a.revealed
         ? `<button class="btn btn-primary" data-action="next" type="button">Weiter ${icon("arrowRight")}</button>`
         : `<button class="btn btn-primary" data-action="reveal" type="button">Musterantwort zeigen</button>`;
@@ -838,8 +1080,8 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
         .join("")}</div>
         ${
           a.checked
-            ? `<div class="answer-box ${a.correct ? "is-pass" : "is-fail"}"><strong>${a.correct ? "Richtig!" : "Nicht ganz. Grün markiert ist die richtige Lösung."}</strong>${q.explanation ? `<p>${q.explanation}</p>` : ""}</div>`
-            : `<p class="hint">Es können eine oder mehrere Antworten richtig sein.</p>`
+            ? `<div class="answer-box ${a.correct ? "is-pass" : "is-fail"}"><strong>${a.correct ? "Richtig!" : "Nicht ganz. Grün markiert ist die richtige Lösung."}</strong>${!a.correct && a.conf === "sicher" ? `<p class="conf-note">Sicherer Irrtum! Genau solche Fehler merkt man sich nach der Korrektur besonders gut. Lies die Erklärung in Ruhe.</p>` : ""}${a.correct && a.conf === "geraten" ? `<p class="conf-note">Gut geraten! Die Frage kommt bald nochmal, damit sie wirklich sitzt.</p>` : ""}${q.explanation ? `<p>${q.explanation}</p>` : ""}</div>`
+            : `<p class="hint">Es können eine oder mehrere Antworten richtig sein.</p>${a.selected.length ? `<div class="conf"><span>Wie sicher bist du?</span>${[["geraten", "Geraten"], ["unsicher", "Unsicher"], ["sicher", "Sicher"]].map(([v, l]) => `<button type="button" data-conf="${v}" class="${a.conf === v ? "is-active" : ""}">${l}</button>`).join("")}</div>` : ""}`
         }`;
       actions = a.checked
         ? `<button class="btn btn-primary" data-action="next" type="button">${index === items.length - 1 ? "Auswertung" : "Weiter"} ${icon("arrowRight")}</button>`
@@ -850,7 +1092,10 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
       <div class="quiz" style="--c:${color};">
         <div class="quiz-top">
           <span>Frage ${index + 1} von ${items.length}</span>
-          <span class="quiz-score">${icon("check")} ${correctCount()} richtig</span>
+          <span class="quiz-top-right">
+            <span class="quiz-score">${icon("check")} ${correctCount()} richtig</span>
+            ${speakButton()}
+          </span>
         </div>
         <div class="bar"><span style="width:${progress}%"></span></div>
         <article class="card question">
@@ -885,12 +1130,22 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
       </div>`;
   };
 
+  el.oninput = (event) => {
+    if (!event.target.matches("[data-own]")) return;
+    const a = answers[index] || (answers[index] = { selected: [], checked: false, correct: false, revealed: false });
+    a.text = event.target.value;
+  };
+
   el.onclick = (event) => {
     const btn = event.target.closest("button");
     if (!btn) return;
     const q = items[index] && items[index].q;
     const a = answers[index] || (answers[index] = { selected: [], checked: false, correct: false, revealed: false });
 
+    if (btn.dataset.conf && q && !a.checked) {
+      a.conf = a.conf === btn.dataset.conf ? "" : btn.dataset.conf;
+      return draw();
+    }
     if (btn.dataset.o !== undefined && q && !a.checked) {
       const oi = Number(btn.dataset.o);
       if (q.type === "single") a.selected = a.selected[0] === oi ? [] : [oi];
@@ -901,11 +1156,18 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
       case "check":
         a.checked = true;
         a.correct = sameSelection(a.selected, q.correct);
-        recordAnswer(q, a.correct);
+        recordAnswer(q, a.correct, a.conf || "");
         return draw();
       case "reveal":
         a.revealed = true;
         return draw();
+      case "speak": {
+        const parts = [q.prompt];
+        if (q.options) q.options.forEach((opt, oi) => parts.push(`Antwort ${oi + 1}: ${opt}`));
+        if (a.checked && q.explanation) parts.push(q.explanation);
+        if (a.revealed && q.sample) parts.push(`Musterantwort: ${q.sample}`);
+        return toggleSpeak(parts.join(". "), btn);
+      }
       case "next":
         index += 1;
         draw();
@@ -931,32 +1193,33 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle } = {}) {
    Karteikarten
    ========================================================================== */
 
-function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null } = {}) {
+function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null, session = false, onDone = null } = {}) {
   if (!cards.length) {
-    el.innerHTML = `<div class="empty small">Noch keine Karteikarten hinterlegt.</div>`;
+    el.innerHTML = session
+      ? `<div class="empty small">Heute keine Karten fällig. ${icon("check")}</div>`
+      : `<div class="empty small">Noch keine Karteikarten hinterlegt.</div>`;
     return;
   }
+  ensureSrsMigrated();
 
-  /* Modus "offen": nur Karten, die noch nicht als gewusst markiert sind. */
   const ids = cards.map(cardId);
-  const openIndices = () => cards.map((_, i) => i).filter((i) => !knownCards.has(ids[i]));
-  let mode = openIndices().length ? "offen" : "alle";
+  const dueIndices = () => cards.map((_, i) => i).filter((i) => isDue(ids[i]));
+  let mode = session ? "lernen" : dueIndices().length ? "lernen" : "alle";
   let order = [];
   let pos = 0;
   let flipped = false;
+  let writing = false;
+  let ownAnswer = "";
 
-  const buildOrder = (keepPos) => {
-    order = mode === "offen" ? openIndices() : cards.map((_, i) => i);
-    if (!keepPos) pos = 0;
-    if (pos >= order.length) pos = 0;
+  const buildOrder = () => {
+    order = session ? cards.map((_, i) => i) : mode === "lernen" ? dueIndices() : cards.map((_, i) => i);
+    pos = 0;
+    if (!session && mode === "alle" && key && deckState[key] && deckState[key].index < order.length) pos = deckState[key].index;
   };
-
-  const saved = key ? deckState[key] : null;
-  buildOrder(false);
-  if (saved && mode === "alle" && saved.index < cards.length) pos = saved.index;
+  buildOrder();
 
   const persist = () => {
-    if (!key || mode !== "alle") return;
+    if (!key || mode !== "alle" || session) return;
     deckState[key] = { index: pos };
     saveJSON(DECK_KEY, deckState);
   };
@@ -964,31 +1227,63 @@ function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null } = {
   const knownCount = () => ids.filter((id) => knownCards.has(id)).length;
 
   const header = () => {
-    const known = knownCount();
+    if (session) return "";
+    const due = dueIndices().length;
     return `
       <div class="deck-head">
         <div class="seg" role="tablist">
-          <button type="button" class="${mode === "offen" ? "is-active" : ""}" data-mode="offen">Noch offen <small>${cards.length - known}</small></button>
+          <button type="button" class="${mode === "lernen" ? "is-active" : ""}" data-mode="lernen">Zu lernen <small>${due}</small></button>
           <button type="button" class="${mode === "alle" ? "is-active" : ""}" data-mode="alle">Alle <small>${cards.length}</small></button>
         </div>
-        <span class="deck-known">${icon("check")} ${known} gewusst</span>
+        <span class="deck-known">${icon("check")} ${knownCount()} gewusst</span>
       </div>`;
+  };
+
+  const actionsHtml = () => {
+    const i = order[pos];
+    if (!flipped) {
+      return `
+        ${
+          writing
+            ? `<textarea class="own-answer" data-own rows="3" placeholder="Deine Antwort in eigenen Worten …">${esc(ownAnswer)}</textarea>`
+            : `<button class="link-btn" type="button" data-action="write">${icon("pencil")} Erst selbst antworten</button>`
+        }
+        <button class="btn btn-primary btn-wide" type="button" data-action="flip">Umdrehen</button>`;
+    }
+    const id = ids[i];
+    const rate = (r, label, cls) =>
+      `<button class="btn rate ${cls}" type="button" data-rate="${r}"><strong>${label}</strong><small>${daysLabel(previewDays(id, r))}</small></button>`;
+    return `
+      ${ownAnswer.trim() ? `<div class="answer-box own"><strong>Deine Antwort</strong><p>${esc(ownAnswer)}</p></div>` : ""}
+      <p class="hint center">Wie gut wusstest du es?</p>
+      <div class="rates">
+        ${rate(1, "Nochmal", "rate-1")}
+        ${rate(2, "Schwer", "rate-2")}
+        ${rate(3, "Gut", "rate-3")}
+        ${rate(4, "Leicht", "rate-4")}
+      </div>`;
+  };
+
+  const drawActions = () => {
+    const box = el.querySelector(".deck-actions");
+    if (box) box.innerHTML = actionsHtml();
+    const area = el.querySelector("[data-own]");
+    if (area && writing && !flipped) area.focus();
   };
 
   const draw = () => {
     if (!order.length) {
+      const next = nextDueLabel(ids);
       el.innerHTML = `
         <div class="deck" style="--c:${color}; --c-soft:${soft || hexToSoft(color, 0.14)};">
           ${header()}
           <div class="result-banner is-pass">
             <span class="result-score">${icon("check")}</span>
-            <div><strong>Alle Karten gewusst!</strong><p>Stark. Du kannst alle nochmal durchgehen oder den Stapel zurücksetzen.</p></div>
+            <div><strong>${session ? "Karten für heute geschafft!" : "Alles gelernt, was heute dran ist!"}</strong><p>${next ? `Nächste Wiederholung: ${next}.` : "Stark."}</p></div>
           </div>
-          <div class="quiz-nav wrap">
-            <button class="btn btn-soft" type="button" data-mode="alle">Alle ansehen</button>
-            <button class="btn btn-ghost" type="button" data-action="reset">Stapel zurücksetzen</button>
-          </div>
+          ${session ? "" : `<div class="quiz-nav wrap"><button class="btn btn-soft" type="button" data-mode="alle">Alle Karten ansehen</button></div>`}
         </div>`;
+      if (session && onDone) onDone();
       return;
     }
 
@@ -996,25 +1291,26 @@ function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null } = {
     const card = cards[i];
     const c = card.color || color;
     const s = card.soft || soft || hexToSoft(c, 0.14);
-    const isKnown = knownCards.has(ids[i]);
+    const entry = srs[ids[i]];
+    const status = !entry ? "Neu" : `Fach ${entry.box} von 5`;
     el.innerHTML = `
       <div class="deck" style="--c:${c}; --c-soft:${s};">
         ${header()}
         <div class="quiz-top">
           <span>Karte ${pos + 1} von ${order.length}</span>
-          ${card.label ? `<span class="source" style="--c:${c};">${card.label}</span>` : ""}
+          <span class="quiz-top-right">
+            ${card.label ? `<span class="source" style="--c:${c};">${card.label}</span>` : ""}
+            ${speakButton()}
+          </span>
         </div>
         <div class="bar"><span style="width:${Math.round(((pos + 1) / order.length) * 100)}%"></span></div>
         <button class="flip ${flipped ? "is-flipped" : ""}" type="button" data-action="flip" aria-label="Karte umdrehen">
           <span class="flip-inner">
-            <span class="flip-face flip-front"><small>Begriff${isKnown ? " · gewusst" : ""}</small><strong>${card.front}</strong><em>Tippen zum Umdrehen</em></span>
+            <span class="flip-face flip-front"><small>Begriff · ${status}</small><strong>${card.front}</strong><em>Tippen zum Umdrehen</em></span>
             <span class="flip-face flip-back"><small>Erklärung</small><span>${card.back}</span></span>
           </span>
         </button>
-        <div class="judge">
-          <button class="btn judge-no" data-action="unknown" type="button">${icon("x")} Noch nicht</button>
-          <button class="btn judge-yes" data-action="known" type="button">${icon("check")} Weiß ich</button>
-        </div>
+        <div class="deck-actions">${actionsHtml()}</div>
         <div class="deck-nav">
           <button class="btn btn-ghost" data-action="prev" type="button">Zurück</button>
           <button class="btn btn-ghost" data-action="shuffle" type="button">${icon("shuffle")} Mischen</button>
@@ -1023,8 +1319,14 @@ function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null } = {
       </div>`;
   };
 
-  const advance = () => {
-    pos = (pos + 1) % Math.max(order.length, 1);
+  const resetCard = () => {
+    flipped = false;
+    writing = false;
+    ownAnswer = "";
+  };
+
+  el.oninput = (event) => {
+    if (event.target.matches("[data-own]")) ownAnswer = event.target.value;
   };
 
   el.onclick = (event) => {
@@ -1032,48 +1334,53 @@ function mountDeck(el, cards, { key = null, color = "#2563eb", soft = null } = {
     if (!btn) return;
     if (btn.dataset.mode) {
       mode = btn.dataset.mode;
-      flipped = false;
-      buildOrder(false);
+      resetCard();
+      buildOrder();
       return draw();
     }
     const i = order[pos];
+    if (btn.dataset.rate) {
+      const r = Number(btn.dataset.rate);
+      srsRate(ids[i], r);
+      trackActivity("karte");
+      if (r >= 3) knownCards.add(ids[i]);
+      if (r === 1) knownCards.delete(ids[i]);
+      saveJSON(KNOWN_KEY, [...knownCards]);
+      if (mode === "lernen" || session) {
+        order.splice(pos, 1);
+        if (r === 1) order.push(i);
+        if (pos >= order.length) pos = 0;
+      } else {
+        pos = (pos + 1) % order.length;
+      }
+      resetCard();
+      persist();
+      return draw();
+    }
     switch (btn.dataset.action) {
       case "flip":
         flipped = !flipped;
         el.querySelector(".flip").classList.toggle("is-flipped", flipped);
-        return;
-      case "known":
-        knownCards.add(ids[i]);
-        saveJSON(KNOWN_KEY, [...knownCards]);
-        if (mode === "offen") {
-          order.splice(pos, 1);
-          if (pos >= order.length) pos = 0;
-        } else advance();
-        break;
-      case "unknown":
-        if (knownCards.delete(ids[i])) saveJSON(KNOWN_KEY, [...knownCards]);
-        advance();
-        break;
+        return drawActions();
+      case "write":
+        writing = true;
+        return drawActions();
+      case "speak":
+        return toggleSpeak(flipped ? cards[i].back : cards[i].front, btn);
       case "prev":
         pos = (pos - 1 + order.length) % order.length;
         break;
       case "next":
-        advance();
+        pos = (pos + 1) % order.length;
         break;
       case "shuffle":
         order = shuffle(order);
         pos = 0;
         break;
-      case "reset":
-        ids.forEach((id) => knownCards.delete(id));
-        saveJSON(KNOWN_KEY, [...knownCards]);
-        mode = "offen";
-        buildOrder(false);
-        break;
       default:
         return;
     }
-    flipped = false;
+    resetCard();
     persist();
     draw();
   };
@@ -1224,6 +1531,17 @@ const THEMA_SECTIONS = [
   { key: "mindmap", title: "Mindmap", short: "Mindmap", iconName: "mindmap", color: "#7c3aed", items: (t) => t.mindmaps || [] },
   { key: "lernkarten", title: "Lernkarten", short: "Lernkarten", iconName: "cards", color: "#ea580c", items: (t) => t.lernkarten || [] },
   { key: "quiz", title: "Quiz", short: "Quiz", iconName: "quiz", color: "#0891b2", items: (t) => t.quiz || [] },
+  {
+    key: "pruefung",
+    title: "Prüfung",
+    short: "Prüfung",
+    iconName: "award",
+    color: "#0f766e",
+    items: (t) => {
+      const closed = (t.quiz || []).filter((q) => Array.isArray(q.optionen) && q.optionen.length);
+      return closed.length >= 5 ? closed : [];
+    }
+  },
   { key: "tabelle", title: "Datentabelle", short: "Tabelle", iconName: "table", color: "#4f46e5", items: (t) => t.tabellen || [] },
   { key: "berichte", title: "Berichte", short: "Berichte", iconName: "report", color: "#475569", items: (t) => t.berichte || [] }
 ];
@@ -1238,6 +1556,8 @@ function sectionMeta(section, items) {
       return plural(items.length, "Karte", "Karten");
     case "quiz":
       return plural(items.length, "Frage", "Fragen");
+    case "pruefung":
+      return `${Math.min(items.length, EXAM_QUESTION_COUNT)} Fragen, ab ${EXAM_PASS_PERCENTAGE} %`;
     case "tabelle":
       return items.length === 1 ? `${(items[0].zeilen || []).length} Zeilen` : plural(items.length, "Tabelle", "Tabellen");
     default: {
@@ -1315,11 +1635,12 @@ function renderSection(t, section, items) {
             (a) => `
               <article class="card media">
                 ${mediaHead(a)}
-                ${a.datei ? `<audio controls preload="metadata" src="${themaFile(t, a.datei)}"></audio>` : ""}
+                ${a.datei ? `<audio controls preload="metadata" src="${themaFile(t, a.datei)}"></audio>${speedControl()}` : ""}
                 ${a.youtube ? youtubeEmbed(a.youtube) : ""}
               </article>`
           )
-          .join("")}</div>`
+          .join("")}</div>`,
+        mount: mountMedia
       };
 
     case "kurzvideo":
@@ -1330,28 +1651,40 @@ function renderSection(t, section, items) {
             (v) => `
               <article class="card media">
                 ${mediaHead(v)}
-                ${v.datei ? `<video controls playsinline preload="metadata" src="${themaFile(t, v.datei)}"></video>` : ""}
+                ${v.datei ? `<video controls playsinline preload="metadata" src="${themaFile(t, v.datei)}"></video>${speedControl()}` : ""}
                 ${v.youtube ? youtubeEmbed(v.youtube) : ""}
                 ${!v.datei && !v.youtube ? `<p class="hint">Video folgt noch.</p>` : ""}
               </article>`
           )
-          .join("")}</div>`
+          .join("")}</div>`,
+        mount: mountMedia
       };
 
     case "praesentation":
       return {
         html: `<div class="stack">${items
-          .map((p) => {
-            const src = themaFile(t, p.datei);
-            return `
+          .map(
+            (p, i) => `
               <article class="card media">
                 <div class="media-head"><h3>${esc(p.titel || "Präsentation")}</h3>
-                  <a class="btn btn-soft" href="${src}" target="_blank" rel="noopener">${icon("external")} Vollbild öffnen</a>
+                  <button class="btn btn-soft" type="button" data-pdf-full="${i}">${icon("maximize")} Vollbild</button>
                 </div>
-                <iframe class="pdf-frame" src="${src}#view=FitH" title="${esc(p.titel || "Präsentation")}"></iframe>
-              </article>`;
-          })
-          .join("")}</div>`
+                <div class="pdf-viewer" data-pdf="${i}">
+                  <div class="pdf-stage"><canvas></canvas><div class="pdf-status">Präsentation wird geladen …</div></div>
+                  <div class="pdf-controls">
+                    <button class="btn btn-soft" type="button" data-pdf-nav="-1" aria-label="Vorherige Folie">${icon("chevLeft")}</button>
+                    <span class="pdf-page">– / –</span>
+                    <button class="btn btn-soft" type="button" data-pdf-nav="1" aria-label="Nächste Folie">${icon("chevRight")}</button>
+                  </div>
+                </div>
+              </article>`
+          )
+          .join("")}</div>`,
+        mount(root) {
+          items.forEach((p, i) =>
+            mountPdf(root.querySelector(`[data-pdf="${i}"]`), root.querySelector(`[data-pdf-full="${i}"]`), themaFile(t, p.datei), p.titel || "Präsentation")
+          );
+        }
       };
 
     case "mindmap":
@@ -1364,11 +1697,14 @@ function renderSection(t, section, items) {
                   ${mm.baum ? `<button class="btn btn-soft" type="button" data-action="expand">Alles aufklappen</button>` : ""}
                 </div>
                 ${mm.baum ? `<ul class="tree">${treeNode(mm.baum, 0)}</ul>` : ""}
-                ${mm.bild ? `<a href="${themaFile(t, mm.bild)}" target="_blank" rel="noopener"><img class="mindmap-img" src="${themaFile(t, mm.bild)}" alt="${esc(mm.titel || "Mindmap")}" loading="lazy" /></a>` : ""}
+                ${mm.bild ? `<button class="img-zoom" type="button" data-zoom-src="${themaFile(t, mm.bild)}" data-zoom-title="${esc(mm.titel || "Mindmap")}"><img class="mindmap-img" src="${themaFile(t, mm.bild)}" alt="${esc(mm.titel || "Mindmap")}" loading="lazy" /><span class="img-zoom-hint">${icon("maximize")} Antippen zum Vergrößern</span></button>` : ""}
               </article>`
           )
           .join("")}</div>`,
         mount(root) {
+          root.querySelectorAll("[data-zoom-src]").forEach((btn) =>
+            btn.addEventListener("click", () => openImageOverlay(btn.dataset.zoomSrc, btn.dataset.zoomTitle))
+          );
           root.querySelectorAll('[data-action="expand"]').forEach((btn) =>
             btn.addEventListener("click", () => {
               const details = btn.closest(".card").querySelectorAll("details");
@@ -1397,6 +1733,18 @@ function renderSection(t, section, items) {
         html: `<div id="quizMount"></div>`,
         mount(root) {
           mountQuiz(root.querySelector("#quizMount"), items.map((q) => ({ q: normalizeQuestion(q) })), { color: section.color });
+        }
+      };
+
+    case "pruefung":
+      return {
+        html: `<p class="lead exam-intro">${Math.min(items.length, EXAM_QUESTION_COUNT)} gemischte Fragen aus dem Quiz zu „${esc(t.titel)}“. Bestanden ab ${EXAM_PASS_PERCENTAGE} %. Am Ende siehst du, was falsch war und warum.</p><div id="examMount"></div>`,
+        mount(root) {
+          mountExam(
+            root.querySelector("#examMount"),
+            () => items.map((q) => ({ q: normalizeQuestion(q), title: t.titel, color: t.farbe || "#0f766e" })),
+            Math.min(items.length, EXAM_QUESTION_COUNT)
+          );
         }
       };
 
@@ -1449,6 +1797,645 @@ function treeNode(node, depth) {
   return `<li><details ${depth < 1 ? "open" : ""}><summary>${esc(node.text)}</summary><ul>${kids
     .map((k) => treeNode(k, depth + 1))
     .join("")}</ul></details></li>`;
+}
+
+/* ==========================================================================
+   Lernaktivität, Serie & Statistik
+   ========================================================================== */
+
+const ACTIVITY_KEY = "lernapp-aktivitaet";
+
+function dayKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function trackActivity(kind, right) {
+  const act = loadJSON(ACTIVITY_KEY, {});
+  const key = dayKey(new Date());
+  const entry = act[key] || { f: 0, r: 0, k: 0 };
+  if (kind === "frage") {
+    entry.f += 1;
+    if (right) entry.r += 1;
+  } else {
+    entry.k += 1;
+  }
+  act[key] = entry;
+  saveJSON(ACTIVITY_KEY, act);
+}
+
+function currentStreak(act = loadJSON(ACTIVITY_KEY, {})) {
+  const d = new Date();
+  if (!act[dayKey(d)]) d.setDate(d.getDate() - 1);
+  let n = 0;
+  while (act[dayKey(d)]) {
+    n += 1;
+    d.setDate(d.getDate() - 1);
+  }
+  return n;
+}
+
+function bestStreak(act) {
+  const keys = Object.keys(act).sort();
+  let best = 0;
+  let run = 0;
+  let prev = null;
+  keys.forEach((k) => {
+    const d = new Date(`${k}T12:00:00`);
+    if (prev && Math.round((d - prev) / 86400000) === 1) run += 1;
+    else run = 1;
+    best = Math.max(best, run);
+    prev = d;
+  });
+  return best;
+}
+
+function streakStrip() {
+  const act = loadJSON(ACTIVITY_KEY, {});
+  const today = act[dayKey(new Date())];
+  const streak = currentStreak(act);
+  if (!streak && !today) return "";
+  const sub = today
+    ? `Heute: ${plural(today.f, "Frage", "Fragen")} · ${plural(today.k, "Karte", "Karten")}`
+    : "Heute noch nicht gelernt – halte deine Serie!";
+  return `
+    <a class="streak ${today ? "" : "is-waiting"}" href="#/statistik">
+      <span class="streak-flame">${icon("flame")}</span>
+      <span class="quick-body"><strong>${plural(streak, "Tag", "Tage")} in Folge</strong><small>${sub}</small></span>
+      <span class="tile-arrow">${icon("arrowRight")}</span>
+    </a>`;
+}
+
+function viewStats() {
+  const act = loadJSON(ACTIVITY_KEY, {});
+  const entries = Object.values(act);
+  const totalQuestions = entries.reduce((s, e) => s + (e.f || 0), 0);
+  const totalRight = entries.reduce((s, e) => s + (e.r || 0), 0);
+  const rate = totalQuestions ? Math.round((totalRight / totalQuestions) * 100) : 0;
+
+  const stats = [
+    [currentStreak(act), "Tage in Folge"],
+    [bestStreak(act), "beste Serie"],
+    [totalQuestions, "Fragen beantwortet"],
+    [`${rate} %`, "richtig"],
+    [knownCards.size, "Karten gewusst"],
+    [mistakeEntries().length, "offene Fehler"]
+  ]
+    .map(([n, l]) => `<div class="stat"><strong>${n}</strong><span>${l}</span></div>`)
+    .join("");
+
+  const days = [];
+  for (let i = 13; i >= 0; i -= 1) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const e = act[dayKey(d)] || { f: 0, k: 0 };
+    days.push({ d, f: e.f || 0, k: e.k || 0 });
+  }
+  const max = Math.max(1, ...days.map((x) => x.f + x.k));
+  const weekday = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  const bars = days
+    .map((x, i) => {
+      const total = x.f + x.k;
+      return `
+        <div class="bar-col ${i === days.length - 1 ? "is-today" : ""}" title="${x.d.toLocaleDateString("de-DE")}: ${x.f} Fragen, ${x.k} Karten">
+          <span class="bar-num">${total || ""}</span>
+          <span class="bar-track"><span class="bar-fill" style="height:${Math.round((total / max) * 100)}%"></span></span>
+          <small>${weekday[x.d.getDay()]}</small>
+        </div>`;
+    })
+    .join("");
+
+  const progressRow = (name, href, color, cards, done) => {
+    const ids = cards.map(cardId);
+    const known = ids.filter((id) => knownCards.has(id)).length;
+    const pct = ids.length ? Math.round((known / ids.length) * 100) : 0;
+    return `
+      <a class="prog-row" href="${href}" style="--c:${color};">
+        <span class="prog-name">${name}${done ? ` <span class="prog-done">${icon("check")}</span>` : ""}</span>
+        <span class="prog-bar"><span style="width:${pct}%"></span></span>
+        <span class="prog-num">${known}/${ids.length}</span>
+      </a>`;
+  };
+  const rows = [
+    ...wbModules.map((m) =>
+      progressRow(m.topic, `#/weiterbildung/modul/${m.id}/karten`, m.color, m.flashcards, learnedModules.has(m.id))
+    ),
+    ...themen
+      .filter((t) => (t.lernkarten || []).length)
+      .map((t) =>
+        progressRow(
+          esc(t.titel),
+          `#/thema/${encodeURIComponent(t.id)}/lernkarten`,
+          t.farbe || "#0f766e",
+          t.lernkarten.map((k) => ({ front: esc(k.vorne), back: esc(k.hinten) })),
+          false
+        )
+      )
+  ].join("");
+
+  return {
+    title: "Statistik",
+    back: "#/",
+    crumbs: [{ label: "Start", href: "#/" }, { label: "Statistik" }],
+    html: `
+      ${pageHead({ eyebrow: "Dein Fortschritt", title: "Statistik", text: "Lerne jeden Tag ein bisschen, dann wächst deine Serie.", color: "#ea580c" })}
+      <div class="stats stats-6">${stats}</div>
+      <article class="card">
+        <h2 class="section-title">${icon("chart")} Letzte 14 Tage</h2>
+        <div class="bars">${bars}</div>
+        <p class="hint">Gezählt werden beantwortete Fragen und bewertete Karteikarten.</p>
+      </article>
+      <h2 class="section-title spaced">${icon("cards")} Karteikarten gewusst</h2>
+      <div class="card prog-list">${rows}</div>
+
+      <h2 class="section-title spaced">${icon("save")} Fortschritt sichern</h2>
+      <article class="card backup">
+        <p>Dein Fortschritt (gelernte Module, gewusste Karten, Fehler, Statistik) ist nur auf diesem Gerät gespeichert. Wenn du die App vom Home-Bildschirm löschst oder ein neues Handy hast, ist er weg. Sichere ihn deshalb ab und zu.</p>
+        <div class="backup-actions">
+          <button class="btn btn-primary" type="button" data-backup="share" style="--c:#ea580c;">${icon("save")} Sicherung speichern</button>
+          <button class="btn btn-soft" type="button" data-backup="copy">Sicherungscode kopieren</button>
+        </div>
+        <details class="restore">
+          <summary>Fortschritt wiederherstellen</summary>
+          <p class="hint">Füge einen Sicherungscode ein oder wähle eine Sicherungsdatei. Der aktuelle Fortschritt auf diesem Gerät wird dabei ersetzt.</p>
+          <textarea id="restoreCode" rows="4" placeholder="Sicherungscode hier einfügen …"></textarea>
+          <div class="backup-actions">
+            <button class="btn btn-primary" type="button" data-backup="restore" style="--c:#ea580c;">Wiederherstellen</button>
+            <label class="btn btn-soft file-btn">Datei wählen<input id="restoreFile" type="file" accept=".json,application/json,text/plain" hidden /></label>
+          </div>
+        </details>
+        <p class="backup-msg" aria-live="polite"></p>
+      </article>`,
+    mount(root) {
+      const msg = root.querySelector(".backup-msg");
+      const say = (text, ok = true) => {
+        msg.textContent = text;
+        msg.classList.toggle("is-error", !ok);
+      };
+      const restore = (text) => {
+        try {
+          const data = decodeBackup(text);
+          if (!window.confirm(`Sicherung vom ${new Date(data.datum).toLocaleString("de-DE")} laden? Der aktuelle Fortschritt auf diesem Gerät wird ersetzt.`)) return;
+          Object.keys(localStorage)
+            .filter((k) => k.startsWith("lernapp-"))
+            .forEach((k) => localStorage.removeItem(k));
+          Object.entries(data.daten).forEach(([k, v]) => {
+            if (k.startsWith("lernapp-")) localStorage.setItem(k, v);
+          });
+          location.reload();
+        } catch (error) {
+          say(error.message || "Der Code konnte nicht gelesen werden.", false);
+        }
+      };
+
+      root.querySelector(".backup").addEventListener("click", async (event) => {
+        const btn = event.target.closest("[data-backup]");
+        if (!btn) return;
+        const data = exportProgress();
+        if (btn.dataset.backup === "copy") {
+          const code = encodeBackup(data);
+          try {
+            await navigator.clipboard.writeText(code);
+            say("Sicherungscode kopiert. Speichere ihn z. B. in deinen Notizen.");
+          } catch (error) {
+            const area = root.querySelector("#restoreCode");
+            root.querySelector(".restore").open = true;
+            area.value = code;
+            area.select();
+            say("Kopieren nicht erlaubt – der Code steht unten im Feld, bitte manuell kopieren.");
+          }
+        }
+        if (btn.dataset.backup === "share") {
+          const name = `lernwelt-sicherung-${dayKey(new Date())}.json`;
+          const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+          try {
+            const file = new File([blob], name, { type: "application/json" });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({ files: [file], title: "Lernwelt-Sicherung" });
+              say("Sicherung erstellt.");
+              return;
+            }
+          } catch (error) {
+            if (error && error.name === "AbortError") return;
+          }
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+          say(`Sicherung als „${name}“ gespeichert.`);
+        }
+        if (btn.dataset.backup === "restore") restore(root.querySelector("#restoreCode").value);
+      });
+
+      root.querySelector("#restoreFile").addEventListener("change", async (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) restore(await file.text());
+      });
+    }
+  };
+}
+
+function exportProgress() {
+  const data = { app: "lernwelt", version: 1, datum: new Date().toISOString(), daten: {} };
+  try {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("lernapp-"))
+      .forEach((k) => {
+        data.daten[k] = localStorage.getItem(k);
+      });
+  } catch (error) {
+    /* kein Speicher verfügbar */
+  }
+  return data;
+}
+
+function encodeBackup(obj) {
+  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+
+function decodeBackup(text) {
+  const raw = String(text || "").trim();
+  if (!raw) throw new Error("Bitte zuerst einen Sicherungscode einfügen.");
+  let obj;
+  try {
+    obj = JSON.parse(raw.startsWith("{") ? raw : decodeURIComponent(escape(atob(raw.replace(/\s+/g, "")))));
+  } catch (error) {
+    throw new Error("Das ist kein gültiger Lernwelt-Sicherungscode.");
+  }
+  if (!obj || obj.app !== "lernwelt" || typeof obj.daten !== "object") {
+    throw new Error("Das ist kein gültiger Lernwelt-Sicherungscode.");
+  }
+  return obj;
+}
+
+/* ==========================================================================
+   Vorlesen (Sprachausgabe des Geräts)
+   ========================================================================== */
+
+const canSpeak = "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined";
+let speakingBtn = null;
+
+function speakButton() {
+  return canSpeak
+    ? `<button class="icon-btn speak" type="button" data-action="speak" aria-label="Vorlesen" title="Vorlesen">${icon("volume")}</button>`
+    : "";
+}
+
+function stopSpeaking() {
+  if (canSpeak) window.speechSynthesis.cancel();
+  if (speakingBtn) speakingBtn.classList.remove("is-speaking");
+  speakingBtn = null;
+}
+
+function toggleSpeak(text, btn) {
+  if (!canSpeak) return;
+  if (speakingBtn === btn) {
+    stopSpeaking();
+    return;
+  }
+  stopSpeaking();
+  const clean = stripTags(text)
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+  const utterance = new SpeechSynthesisUtterance(clean);
+  utterance.lang = "de-DE";
+  const voice = window.speechSynthesis.getVoices().find((v) => /^de/i.test(v.lang));
+  if (voice) utterance.voice = voice;
+  const done = () => {
+    if (speakingBtn === btn) {
+      btn.classList.remove("is-speaking");
+      speakingBtn = null;
+    }
+  };
+  utterance.onend = done;
+  utterance.onerror = done;
+  speakingBtn = btn;
+  btn.classList.add("is-speaking");
+  window.speechSynthesis.speak(utterance);
+}
+
+/* ==========================================================================
+   Vollbild-Ansichten innerhalb der App (bleiben in der App, mit Schließen)
+   ========================================================================== */
+
+let overlayKeyHandler = null;
+
+function openOverlay(contentHtml, { title = "", onKey = null } = {}) {
+  closeOverlay();
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.innerHTML = `
+    <div class="overlay-bar">
+      <button class="btn btn-soft overlay-close" type="button">${icon("x")} Schließen</button>
+      <strong class="overlay-title">${esc(title)}</strong>
+      <span class="overlay-extra"></span>
+    </div>
+    <div class="overlay-body">${contentHtml}</div>`;
+  document.body.appendChild(overlay);
+  document.body.classList.add("has-overlay");
+  overlay.querySelector(".overlay-close").addEventListener("click", closeOverlay);
+  overlayKeyHandler = (event) => {
+    if (event.key === "Escape") closeOverlay();
+    else if (onKey) onKey(event);
+  };
+  document.addEventListener("keydown", overlayKeyHandler);
+  return overlay;
+}
+
+function closeOverlay() {
+  document.querySelectorAll(".overlay").forEach((el) => {
+    if (typeof el.onClose === "function") el.onClose();
+    el.remove();
+  });
+  document.body.classList.remove("has-overlay");
+  if (overlayKeyHandler) document.removeEventListener("keydown", overlayKeyHandler);
+  overlayKeyHandler = null;
+}
+
+function addSwipe(el, go) {
+  let startX = 0;
+  let startY = 0;
+  el.addEventListener(
+    "touchstart",
+    (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    },
+    { passive: true }
+  );
+  el.addEventListener(
+    "touchend",
+    (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    },
+    { passive: true }
+  );
+}
+
+function openImageOverlay(src, title) {
+  const overlay = openOverlay(`<div class="zoom-scroll"><img src="${src}" alt="${esc(title)}" /></div>`, { title });
+  const levels = [1, 1.5, 2, 3, 4];
+  let level = 0;
+  const img = overlay.querySelector("img");
+  const extra = overlay.querySelector(".overlay-extra");
+  extra.innerHTML = `
+    <button class="btn btn-soft icon-only" type="button" data-z="-1" aria-label="Verkleinern">${icon("minus")}</button>
+    <button class="btn btn-soft icon-only" type="button" data-z="1" aria-label="Vergrößern">${icon("plus")}</button>`;
+  const apply = () => {
+    img.style.width = `${levels[level] * 100}%`;
+    img.style.maxWidth = level === 0 ? "100%" : "none";
+  };
+  extra.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-z]");
+    if (!b) return;
+    level = Math.min(levels.length - 1, Math.max(0, level + Number(b.dataset.z)));
+    apply();
+  });
+  img.addEventListener("dblclick", () => {
+    level = level === 0 ? 2 : 0;
+    apply();
+  });
+  apply();
+}
+
+/* ---------- Präsentation (PDF) mit pdf.js in der App ---------- */
+
+const PDFJS_BASE = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+const PDF_POS_KEY = "lernapp-pdf-seite";
+let pdfjsPromise = null;
+const pdfDocs = new Map();
+const renderTasks = new WeakMap();
+
+function loadPdfJs() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if (!pdfjsPromise) {
+    pdfjsPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = `${PDFJS_BASE}pdf.min.js`;
+      script.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.min.js`;
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = () => {
+        pdfjsPromise = null;
+        reject(new Error("PDF-Anzeige nicht verfügbar"));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return pdfjsPromise;
+}
+
+function getPdf(src) {
+  if (!pdfDocs.has(src)) {
+    pdfDocs.set(
+      src,
+      loadPdfJs()
+        .then((lib) => lib.getDocument(src).promise)
+        .catch((error) => {
+          pdfDocs.delete(src);
+          throw error;
+        })
+    );
+  }
+  return pdfDocs.get(src);
+}
+
+async function drawPdfPage(doc, number, canvas, maxWidth, maxHeight = 0) {
+  const page = await doc.getPage(number);
+  const base = page.getViewport({ scale: 1 });
+  let scale = maxWidth / base.width;
+  if (maxHeight) scale = Math.min(scale, maxHeight / base.height);
+  const ratio = Math.min(window.devicePixelRatio || 1, 3);
+  const viewport = page.getViewport({ scale: scale * ratio });
+  const previous = renderTasks.get(canvas);
+  if (previous) {
+    try {
+      previous.cancel();
+    } catch (error) {
+      /* schon fertig */
+    }
+  }
+  const off = document.createElement("canvas");
+  off.width = Math.floor(viewport.width);
+  off.height = Math.floor(viewport.height);
+  const task = page.render({ canvasContext: off.getContext("2d"), viewport });
+  renderTasks.set(canvas, task);
+  try {
+    await task.promise;
+  } catch (error) {
+    if (error && error.name === "RenderingCancelledException") return;
+    throw error;
+  }
+  canvas.width = off.width;
+  canvas.height = off.height;
+  canvas.style.width = `${Math.floor(viewport.width / ratio)}px`;
+  canvas.style.height = `${Math.floor(viewport.height / ratio)}px`;
+  canvas.getContext("2d").drawImage(off, 0, 0);
+}
+
+function mountPdf(viewer, fullBtn, src, title) {
+  if (!viewer) return;
+  const canvas = viewer.querySelector("canvas");
+  const status = viewer.querySelector(".pdf-status");
+  const label = viewer.querySelector(".pdf-page");
+  const stage = viewer.querySelector(".pdf-stage");
+  let doc = null;
+  let page = loadJSON(PDF_POS_KEY, {})[src] || 1;
+
+  const show = () => {
+    if (!doc || !viewer.isConnected) return;
+    page = Math.min(Math.max(1, page), doc.numPages);
+    label.textContent = `Folie ${page} / ${doc.numPages}`;
+    const positions = loadJSON(PDF_POS_KEY, {});
+    positions[src] = page;
+    saveJSON(PDF_POS_KEY, positions);
+    drawPdfPage(doc, page, canvas, stage.clientWidth).catch(() => {});
+  };
+  const go = (delta) => {
+    page += delta;
+    show();
+  };
+
+  viewer.querySelectorAll("[data-pdf-nav]").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.pdfNav))));
+  addSwipe(stage, go);
+  stage.addEventListener("click", (e) => {
+    const r = stage.getBoundingClientRect();
+    go(e.clientX - r.left > r.width / 2 ? 1 : -1);
+  });
+  if (fullBtn) {
+    fullBtn.addEventListener("click", () => {
+      if (doc)
+        openPdfOverlay(doc, title, page, (p) => {
+          page = p;
+          show();
+        });
+    });
+  }
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(show, 200);
+  });
+
+  getPdf(src)
+    .then((d) => {
+      doc = d;
+      status.remove();
+      show();
+    })
+    .catch(() => {
+      status.textContent = "Die Präsentation konnte nicht geladen werden. Bitte prüfe die Internetverbindung.";
+    });
+}
+
+function openPdfOverlay(doc, title, startPage, onClose) {
+  let page = startPage;
+  const overlay = openOverlay(
+    `<div class="pdf-full-stage"><canvas></canvas></div>
+     <div class="overlay-nav">
+       <button class="btn btn-soft" type="button" data-n="-1" aria-label="Vorherige Folie">${icon("chevLeft")}</button>
+       <span class="pdf-page"></span>
+       <button class="btn btn-soft" type="button" data-n="1" aria-label="Nächste Folie">${icon("chevRight")}</button>
+     </div>`,
+    {
+      title,
+      onKey: (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") go(1);
+        if (e.key === "ArrowLeft") go(-1);
+      }
+    }
+  );
+  overlay.onClose = () => onClose(page);
+  const stage = overlay.querySelector(".pdf-full-stage");
+  const canvas = stage.querySelector("canvas");
+  const label = overlay.querySelector(".pdf-page");
+
+  function show() {
+    if (!overlay.isConnected) return;
+    page = Math.min(Math.max(1, page), doc.numPages);
+    label.textContent = `Folie ${page} / ${doc.numPages}`;
+    drawPdfPage(doc, page, canvas, stage.clientWidth, stage.clientHeight).catch(() => {});
+  }
+  function go(delta) {
+    page += delta;
+    show();
+  }
+
+  overlay.querySelectorAll("[data-n]").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.n))));
+  addSwipe(stage, go);
+  stage.addEventListener("click", (e) => {
+    const r = stage.getBoundingClientRect();
+    go(e.clientX - r.left > r.width / 2 ? 1 : -1);
+  });
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(show, 200);
+  });
+  requestAnimationFrame(show);
+}
+
+/* ---------- Audio & Video: Tempo und Weiterhören ---------- */
+
+const SPEED_KEY = "lernapp-tempo";
+const MEDIA_POS_KEY = "lernapp-media-pos";
+
+function speedControl() {
+  const current = loadJSON(SPEED_KEY, 1);
+  return `<div class="speed" role="group" aria-label="Abspieltempo"><span>Tempo</span>${[0.75, 1, 1.25, 1.5, 2]
+    .map((r) => `<button type="button" data-speed="${r}" class="${r === current ? "is-active" : ""}">${String(r).replace(".", ",")}×</button>`)
+    .join("")}</div>`;
+}
+
+function mountMedia(root) {
+  const rate = loadJSON(SPEED_KEY, 1);
+  root.querySelectorAll("audio[src], video[src]").forEach((media) => {
+    const key = media.getAttribute("src");
+    media.defaultPlaybackRate = rate;
+    media.playbackRate = rate;
+    media.addEventListener("loadedmetadata", () => {
+      const saved = loadJSON(MEDIA_POS_KEY, {})[key];
+      if (saved > 5 && saved < media.duration - 5) media.currentTime = saved;
+      media.playbackRate = loadJSON(SPEED_KEY, 1);
+    });
+    let last = 0;
+    media.addEventListener("timeupdate", () => {
+      if (Math.abs(media.currentTime - last) < 5) return;
+      last = media.currentTime;
+      const positions = loadJSON(MEDIA_POS_KEY, {});
+      positions[key] = media.currentTime;
+      saveJSON(MEDIA_POS_KEY, positions);
+    });
+    media.addEventListener("ended", () => {
+      const positions = loadJSON(MEDIA_POS_KEY, {});
+      delete positions[key];
+      saveJSON(MEDIA_POS_KEY, positions);
+    });
+  });
+  root.querySelectorAll(".speed").forEach((group) =>
+    group.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-speed]");
+      if (!b) return;
+      const r = Number(b.dataset.speed);
+      saveJSON(SPEED_KEY, r);
+      root.querySelectorAll("audio, video").forEach((m) => {
+        m.defaultPlaybackRate = r;
+        m.playbackRate = r;
+      });
+      root.querySelectorAll("[data-speed]").forEach((x) => x.classList.toggle("is-active", Number(x.dataset.speed) === r));
+    })
+  );
 }
 
 /* ---------- Start ---------- */
