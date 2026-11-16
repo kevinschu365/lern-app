@@ -318,6 +318,8 @@ function allCards() {
     )
   );
   ownCards().forEach((c) => list.push({ front: esc(c.front), back: esc(c.back), label: "Meine Karten", color: "#0d9488", href: "#/eigene" }));
+  const starred = starredTerms();
+  glossaryEntries().filter((e) => starred.has(e.id)).forEach((e) => list.push({ ...termToCard(e), label: "Meine Begriffe" }));
   return list;
 }
 
@@ -568,6 +570,7 @@ function render() {
     else if (route[0] === "eigene") view = viewOwn();
     else if (route[0] === "fokus") view = viewFocus();
     else if (route[0] === "vortest") view = viewPretest(route[1], route[2]);
+    else if (route[0] === "begriffe") view = viewGlossary(route[1] || "alle", route[2] || "");
     else view = viewNotFound();
   } catch (error) {
     console.error(error);
@@ -730,6 +733,7 @@ function viewHome() {
         <a href="#/statistik">${icon("chart")} Statistik &amp; Sicherung</a>
         <a href="#/fokus">${icon("target")} Fokus-Timer</a>
         <a href="#/eigene">${icon("pencil")} Meine Karten</a>
+        <a href="#/begriffe">${icon("book")} Begriffe A–Z</a>
         <a href="#/suche">${icon("search")} Suche</a>
       </nav>
       ${versionFooter()}`
@@ -802,6 +806,7 @@ function viewWbHub() {
       <div class="tile-grid">
         ${tile({ href: "#/weiterbildung/module", title: "Module", text: "Quiz, Karteikarten, Übungen und Lerntipps je Modul", meta: plural(wbModules.length, "Modul", "Module"), iconName: "grid", color: "#2563eb" })}
         ${tile({ href: "#/weiterbildung/zufall", title: "Zufallsmodus", text: `${RANDOM_QUESTION_COUNT} Fragen und ${RANDOM_CARD_COUNT} Karten aus allen Modulen`, meta: "Gemischt wiederholen", iconName: "shuffle", color: "#7c3aed" })}
+        ${tile({ href: "#/begriffe/wb", title: "Begriffe A–Z", text: "Alle Fachbegriffe der Module zum Nachschlagen und Lernen", meta: plural(glossaryEntries().filter((e) => e.bereich === "wb").length, "Begriff", "Begriffe"), iconName: "book", color: "#0f766e" })}
         ${tile({ href: "#/weiterbildung/pruefung", title: "Prüfungsmodus", text: `${EXAM_QUESTION_COUNT} Fragen, bestanden ab ${EXAM_PASS_PERCENTAGE} %`, meta: "Mit Fehleranalyse", iconName: "award", color: "#0f766e" })}
       </div>`
   };
@@ -894,6 +899,7 @@ function viewWbModule(id, tab) {
       })}
       ${pretestBanner("modul", m.id)}
       <nav class="tabs" style="--c:${m.color}; --c-soft:${m.softColor};">${tabs}</nav>
+      ${(() => { const n = glossaryEntries().filter((e) => e.gruppe === `wb-${m.id}`).length; return n ? `<a class="term-link" href="#/begriffe/wb-${m.id}">${icon("book")} ${plural(n, "Fachbegriff", "Fachbegriffe")} dieses Moduls nachschlagen ${icon("arrowRight")}</a>` : ""; })()}
       <section class="tab-body">${body}</section>
       ${pager}`,
     mount(root) {
@@ -1718,12 +1724,13 @@ function renderSearchResults(query) {
     return terms.every((t) => folded.includes(t));
   };
 
+  const glossHits = glossaryEntries().filter((e) => matches(`${e.begriff} ${e.kurz} ${e.mehr}`));
   const cards = allCards().filter((c) => matches(`${c.front} ${c.back}`));
   const questions = allQuestions().filter((e) =>
     matches(`${e.q.prompt} ${(e.q.options || []).join(" ")} ${solutionText(e.q)} ${e.q.explanation || ""}`)
   );
 
-  if (!cards.length && !questions.length) {
+  if (!glossHits.length && !cards.length && !questions.length) {
     return `<div class="empty small">Nichts gefunden für „${esc(query)}“.</div>`;
   }
 
@@ -1764,8 +1771,14 @@ function renderSearchResults(query) {
 
   const more = (n) => (n > SEARCH_LIMIT ? `<p class="hint">… und ${n - SEARCH_LIMIT} weitere. Grenze die Suche mit einem zweiten Begriff ein.</p>` : "");
 
+  const termMarkup = glossHits
+    .slice(0, SEARCH_LIMIT)
+    .map((e) => `<details class="card hit"><summary><span class="q-meta"><span class="source" style="--c:${e.color};">${esc(e.quelle)}</span></span><strong>${esc(e.begriff)}</strong></summary><p>${esc(e.kurz)}${e.mehr ? `<br />${esc(e.mehr)}` : ""}</p><a class="hit-link" href="#/begriffe/${encodeURIComponent(e.bereich === "wb" ? e.gruppe : e.bereich)}">Im Glossar ${icon("arrowRight")}</a></details>`)
+    .join("");
+
   return `
-    ${cards.length ? `<h2 class="section-title">${icon("cards")} Karteikarten <small class="count">${cards.length}</small></h2><div class="stack">${cardMarkup}</div>${more(cards.length)}` : ""}
+    ${glossHits.length ? `<h2 class="section-title">${icon("book")} Begriffe <small class="count">${glossHits.length}</small></h2><div class="stack">${termMarkup}</div>${more(glossHits.length)}` : ""}
+    ${cards.length ? `<h2 class="section-title${glossHits.length ? " spaced" : ""}">${icon("cards")} Karteikarten <small class="count">${cards.length}</small></h2><div class="stack">${cardMarkup}</div>${more(cards.length)}` : ""}
     ${questions.length ? `<h2 class="section-title spaced">${icon("quiz")} Fragen <small class="count">${questions.length}</small></h2><div class="stack">${questionMarkup}</div>${more(questions.length)}` : ""}`;
 }
 
@@ -1779,6 +1792,7 @@ const THEMA_SECTIONS = [
   { key: "videouebersicht", title: "Videoübersicht", short: "Videoübersicht", iconName: "film", color: "#059669", items: (t) => (t.videos || []).filter((v) => v.art !== "kurz") },
   { key: "praesentation", title: "Präsentation", short: "Präsentation", iconName: "slides", color: "#db2777", items: (t) => t.praesentationen || [] },
   { key: "mindmap", title: "Mindmap", short: "Mindmap", iconName: "mindmap", color: "#7c3aed", items: (t) => t.mindmaps || [] },
+  { key: "begriffe", title: "Begriffe A–Z", short: "Begriffe", iconName: "book", color: "#0f766e", items: (t) => t.begriffe || [] },
   { key: "lernkarten", title: "Lernkarten", short: "Lernkarten", iconName: "cards", color: "#ea580c", items: (t) => t.lernkarten || [] },
   { key: "quiz", title: "Quiz", short: "Quiz", iconName: "quiz", color: "#0891b2", items: (t) => t.quiz || [] },
   {
@@ -1811,6 +1825,8 @@ function sectionMeta(section, items) {
       return `${Math.min(items.length, EXAM_QUESTION_COUNT)} Fragen, ab ${EXAM_PASS_PERCENTAGE} %`;
     case "training":
       return "10 gemischte Aufgaben";
+    case "begriffe":
+      return plural(items.length, "Fachbegriff", "Fachbegriffe");
     case "tabelle":
       return items.length === 1 ? `${(items[0].zeilen || []).length} Zeilen` : plural(items.length, "Tabelle", "Tabellen");
     default: {
@@ -2006,6 +2022,15 @@ function renderSection(t, section, items) {
           );
         }
       };
+
+    case "begriffe": {
+      const entries = glossaryEntries().filter((e) => e.bereich === t.id);
+      const base = `#/begriffe/${encodeURIComponent(t.id)}`;
+      return {
+        html: `<div class="glossary-tools"><form class="search-box" role="search" onsubmit="return false;">${icon("search")}<input id="glossarySearch" type="search" placeholder="Begriff filtern …" autocomplete="off" /></form><div class="glossary-learn"><a class="btn btn-primary" style="--c:#0f766e;" href="${base}/lernen">${icon("cards")} Lernen</a><a class="btn btn-soft" href="${base}/training">${icon("shuffle")} Training</a></div></div><div id="glossaryList">${glossaryListHtml(entries, starredTerms())}</div>`,
+        mount: (root) => wireGlossary(root)
+      };
+    }
 
     case "training":
       return {
@@ -3267,6 +3292,261 @@ function toast(message, iconName = "check", special = false) {
   document.body.appendChild(el);
   setTimeout(() => el.classList.add("is-out"), 3200);
   setTimeout(() => el.remove(), 3700);
+}
+
+/* ==========================================================================
+   Glossar „Begriffe A–Z“
+   Quellen: window.LERN_GLOSSAR_WB (Weiterbildung) + Feld `begriffe` je Thema.
+   Filter-Routen: #/begriffe/<filter>[/lernen|/training]
+     filter = alle | wb | wb-<modulId> | <themaId> | gemerkt
+   ========================================================================== */
+
+const GLOSSAR_STAR_KEY = "lernapp-begriffe-merk";
+let glossaryCache = null;
+
+function glossaryEntries() {
+  if (glossaryCache) return glossaryCache;
+  const list = [];
+  (Array.isArray(window.LERN_GLOSSAR_WB) ? window.LERN_GLOSSAR_WB : []).forEach((b) => {
+    if (!b || !b.begriff || !b.kurz) return;
+    const m = wbModules.find((x) => x.id === Number(b.modul));
+    list.push({
+      begriff: String(b.begriff),
+      kurz: String(b.kurz),
+      mehr: b.mehr ? String(b.mehr) : "",
+      siehe: Array.isArray(b.siehe) ? b.siehe : [],
+      gruppe: m ? `wb-${m.id}` : "wb",
+      bereich: "wb",
+      quelle: m ? `Modul ${m.id}: ${m.topic}` : WEITERBILDUNG.titel,
+      color: m ? m.color : WEITERBILDUNG.farbe,
+      href: m ? `#/weiterbildung/modul/${m.id}/karten` : "#/weiterbildung"
+    });
+  });
+  themen.forEach((t) =>
+    (Array.isArray(t.begriffe) ? t.begriffe : []).forEach((b) => {
+      if (!b || !b.begriff || !b.kurz) return;
+      list.push({
+        begriff: String(b.begriff),
+        kurz: String(b.kurz),
+        mehr: b.mehr ? String(b.mehr) : "",
+        siehe: Array.isArray(b.siehe) ? b.siehe : [],
+        gruppe: t.id,
+        bereich: t.id,
+        quelle: t.titel,
+        color: t.farbe || "#0f766e",
+        href: `#/thema/${encodeURIComponent(t.id)}`
+      });
+    })
+  );
+  list.forEach((e) => {
+    e.id = `g${hashText(`${e.gruppe}|${e.begriff}`)}`;
+    e.letter = glossaryLetter(e.begriff);
+  });
+  list.sort((a, b) => a.begriff.localeCompare(b.begriff, "de", { sensitivity: "base" }));
+  glossaryCache = list;
+  return list;
+}
+
+function glossaryLetter(text) {
+  const c = foldText(text).replace(/^[^a-z0-9]+/, "").charAt(0).toUpperCase();
+  return /[A-Z]/.test(c) ? c : "#";
+}
+
+function starredTerms() {
+  return new Set(loadJSON(GLOSSAR_STAR_KEY, []));
+}
+
+function glossaryFilterInfo(filter) {
+  if (!filter || filter === "alle") return { key: "alle", label: "Alle Begriffe", match: () => true };
+  if (filter === "gemerkt") {
+    const stars = starredTerms();
+    return { key: "gemerkt", label: "Meine Begriffe", match: (e) => stars.has(e.id) };
+  }
+  if (filter === "wb") return { key: "wb", label: WEITERBILDUNG.titel, match: (e) => e.bereich === "wb" };
+  if (filter.startsWith("wb-")) {
+    const m = wbModules.find((x) => `wb-${x.id}` === filter);
+    return { key: filter, label: m ? `Modul ${m.id}: ${m.topic}` : "Modul", match: (e) => e.gruppe === filter };
+  }
+  const t = themen.find((x) => x.id === filter);
+  return { key: filter, label: t ? t.titel : filter, match: (e) => e.bereich === filter };
+}
+
+/* Begriffe als Karteikarten (für Lernen/Training und „Heute dran“). */
+function termToCard(e) {
+  return {
+    front: esc(e.begriff),
+    back: `${esc(e.kurz)}${e.mehr ? `<br /><small class="card-more">${esc(e.mehr)}</small>` : ""}`,
+    label: `Begriff · ${esc(e.quelle)}`,
+    color: e.color,
+    href: `#/begriffe/${encodeURIComponent(e.bereich === "wb" ? e.gruppe : e.bereich)}`
+  };
+}
+
+function glossaryListHtml(entries, stars) {
+  if (!entries.length) return `<div class="empty small">Keine Begriffe gefunden.</div>`;
+  const byLetter = new Map();
+  entries.forEach((e) => {
+    if (!byLetter.has(e.letter)) byLetter.set(e.letter, []);
+    byLetter.get(e.letter).push(e);
+  });
+  return [...byLetter.entries()]
+    .map(
+      ([letter, list]) => `
+        <section class="term-group" id="buchstabe-${letter}">
+          <h2 class="term-letter">${letter}</h2>
+          <div class="term-list">${list
+            .map(
+              (e) => `
+                <details class="term" data-term="${e.id}" data-name="${esc(foldText(e.begriff))}" style="--c:${e.color};">
+                  <summary>
+                    <span class="term-main"><strong>${esc(e.begriff)}</strong><span class="term-kurz">${esc(e.kurz)}</span></span>
+                    <button class="star ${stars.has(e.id) ? "is-on" : ""}" type="button" data-star="${e.id}" aria-label="Merken" title="Merken">★</button>
+                  </summary>
+                  <div class="term-body">
+                    ${e.mehr ? `<p>${esc(e.mehr)}</p>` : ""}
+                    ${
+                      e.siehe.length
+                        ? `<p class="term-see">Siehe auch: ${e.siehe.map((s) => `<button class="link-btn" type="button" data-see="${esc(s)}" data-see-group="${esc(e.gruppe)}">${esc(s)}</button>`).join(" ")}</p>`
+                        : ""
+                    }
+                    <a class="term-source" href="${e.href}"><span class="source" style="--c:${e.color};">${esc(e.quelle)}</span></a>
+                  </div>
+                </details>`
+            )
+            .join("")}</div>
+        </section>`
+    )
+    .join("");
+}
+
+function viewGlossary(filter = "alle", mode = "") {
+  const all = glossaryEntries();
+  const info = glossaryFilterInfo(filter);
+  const entries = all.filter(info.match);
+  const stars = starredTerms();
+  const base = `#/begriffe/${encodeURIComponent(info.key)}`;
+  const crumbs = [{ label: "Start", href: "#/" }, { label: "Begriffe A–Z", href: "#/begriffe" }];
+
+  if (!all.length) {
+    return {
+      title: "Begriffe A–Z",
+      back: "#/",
+      crumbs: [{ label: "Start", href: "#/" }, { label: "Begriffe A–Z" }],
+      html: `${pageHead({ eyebrow: "Glossar", title: "Begriffe A–Z", color: "#0f766e" })}<div class="empty">Die Begriffslisten werden gerade erstellt.</div>`
+    };
+  }
+
+  if (mode === "lernen" || mode === "training") {
+    const cards = entries.map(termToCard);
+    return {
+      title: `${mode === "lernen" ? "Begriffe lernen" : "Begriffe-Training"} · ${info.label}`,
+      back: base,
+      crumbs: [...crumbs, { label: info.label, href: base }, { label: mode === "lernen" ? "Lernen" : "Training" }],
+      html: `
+        ${pageHead({
+          eyebrow: info.label,
+          title: mode === "lernen" ? "Begriffe lernen" : "Begriffe-Training",
+          text: mode === "lernen" ? `${plural(cards.length, "Begriff", "Begriffe")} als Karteikarten mit Wiederholung in Abständen.` : "Zuordnen, passt/passt nicht und die richtige Erklärung wählen. Jede Runde ist anders.",
+          color: "#0f766e"
+        })}
+        <div id="glossaryMount"></div>`,
+      mount(root) {
+        const el = root.querySelector("#glossaryMount");
+        if (mode === "lernen") mountDeck(el, cards, { key: `begriffe-${info.key}`, color: "#0f766e" });
+        else mountTraining(el, cards, "#0f766e");
+      }
+    };
+  }
+
+  const filters = [
+    ["alle", "Alle", all.length],
+    ["gemerkt", "★ Gemerkt", all.filter((e) => stars.has(e.id)).length],
+    ["wb", "Weiterbildung", all.filter((e) => e.bereich === "wb").length],
+    ...themen.filter((t) => (t.begriffe || []).length).map((t) => [t.id, t.titel, all.filter((e) => e.bereich === t.id).length])
+  ].filter(([key, , n]) => n > 0 || key === "gemerkt" || key === info.key);
+  const letters = [...new Set(entries.map((e) => e.letter))];
+
+  return {
+    title: `Begriffe A–Z${info.key !== "alle" ? ` · ${info.label}` : ""}`,
+    back: "#/",
+    crumbs: info.key === "alle" ? [{ label: "Start", href: "#/" }, { label: "Begriffe A–Z" }] : [...crumbs, { label: info.label }],
+    html: `
+      ${pageHead({
+        eyebrow: "Glossar",
+        title: info.key === "alle" ? "Begriffe A–Z" : esc(info.label),
+        text: `${plural(entries.length, "Fachbegriff", "Fachbegriffe")} zum Nachschlagen. Tippe einen Begriff an für mehr, ★ merkt ihn dir. Gemerkte Begriffe kommen auch in „Heute dran“.`,
+        color: "#0f766e"
+      })}
+      <div class="chips glossary-filters">${filters
+        .map(([key, label, n]) => `<a class="chip ${key === info.key ? "is-active" : ""}" href="#/begriffe/${encodeURIComponent(key)}">${esc(label)} <small>${n}</small></a>`)
+        .join("")}</div>
+      <div class="glossary-tools">
+        <form class="search-box" role="search" onsubmit="return false;">
+          ${icon("search")}
+          <input id="glossarySearch" type="search" placeholder="Begriff filtern …" autocomplete="off" />
+        </form>
+        ${
+          entries.length >= 4
+            ? `<div class="glossary-learn">
+                <a class="btn btn-primary" style="--c:#0f766e;" href="${base}/lernen">${icon("cards")} Lernen</a>
+                <a class="btn btn-soft" href="${base}/training">${icon("shuffle")} Training</a>
+              </div>`
+            : ""
+        }
+      </div>
+      ${letters.length > 1 ? `<nav class="az-bar" aria-label="Buchstaben">${letters.map((l) => `<button type="button" data-letter="${l}">${l}</button>`).join("")}</nav>` : ""}
+      <div id="glossaryList">${glossaryListHtml(entries, stars)}</div>`,
+    mount: (root) => wireGlossary(root)
+  };
+}
+
+function wireGlossary(root) {
+  const list = root.querySelector("#glossaryList") || root;
+  root.addEventListener("click", (event) => {
+    const star = event.target.closest("[data-star]");
+    if (star) {
+      event.preventDefault();
+      const stars = starredTerms();
+      if (stars.has(star.dataset.star)) stars.delete(star.dataset.star);
+      else stars.add(star.dataset.star);
+      saveJSON(GLOSSAR_STAR_KEY, [...stars]);
+      star.classList.toggle("is-on");
+      return;
+    }
+    const letter = event.target.closest("[data-letter]");
+    if (letter) {
+      root.querySelector(`#buchstabe-${letter.dataset.letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const see = event.target.closest("[data-see]");
+    if (see) {
+      const name = foldText(see.dataset.see);
+      const target =
+        [...root.querySelectorAll(".term")].find((t) => t.dataset.name === name) ||
+        null;
+      if (target) {
+        target.open = true;
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.classList.add("is-flash");
+        setTimeout(() => target.classList.remove("is-flash"), 1200);
+      } else {
+        location.hash = `#/suche/${encodeURIComponent(see.dataset.see)}`;
+      }
+    }
+  });
+  const input = root.querySelector("#glossarySearch");
+  if (input) {
+    input.addEventListener("input", () => {
+      const q = foldText(input.value.trim());
+      list.querySelectorAll(".term").forEach((t) => {
+        const text = foldText(t.textContent);
+        t.hidden = !!q && !text.includes(q);
+      });
+      list.querySelectorAll(".term-group").forEach((g) => {
+        g.hidden = ![...g.querySelectorAll(".term")].some((t) => !t.hidden);
+      });
+    });
+  }
 }
 
 /* ==========================================================================

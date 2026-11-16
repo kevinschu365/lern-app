@@ -1619,3 +1619,119 @@ button.tab.is-active { background: var(--surface); color: var(--c); box-shadow: 
 @media (min-width: 601px) {
   .stats-6 { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ==========================================================================
+   Glossar „Begriffe A–Z“
+   ========================================================================== */
+
+.glossary-filters { margin: -6px 0 16px; }
+.glossary-filters .chip { text-decoration: none; padding: 6px 12px; font-size: 0.85rem; }
+.glossary-filters .chip small { color: var(--muted); margin-left: 3px; }
+.glossary-filters .chip.is-active { background: #0f766e; border-color: #0f766e; color: #fff; }
+.glossary-filters .chip.is-active small { color: rgba(255, 255, 255, 0.8); }
+
+.glossary-tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; }
+.glossary-tools .search-box { flex: 1; min-width: 220px; margin: 0; }
+.glossary-learn { display: flex; gap: 8px; }
+
+.az-bar {
+  position: sticky;
+  top: calc(58px + env(safe-area-inset-top));
+  z-index: 5;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  margin: 0 -4px 14px;
+  padding: 8px 4px;
+  background: var(--topbar);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  scrollbar-width: none;
+}
+.az-bar::-webkit-scrollbar { display: none; }
+.az-bar button {
+  flex: none;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.az-bar button:hover { border-color: #0f766e; color: #0f766e; }
+
+.term-group { scroll-margin-top: 120px; margin-bottom: 18px; }
+.term-letter { font-size: 1.3rem; color: #0f766e; margin: 0 0 8px 4px; }
+.term-list { display: grid; gap: 8px; }
+.term {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--c, #0f766e);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s;
+}
+.term[hidden] { display: none; }
+.term summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.term summary::-webkit-details-marker { display: none; }
+.term-main { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.term-main strong { font-size: 1rem; }
+.term-kurz { color: var(--ink-2); font-size: 0.92rem; line-height: 1.45; }
+.term-body { padding: 0 14px 14px; display: grid; gap: 8px; }
+.term-body p { color: var(--ink-2); font-size: 0.92rem; }
+.term-see { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.term-see .link-btn { padding: 2px 0; font-size: 0.88rem; }
+.term-source { text-decoration: none; justify-self: start; }
+.term.is-flash { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, #0f766e) 45%, transparent); }
+
+.star {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--faint);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.star.is-on { color: #f59e0b; border-color: color-mix(in srgb, #f59e0b 45%, var(--line)); background: color-mix(in srgb, #f59e0b 12%, var(--surface)); }
+
+.term-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: -8px 0 16px;
+  color: #0f766e;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+.term-link .icon { width: 17px; height: 17px; }
+.card-more { display: block; margin-top: 10px; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+
+@media (max-width: 600px) {
+  .glossary-learn { width: 100%; }
+  .glossary-learn .btn { flex: 1; }
+  .az-bar { top: calc(58px + env(safe-area-inset-top)); }
+}
+@media (prefers-color-scheme: dark) {
+  .term-letter, .term-link { color: #2dd4bf; }
+}
+
+@media (max-width: 600px) {
+  .glossary-filters { flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 0 16px 4px; scrollbar-width: none; }
+  .glossary-filters::-webkit-scrollbar { display: none; }
+  .glossary-filters .chip { flex: none; }
+}

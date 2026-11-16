@@ -4,6 +4,20 @@
 
 window.LERN_CHANGELOG = [
   {
+    version: "2.5",
+    datum: "16.11.2026",
+    titel: "Begriffe A–Z",
+    neu: [
+      "Neues Glossar „Begriffe A–Z“ mit den wichtigsten Fachbegriffen aus der Weiterbildung und allen Themen.",
+      "Filter nach Thema oder Modul, Buchstaben-Leiste zum Springen und Suchfeld.",
+      "Jeder Begriff mit kurzer Erklärung, Praxisbeispiel und „Siehe auch“-Verweisen.",
+      "★ Begriffe merken: Gemerkte Begriffe kommen automatisch in „Heute dran“.",
+      "Begriffe als Karteikarten lernen oder im Training abfragen.",
+      "Neue Kachel „Begriffe A–Z“ in jedem Thema und in der Weiterbildung, dazu ein Link in jedem Modul.",
+      "Die Suche findet jetzt auch Begriffe aus dem Glossar."
+    ]
+  },
+  {
     version: "2.4",
     datum: "16.11.2026",
     titel: "Mehr Abwechslung, mehr Themen",
