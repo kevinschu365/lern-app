@@ -637,6 +637,213 @@ window.LERN_THEMEN.push({
       ],
       erklaerung: "Saubere UTMs entstehen vor dem Versand. Hinterher lassen sich Fehler nicht mehr korrigieren.",
       quelle: "Die Werkzeuge 2026: GA4, Search Console, Data Studio und UTM"
+    },
+
+    // ---------- Rechenaufgaben (10) ----------
+    {
+      typ: "rechnen",
+      frage: "Die Seite „Erbrecht“ hatte im Oktober laut Search Console 8.400 Impressionen und 126 Klicks. Wie hoch ist die CTR?",
+      loesung: 1.5,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "CTR = Klicks ÷ Impressionen × 100 = 126 ÷ 8.400 × 100 = 1,5 %.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Die Kanzlei-Website hatte im Monat 2.350 Sitzungen. Dabei wurde 47-mal das Schlüsselereignis generate_lead ausgelöst. Wie hoch ist die Conversion Rate bezogen auf Sitzungen?",
+      loesung: 2,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "Conversion Rate = Conversions ÷ Sitzungen × 100 = 47 ÷ 2.350 × 100 = 2 %. In GA4 heißt das Schlüsselereignisrate der Sitzung.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Eine Google-Ads-Kampagne für Familienrecht kostet im Monat 1.380 € und bringt 23 Anfragen. Wie hoch ist der CPL?",
+      loesung: 60,
+      einheit: "€",
+      toleranz: 0.5,
+      erklaerung: "CPL = Kosten ÷ Leads = 1.380 € ÷ 23 = 60 € pro Anfrage.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Für Anzeigen zum Arbeitsrecht gibt die Kanzlei 1.500 € aus. Daraus entstehen 6 Mandate mit durchschnittlich 1.250 € Honorar. Wie hoch ist der ROAS in Prozent?",
+      loesung: 500,
+      einheit: "%",
+      toleranz: 0.5,
+      erklaerung: "Umsatz = 6 × 1.250 € = 7.500 €. ROAS = Umsatz ÷ Werbekosten = 7.500 € ÷ 1.500 € = 5, also 500 %. Sonstige Kosten (z. B. Arbeitszeit) sind darin nicht berücksichtigt.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "GA4 zeigt 3.200 Sitzungen, davon 2.080 Sitzungen mit Interaktion. Wie hoch ist die Absprungrate?",
+      loesung: 35,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "Interaktionsrate = 2.080 ÷ 3.200 = 65 %. Absprungrate = 100 % − 65 % = 35 %. Oder direkt: 1.120 Sitzungen ohne Interaktion ÷ 3.200 = 35 %.",
+      quelle: "Die Werkzeuge 2026: GA4, Search Console, Data Studio und UTM"
+    },
+    {
+      typ: "rechnen",
+      frage: "Ein Instagram-Beitrag der Kanzlei erreicht 2.400 Konten und bekommt 96 Likes, 18 Kommentare und 6 Mal geteilt. Wie hoch ist die Engagement-Rate, gerechnet als Interaktionen ÷ Reichweite × 100?",
+      loesung: 5,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "Interaktionen = 96 + 18 + 6 = 120. Engagement-Rate = 120 ÷ 2.400 × 100 = 5 %. Achtung: Plattformen und Tools rechnen teils mit Followern oder Impressionen statt Reichweite, deshalb immer dazusagen, worauf sich die Rate bezieht."
+    },
+    {
+      typ: "rechnen",
+      frage: "Eine Anzeige kostet 840 € und bringt 350 Klicks. Wie hoch ist der CPC?",
+      loesung: 2.4,
+      einheit: "€",
+      toleranz: 0.01,
+      erklaerung: "CPC = Kosten ÷ Klicks = 840 € ÷ 350 = 2,40 € pro Klick.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Eine Seminar-Kampagne der Kanzlei kostet 2.000 € und bringt 5.000 € Gewinn. Wie hoch ist der ROI nach der Formel (Gewinn − Kosten) ÷ Kosten × 100?",
+      loesung: 150,
+      einheit: "%",
+      toleranz: 0.5,
+      erklaerung: "ROI = (5.000 € − 2.000 €) ÷ 2.000 € × 100 = 3.000 ÷ 2.000 × 100 = 150 %.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Ein Mandant bringt im Schnitt 1.200 € Honorar pro Mandat, beauftragt die Kanzlei 0,5-mal pro Jahr (also alle zwei Jahre) und bleibt 4 Jahre. Wie hoch ist der CLV nach der einfachen Formel?",
+      loesung: 2400,
+      einheit: "€",
+      toleranz: 1,
+      erklaerung: "CLV = Ø Umsatz pro Auftrag × Aufträge pro Jahr × Jahre = 1.200 € × 0,5 × 4 = 2.400 €.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "rechnen",
+      frage: "Die organischen Klicks ohne Markenanfragen steigen von 1.240 im September auf 1.550 im Oktober. Um wie viel Prozent sind sie gestiegen?",
+      loesung: 25,
+      einheit: "%",
+      toleranz: 0.1,
+      erklaerung: "Veränderung = (neu − alt) ÷ alt × 100 = (1.550 − 1.240) ÷ 1.240 × 100 = 310 ÷ 1.240 × 100 = 25 %. Für eine faire Bewertung zusätzlich mit dem Vorjahresmonat vergleichen.",
+      quelle: "Mein Monats-Report: Welche 8 Zahlen ich jeden Monat anschaue"
+    },
+
+    // ---------- Fallbeispiele (5) ----------
+    {
+      typ: "fall",
+      fall: "Im Oktober steigen die Sitzungen auf der Kanzlei-Website um 30 %, die Anfragen über das Kontaktformular fallen aber von 20 auf 9. Kurz vorher wurde das Formular-Plugin aktualisiert.",
+      frage: "Was prüfst du zuerst?",
+      optionen: [
+        "Das Anzeigenbudget erhöhen, damit wieder mehr Anfragen kommen",
+        "Ob das Ereignis generate_lead nach dem Update noch auslöst (Testanfrage, DebugView, Abgleich mit dem Posteingang) und welcher Kanal den zusätzlichen Traffic bringt",
+        "Die Datenaufbewahrung auf 14 Monate stellen",
+        "Nichts, mehr Traffic ist wichtiger als Anfragen"
+      ],
+      richtig: [1],
+      erklaerung: "Erst die Messung prüfen, dann die Ursache: Nach einem Plugin-Update hört die Formularmessung oft auf zu feuern. Kommen im Posteingang weiterhin Anfragen an, ist es ein Messfehler. Wenn nicht, zeigt die Kanalaufteilung, ob der neue Traffic überhaupt zur Zielgruppe passt.",
+      quelle: "Mein Monats-Report: Welche 8 Zahlen ich jeden Monat anschaue"
+    },
+    {
+      typ: "fall",
+      fall: "Die Seite „Testament erstellen“ hat in der Search Console 12.000 Impressionen im Monat, eine durchschnittliche Position von 4, aber nur 0,8 % CTR.",
+      frage: "Welche Maßnahme liegt am nächsten?",
+      optionen: [
+        "Title und Meta-Beschreibung nachschärfen, damit das Suchergebnis zum Klicken einlädt",
+        "Die Seite auf noindex setzen",
+        "Mehr UTM-Parameter in die Seite einbauen",
+        "Den Consent-Banner entfernen"
+      ],
+      richtig: [0],
+      erklaerung: "Viele Impressionen bei guter Position, aber wenige Klicks: Das Snippet überzeugt nicht. Genau dafür steht im Monats-Report „CTR und Position der 10 wichtigsten Seiten“. Prüfe dabei auch, ob AI Overviews oder andere Elemente die Klicks abfangen.",
+      quelle: "Mein Monats-Report: Welche 8 Zahlen ich jeden Monat anschaue"
+    },
+    {
+      typ: "fall",
+      fall: "Dein Vorgesetzter sieht im Report: Anfragen im Oktober 6, im September 8. Er fragt besorgt, ob die Website „kaputt“ ist.",
+      frage: "Wie reagierst du am sinnvollsten?",
+      optionen: [
+        "Sofort eine neue Website in Auftrag geben",
+        "Mit Vormonat und Vorjahresmonat vergleichen und erklären, dass so kleine Schwankungen oft Zufall sind, dann die Hilfskennzahlen als Erklärung anschauen",
+        "Die Zahlen im Report anpassen, damit es besser aussieht",
+        "Nur noch Impressionen berichten, weil die größer sind"
+      ],
+      richtig: [1],
+      erklaerung: "Von 8 auf 6 ist bei kleinen Zahlen oft kein Trend. Der Vergleich mit dem Vorjahresmonat zeigt Saisoneffekte, die Hilfskennzahlen (Klicks, Interaktionsrate) erklären, ob sich wirklich etwas verändert hat.",
+      quelle: "Mein Monats-Report: Welche 8 Zahlen ich jeden Monat anschaue"
+    },
+    {
+      typ: "fall",
+      fall: "Seit der Installation eines neuen WordPress-Statistik-Plugins haben sich die Seitenaufrufe in GA4 fast verdoppelt, und die Interaktionsrate springt auf 98 %. Am Inhalt hat sich nichts geändert.",
+      frage: "Was ist die wahrscheinlichste Ursache?",
+      optionen: [
+        "Die Website ist plötzlich viel beliebter",
+        "Der KI-Bericht der Search Console zählt mit",
+        "GA4 ist doppelt eingebunden (Plugin und Tag Manager)",
+        "Die Datenaufbewahrung steht auf 2 Monaten"
+      ],
+      richtig: [2],
+      erklaerung: "Doppelte Tags erzeugen doppelte Seitenaufrufe. Weil jede Sitzung dann mindestens zwei Seitenaufrufe hat, gilt sie als „Sitzung mit Interaktion“, die Interaktionsrate wird künstlich hoch. Lösung: nur eine Einbindung behalten und im DebugView testen.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "fall",
+      fall: "GA4 zeigt im Oktober 14 Formular-Anfragen. Im Kanzlei-Posteingang sind im selben Zeitraum 21 Formular-Anfragen eingegangen. Das Tracking wurde getestet und funktioniert.",
+      frage: "Wie erklärst du die Lücke?",
+      optionen: [
+        "GA4 ist falsch eingerichtet und muss gelöscht werden",
+        "Besucher ohne Einwilligung werden nicht oder nur modelliert erfasst, deshalb zeigt GA4 weniger Anfragen als tatsächlich eingehen",
+        "Die Kanzlei hat sich verzählt",
+        "Die Search Console hat Anfragen abgezogen"
+      ],
+      richtig: [1],
+      erklaerung: "Wer im Banner ablehnt, fehlt in GA4 ganz oder wird nur geschätzt. Deshalb gleicht man monatlich mit dem Posteingang ab und nennt im Bericht ehrlich die Grenzen der Messung.",
+      quelle: "Mein Monats-Report: Welche 8 Zahlen ich jeden Monat anschaue"
+    },
+
+    // ---------- Fehler finden (3) ----------
+    {
+      typ: "fehler",
+      frage: "Finde die Fehler im Tracking-Plan für den November-Newsletter.",
+      teile: [
+        { text: "Ziel-URL: https://kanzlei-beispiel.de/erbrecht/", falsch: false },
+        { text: "utm_source=Brevo", falsch: true, warum: "GA4 unterscheidet Groß- und Kleinschreibung. Google empfiehlt durchgehend Kleinbuchstaben, also „brevo“, sonst zersplittern die Daten." },
+        { text: "utm_medium=rundbrief", falsch: true, warum: "Frei erfundenes Medium: GA4 kann es keinem Kanal zuordnen, der Traffic landet unter „Unassigned“. Besser „email“." },
+        { text: "utm_campaign=newsletter-2026-11", falsch: false },
+        { text: "Im Blog verlinken wir intern auf die Kontaktseite mit ?utm_source=blog&utm_medium=intern, um Klickwege zu sehen.", falsch: true, warum: "UTMs in internen Links überschreiben die echte Herkunft der Sitzung. Für interne Klickwege Ereignisse oder Pfad-Explorations nutzen." },
+        { text: "Vor dem Versand testen wir den Link und prüfen ihn im Echtzeit-Bericht.", falsch: false }
+      ],
+      erklaerung: "Pflicht sind utm_source, utm_medium und utm_campaign, alles klein und mit Medien, die GA4 kennt. Interne Links bleiben ohne UTM.",
+      quelle: "Die Werkzeuge 2026: GA4, Search Console, Data Studio und UTM"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Fehler in diesem Monatsreport für Oktober.",
+      teile: [
+        { text: "Haupt-KPI: 38 Anfragen (Formular, Anruf-Klick und Termin getrennt ausgewiesen).", falsch: false },
+        { text: "Die Interaktionsrate liegt bei 68 %, die Absprungrate bei 42 %.", falsch: true, warum: "In GA4 ist die Absprungrate 100 % minus Interaktionsrate. Bei 68 % Interaktionsrate muss sie 32 % betragen." },
+        { text: "Die CTR der Seite „Erbrecht“: 90 Klicks bei 3.000 Impressionen = 3 %.", falsch: false },
+        { text: "Die Search Console zeigt 2.100 Klicks, GA4 nur 1.650 organische Sitzungen. Also ist GA4 defekt.", falsch: true, warum: "Search-Console-Klicks und GA4-Sitzungen sind nie gleich (Consent, Zählweise, Zeitzonen). Man vergleicht Trends, nicht absolute Werte." },
+        { text: "Die KI-Impressionen sind um 40 % gestiegen, daraus kamen rund 300 zusätzliche Besucher.", falsch: true, warum: "Der KI-Bericht der Search Console zeigt nur Impressionen, keine Klicks. Auf zusätzliche Besucher kann man daraus nicht schließen." },
+        { text: "Im Vergleich zum Vorjahresmonat stiegen die Anfragen um 12 %.", falsch: false }
+      ],
+      erklaerung: "Ein Report ist nur glaubwürdig, wenn die Zahlen zueinander passen und er keine Schlüsse zieht, die die Daten nicht hergeben.",
+      quelle: "Kennzahlen, Consent und Messfehler"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Fehler im Mess-Setup der Kanzlei-Website.",
+      teile: [
+        { text: "Die erfolgreiche Formularabsendung wird als generate_lead erfasst und als Schlüsselereignis markiert.", falsch: false },
+        { text: "Als Parameter senden wir das Rechtsgebiet und die E-Mail-Adresse des Anfragenden mit.", falsch: true, warum: "Personenbezogene Daten wie E-Mail-Adressen gehören nie in GA4-Ereignisse. Das verstößt gegen Googles Richtlinien und den Datenschutz. Das Rechtsgebiet ist in Ordnung." },
+        { text: "GA4 ist über das WordPress-Plugin und zusätzlich über den Tag Manager eingebunden, doppelt hält besser.", falsch: true, warum: "Doppelte Einbindung zählt Seitenaufrufe doppelt und verfälscht die Interaktionswerte." },
+        { text: "Die IP-Adressen von Kanzlei und Agentur sind als interner Traffic ausgeschlossen.", falsch: false },
+        { text: "Die Datenaufbewahrung bleibt auf 2 Monaten, damit wir Explorations über das ganze Jahr auswerten können.", falsch: true, warum: "Mit 2 Monaten fehlen Explorations über längere Zeiträume die Detaildaten. Für Jahresvergleiche auf 14 Monate erhöhen, das wirkt aber nicht rückwirkend." },
+        { text: "Jedes neue Ereignis testen wir im DebugView, bevor wir ihm im Report vertrauen.", falsch: false }
+      ],
+      erklaerung: "Saubere Messung heißt: richtige Ereignisse, keine personenbezogenen Daten, eine einzige Einbindung, interner Traffic raus und genug Datenaufbewahrung.",
+      quelle: "Kennzahlen, Consent und Messfehler"
     }
   ],
 

@@ -590,6 +590,178 @@ window.LERN_THEMEN.push({
       schritte: ["Thema aus häufigen Mandantenfragen wählen", "Skript mit Hook schreiben", "Fachliche Freigabe durch Anwalt oder Anwältin", "Drehen und schneiden", "Untertitel prüfen und veröffentlichen"],
       erklaerung: "Die fachliche Freigabe vor dem Dreh spart Nacharbeit. Untertitel vor Veröffentlichung prüfen, gerade bei Fachbegriffen.",
       quelle: "10 Reel-Ideen und Hook-Formeln für eine Kanzlei"
+    },
+    {
+      typ: "fall",
+      fall: "Unter einem Reel zum Kündigungsschutz schreibt ein Nutzer ausführlich seinen eigenen Fall auf und fragt: „Soll ich jetzt klagen, ja oder nein?“",
+      frage: "Wie antwortest du im Namen der Kanzlei?",
+      optionen: [
+        "Direkt im Kommentar eine Einschätzung zu seinem Fall geben, das zeigt Kompetenz.",
+        "Den Kommentar kommentarlos löschen.",
+        "Kurz und freundlich antworten, dass eine Einschätzung im Einzelfall ein Gespräch braucht, auf den Kontaktweg verweisen und ggf. in die Direktnachricht wechseln.",
+        "Mit „Klar, klagen lohnt sich immer!“ antworten, um Interaktionen zu sammeln."
+      ],
+      richtig: [2],
+      erklaerung: "Rechtsberatung oder Einzelfälle werden nicht öffentlich in Kommentaren geklärt. Allgemein informieren, für den Einzelfall auf ein Gespräch verweisen. Erfolgsversprechen sind ohnehin tabu.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fall",
+      fall: "Ein Reel-Entwurf startet so: „Hallo, ich bin Rechtsanwalt Max Muster von der Kanzlei Muster, und heute möchte ich euch etwas zum Thema Verkehrsunfall erzählen …“ Das dauert 8 Sekunden. In den Statistiken springen die meisten früh ab.",
+      frage: "Was ist die beste Änderung?",
+      optionen: [
+        "Mit einem Hook ohne Anlauf starten, z. B. „Diesen Fehler machen fast alle nach einem Unfall.“, plus Text im Bild. Die Vorstellung kommt ans Ende oder ins Profil.",
+        "Die Begrüßung lauter und mit Musik sprechen.",
+        "Das Reel einfach auf 3 Minuten verlängern.",
+        "Die Vorstellung behalten, aber schneller sprechen."
+      ],
+      richtig: [0],
+      erklaerung: "In den ersten 1 bis 3 Sekunden entscheidet sich, ob jemand bleibt. Der Hook zeigt sofort, worum es geht und warum es den Zuschauer betrifft, gesprochen, als Text im Bild und visuell. Kein „Hallo, ich bin …“ am Anfang.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fall",
+      fall: "Eine Anwältin will ein Reel über einen gewonnenen Fall drehen. Der Mandant wäre im Video gut erkennbar, und im Hintergrund liegt die Akte auf dem Schreibtisch.",
+      frage: "Was rätst du?",
+      optionen: [
+        "Kein Problem, das Ergebnis war ja positiv.",
+        "Nur die Akte wegräumen, der Rest passt.",
+        "Keinen echten, erkennbaren Mandantenfall zeigen. Das Fallbeispiel verfremden oder ausdenken, keine Akten oder Bildschirme im Hintergrund.",
+        "Das Video drehen, aber erst nach einem Jahr veröffentlichen."
+      ],
+      richtig: [2],
+      erklaerung: "Die Verschwiegenheit (§ 43a Abs. 2 BRAO) gilt auch auf Social Media. Fallbeispiele immer verfremden oder ausdenken. Erfolgszahlen und „gewonnene Fälle“ können zudem schnell irreführend wirken (§ 6 BORA).",
+      quelle: "10 Reel-Ideen und Hook-Formeln für eine Kanzlei"
+    },
+    {
+      typ: "fall",
+      fall: "Das Team hat sich 7 Reels pro Woche vorgenommen. Nach drei Wochen sind die Videos hektisch gedreht, oft ohne Freigabe, und die Zahlen sinken.",
+      frage: "Was schlägst du vor?",
+      optionen: [
+        "Auf 14 Reels pro Woche erhöhen, Masse schlägt Klasse.",
+        "Einen Rhythmus wählen, den ihr halten könnt (z. B. 2 gute Reels pro Woche), mehrere Videos an einem Drehtag aufnehmen (Batching) und einen Redaktionsplan mit Freigabe führen.",
+        "Ganz mit Reels aufhören.",
+        "Nur noch fremde Trend-Videos unbearbeitet reposten."
+      ],
+      richtig: [1],
+      erklaerung: "Lieber 2 gute Reels pro Woche als 7 schwache. Batching spart Zeit, der Redaktionsplan mit Status und Freigabe sichert die Qualität. Unbearbeitete Reposts werden bei Instagram zudem nicht mehr empfohlen.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fall",
+      fall: "Ein Erklärvideo lief auf TikTok sehr gut. Ein Kollege will die heruntergeladene Datei mit TikTok-Wasserzeichen unverändert auch auf Instagram hochladen.",
+      frage: "Was ist der bessere Weg?",
+      optionen: [
+        "So machen, das spart Zeit.",
+        "Die eigene Originaldatei ohne Wasserzeichen anderer Apps hochladen und Länge, Ton und Format an Instagram anpassen.",
+        "Nur einen Screenshot des TikToks als Foto posten.",
+        "Das Video auf Instagram nur schneller abspielen lassen."
+      ],
+      richtig: [1],
+      erklaerung: "Beim Content-Recycling pro Plattform anpassen und bei Instagram eigene Originaldateien ohne Wasserzeichen anderer Apps hochladen. Nur Tempo ändern oder einen Screenshot einfügen gilt nicht als originell.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fall",
+      fall: "Unter einem Post der Kanzlei kommentiert jemand: „Anwälte wollen doch eh nur abkassieren.“ Mehrere Leute liken den Kommentar.",
+      frage: "Wie gehst du am besten damit um?",
+      optionen: [
+        "Sachlich bleiben, öffentlich kurz reagieren (z. B. wie ein Erstgespräch abläuft) und bei Bedarf in die Direktnachricht wechseln. Grundlage sind eure Netiquette-Regeln.",
+        "Scharf zurückschreiben, damit alle sehen, dass ihr euch wehrt.",
+        "Alle kritischen Kommentare sofort löschen und den Nutzer blockieren.",
+        "Mit einem ironischen Meme über den Nutzer antworten."
+      ],
+      richtig: [0],
+      erklaerung: "Bei Kritik sachlich bleiben, kurz öffentlich reagieren und ggf. in die Direktnachricht wechseln. Was gelöscht, beantwortet oder eskaliert wird, legen Netiquette und Moderationsregeln vorher fest.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "rechnen",
+      frage: "Ein Reel hat eine Reichweite von 4.000 Konten. Es bekommt 120 Likes, 18 Kommentare, 30 Shares und 32 Saves. Wie hoch ist die Engagement-Rate bezogen auf die Reichweite?",
+      loesung: 5,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "Interaktionen: 120 + 18 + 30 + 32 = 200. Engagement-Rate = 200 ÷ 4.000 × 100 = 5 %.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "rechnen",
+      frage: "Dasselbe Reel (200 Interaktionen) soll mit einer Studie verglichen werden, die die Engagement-Rate über die Follower berechnet. Das Konto hat 2.500 Follower. Wie hoch ist die Engagement-Rate nach Followern?",
+      loesung: 8,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "200 ÷ 2.500 × 100 = 8 %. Nach Reichweite waren es 5 %. Darum immer dazusagen, welcher Nenner genutzt wird, sonst sind Werte nicht vergleichbar.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "rechnen",
+      frage: "Ein Reel erreicht 6.000 Konten, davon 4.500 Nicht-Follower. Wie hoch ist der Anteil der Nicht-Follower an der Reichweite?",
+      loesung: 75,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "4.500 ÷ 6.000 × 100 = 75 %. Ein hoher Anteil zeigt, dass die Plattform das Reel nach dem Empfehlungsprinzip an neue Zielgruppen verteilt. Sends sind dafür ein besonders starkes Signal.",
+      quelle: "Plattformen und Algorithmen 2026"
+    },
+    {
+      typ: "rechnen",
+      frage: "Ein Reel ist 40 Sekunden lang. Die durchschnittliche Wiedergabedauer liegt bei 14 Sekunden. Wie viel Prozent des Videos werden im Schnitt angesehen (Watchtime-Quote)?",
+      loesung: 35,
+      einheit: "%",
+      toleranz: 0.05,
+      erklaerung: "14 ÷ 40 × 100 = 35 %. Im Schnitt steigen die Zuschauer also früh aus. Hook und Aufbau sollten überarbeitet werden.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Schwächen in diesem Reel-Skript „Was tun nach einem Verkehrsunfall?“.",
+      teile: [
+        { text: "0–8 Sek.: „Hallo und herzlich willkommen, ich bin Rechtsanwalt Max Muster, und heute möchte ich euch etwas erzählen …“", falsch: true, warum: "Zu langes Intro, kein Hook. Der erste Satz muss ohne Anlauf zeigen, worum es geht." },
+        { text: "Text im Bild: keiner, alles nur gesprochen.", falsch: true, warum: "Viele schauen ohne Ton. Hook als kurze Textzeile im Bild und Untertitel sind Pflicht." },
+        { text: "Kern: drei Schritte, die man direkt nach dem Unfall tun sollte.", falsch: false },
+        { text: "Untertitel ganz unten, direkt über der Beschreibung.", falsch: true, warum: "Text gehört in die sichere Zone, nicht ganz unten (Beschreibung) und nicht rechts (Buttons)." },
+        { text: "Ende: „Speicher dir das für den Ernstfall.“", falsch: false }
+      ],
+      erklaerung: "Aufbau: Hook, Kontext in einem Satz, 1 bis 3 Kernpunkte, Call to Action. Kern und Abschluss passen hier, Einstieg und Untertitel nicht.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in dieser Instagram-Caption der Kanzlei.",
+      teile: [
+        { text: "3 Dinge, die du nach einer Kündigung sofort tun solltest.", falsch: false },
+        { text: "Wir haben 98 % unserer Fälle gewonnen!", falsch: true, warum: "Irreführende Erfolgszahlen sind unzulässig (§ 6 BORA)." },
+        { text: "Unser Spezialist für alle Rechtsgebiete hilft dir.", falsch: true, warum: "„Spezialist“ nur, wenn es zutrifft und nicht mit einem Fachanwaltstitel verwechselt werden kann (§ 7 BORA). „Für alle Rechtsgebiete“ passt dazu nicht." },
+        { text: "Hinweis: Allgemeine Information, ersetzt keine Beratung im Einzelfall.", falsch: false },
+        { text: "Ruf JETZT an, bevor es zu spät ist!", falsch: true, warum: "Aufdringlicher Call to Action. Sachlich ist z. B. „Speicher dir das“ oder „Mehr dazu im Blog, Link im Profil“." }
+      ],
+      erklaerung: "Werbung ist erlaubt, wenn sie sachlich informiert und nicht auf einen Auftrag im Einzelfall drängt (§ 43b BRAO). Zahl-Hook und Hinweis passen, der Rest nicht.",
+      quelle: "10 Reel-Ideen und Hook-Formeln für eine Kanzlei"
+    },
+    {
+      typ: "fehler",
+      frage: "Prüfe das Instagram-Profil und das neueste Reel der Kanzlei. Wo fehlt eine Angabe oder Kennzeichnung, und was ist sonst falsch?",
+      teile: [
+        { text: "Bio: „Kanzlei für Arbeits- und Mietrecht in [Stadt]. Recht in 60 Sekunden erklärt.“", falsch: false },
+        { text: "Im Profil gibt es weder Impressum noch einen Link dorthin.", falsch: true, warum: "Auch geschäftliche Social-Media-Profile brauchen ein Impressum (§ 5 DDG). Ein Link zum Website-Impressum genügt in der Regel." },
+        { text: "Im Reel läuft ein aktueller Chart-Hit, der nicht für Business-Konten freigegeben ist.", falsch: true, warum: "Unternehmenskonten nur lizenzfreie bzw. für Business freigegebene Musik nutzen." },
+        { text: "Das Reel „Mythos oder Fakt“ erklärt eine Rechtsfrage ohne den Hinweis, dass es sich um allgemeine Information handelt.", falsch: true, warum: "Der Hinweis „Allgemeine Information, ersetzt keine Beratung im Einzelfall“ fehlt. Er ist bei Kanzlei-Inhalten sinnvoll." },
+        { text: "Link im Profil zum passenden Blogartikel.", falsch: false }
+      ],
+      erklaerung: "Impressum, freigegebene Musik und der Hinweis auf allgemeine Information gehören zu den Leitplanken für Kanzlei-Inhalte.",
+      quelle: "10 Reel-Ideen und Hook-Formeln für eine Kanzlei"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Denkfehler in diesem Monatsbericht zu Social Media.",
+      teile: [
+        { text: "Reichweite und Impressionen sind dasselbe, deshalb melden wir nur eine Zahl.", falsch: true, warum: "Reichweite zählt unterschiedliche Konten, Impressionen jede Anzeige. Eine Person kann mehrfach zählen." },
+        { text: "Engagement-Rate: 6 % (Interaktionen ÷ Reichweite × 100).", falsch: false },
+        { text: "Wir vergleichen die 6 % direkt mit dem Benchmark einer Studie, die über Follower rechnet.", falsch: true, warum: "Unterschiedliche Nenner machen Werte nicht vergleichbar. Am sinnvollsten ist der Vergleich mit den eigenen bisherigen Beiträgen." },
+        { text: "Saves und Shares sind gestiegen, die Beiträge haben also mehr Nutzwert und werden öfter weiterempfohlen.", falsch: false },
+        { text: "Die Shorts-Aufrufe zeigen allein, wie gut unsere YouTube-Videos geschaut wurden.", falsch: true, warum: "Seit März 2025 zählt jeder Start als Aufruf. Aussagekräftiger sind angesehene vs. weggewischte Aufrufe und die durchschnittliche Wiedergabedauer." }
+      ],
+      erklaerung: "Kennzahlen immer mit Definition und Nenner berichten und vor allem mit den eigenen früheren Werten vergleichen.",
+      quelle: "Reels-Handwerk, Planung, Community und Kennzahlen"
     }
   ],
 

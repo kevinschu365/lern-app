@@ -564,6 +564,155 @@ window.LERN_THEMEN.push({
       schritte: ["Überprüfbare Behauptungen auflisten", "Primärquelle zu jeder Behauptung suchen", "Abweichungen korrigieren oder streichen", "Fachliche Freigabe einholen"],
       erklaerung: "Die Faktencheck-Vorlage aus der Bibliothek erledigt Schritt 1. Prüfen und freigeben bleibt Menschensache.",
       quelle: "Prompt-Bibliothek: 14 Vorlagen für den Marketing-Alltag"
+    },
+    {
+      typ: "fall",
+      fall: "Du lässt dir von der KI einen Blogartikel zum Thema „Testament ändern“ schreiben. Heraus kommt ein Text voller Superlative: „Ihre erfahrenen Top-Experten“, „Wir holen das Beste für Sie heraus“.",
+      frage: "Was änderst du am Prompt?",
+      optionen: [
+        "Ich schreibe nur „weniger werblich“ dahinter und lasse neu generieren.",
+        "Ich ergänze Zielgruppe, Ziel und Ton positiv formuliert („sachlich, verständlich, per Sie“), schließe Werbesprache und Erfolgsversprechen aus und gebe einen Musterabsatz im Hausstil als Beispiel mit.",
+        "Ich gebe der KI die Rolle „erfahrener Werbetexter“, damit sie professioneller klingt.",
+        "Ich verlange einfach einen doppelt so langen Text."
+      ],
+      richtig: [1],
+      erklaerung: "Kontext und Format sind der größte Hebel. Positive Vorgaben wirken besser als nur Verbote, und ein Beispiel steuert den Ton oft zuverlässiger als jede Beschreibung. „Keine Werbesprache, keine Erfolgsversprechen“ steht so auch im Vorher-nachher-Beispiel.",
+      quelle: "Gute Prompts bauen: Aufbau und Techniken"
+    },
+    {
+      typ: "fall",
+      fall: "Ein Kollege möchte die E-Mail einer Mandantin zu ihrem Erbstreit in die kostenlose ChatGPT-Version kopieren, um daraus einen anschaulichen Blogartikel zu machen. „Den Namen lösche ich vorher, und das Training schalte ich ab.“",
+      frage: "Wie reagierst du?",
+      optionen: [
+        "Passt so, ohne Namen und mit abgeschaltetem Training ist das unproblematisch.",
+        "Passt, solange der fertige Artikel fachlich geprüft wird.",
+        "Stopp: Mandantendaten gehören nicht in KI-Werkzeuge. Für den Artikel reicht ein ausgedachtes, allgemeines Beispiel.",
+        "Er soll die E-Mail lieber in einen anderen kostenlosen Chatbot kopieren."
+      ],
+      richtig: [2],
+      erklaerung: "Grundregel: keine Mandantendaten in KI-Werkzeuge (Verschwiegenheit, § 43a Abs. 2 BRAO). Anonymisieren reicht oft nicht, weil Ort, Datum und ein ungewöhnlicher Sachverhalt eine Person erkennbar machen. Das Training abzuschalten ändert nichts an der Grundregel.",
+      quelle: "Assistenten, Qualitätskontrolle und Datenschutz"
+    },
+    {
+      typ: "fall",
+      fall: "Im KI-Entwurf für einen Mietrechts-Artikel steht: „Der BGH hat 2024 entschieden (Az. VIII ZR 123/24), dass …“. Der Satz klingt überzeugend und passt perfekt in den Text.",
+      frage: "Was ist der richtige nächste Schritt?",
+      optionen: [
+        "Übernehmen, die KI nennt ja ein konkretes Aktenzeichen.",
+        "Die KI fragen, ob sie sich sicher ist, und bei „Ja“ übernehmen.",
+        "Das Urteil an der Primärquelle prüfen (Gericht, Entscheidungsdatenbank), den Link wirklich öffnen und die Aussage fachlich freigeben lassen.",
+        "Nur das Aktenzeichen streichen, den Rest des Satzes stehen lassen."
+      ],
+      richtig: [2],
+      erklaerung: "Sprachmodelle erfinden gerade bei Paragrafen, Aktenzeichen, Zahlen und Zitaten plausibel klingende Angaben. Jedes Urteil wird an der Primärquelle geprüft, rechtliche Aussagen gibt ein Mensch fachlich frei.",
+      quelle: "Assistenten, Qualitätskontrolle und Datenschutz"
+    },
+    {
+      typ: "fall",
+      fall: "Dein Prompt für Newsletter-Teaser lautet: „Fasse den Artikel kurz zusammen, aber erkläre alle Details ausführlich.“ Die Ergebnisse sind mal drei Zeilen, mal eine halbe Seite.",
+      frage: "Woran liegt das, und was hilft?",
+      optionen: [
+        "Die Vorgaben widersprechen sich. Besser eindeutig: 3 bis 4 Sätze, die neugierig machen, ohne alles zu verraten, plus Button-Text mit max. 4 Wörtern.",
+        "Die KI ist einfach unzuverlässig, da hilft nur häufiger neu generieren.",
+        "Der Prompt ist zu kurz, ich sollte noch mehr Anforderungen ergänzen.",
+        "Ich sollte „Geh Schritt für Schritt vor“ ergänzen."
+      ],
+      richtig: [0],
+      erklaerung: "Widersprüchliche Vorgaben wie „kurz“ und „ausführlich mit allen Details“ verschlechtern das Ergebnis, aktuelle Modelle nehmen Anweisungen sehr genau. Die Teaser-Vorlage aus der Bibliothek zeigt eine eindeutige Fassung.",
+      quelle: "Gute Prompts bauen: Aufbau und Techniken"
+    },
+    {
+      typ: "fall",
+      fall: "Du willst mit einem einzigen Prompt Recherche, Gliederung, kompletten Artikel, Title, Meta-Description und drei Social-Posts zum Thema „Pflichtteil“ erzeugen. Das Ergebnis ist überall mittelmäßig.",
+      frage: "Wie gehst du besser vor?",
+      optionen: [
+        "Den Prompt noch länger machen und alle Anforderungen fett markieren.",
+        "Die Aufgabe als Prompt-Kette in Schritte teilen, z. B. Gliederung, Freigabe, Text, Prüfung, danach Meta und Social-Posts.",
+        "Ein anderes Modell ausprobieren, der Prompt ist in Ordnung.",
+        "Die Recherche einfach weglassen, dann wird der Rest besser."
+      ],
+      richtig: [1],
+      erklaerung: "„Alles in einen Prompt“ ist ein typischer Fehler. Große Aufgaben teilst du in mehrere Prompts nacheinander auf (Prompt-Ketten). So kannst du jeden Zwischenschritt prüfen und nachsteuern.",
+      quelle: "Assistenten, Qualitätskontrolle und Datenschutz"
+    },
+    {
+      typ: "fall",
+      fall: "Du gibst der KI drei Beispiel-Posts aus eurem LinkedIn-Kanal mit. Alle drei beginnen mit einer Frage und sind fast gleich lang. Jetzt klingen auch alle neuen Posts gleich: Frage am Anfang, gleiche Länge.",
+      frage: "Was änderst du an deinen Beispielen?",
+      optionen: [
+        "Gar keine Beispiele mehr mitgeben, nur noch beschreiben.",
+        "Nur noch ein einziges Beispiel verwenden.",
+        "3 bis 5 Beispiele wählen, die nah am echten Fall sind, sich untereinander unterscheiden und klar vom Auftrag getrennt sind.",
+        "Die KI bitten, die Beispiele zu ignorieren."
+      ],
+      richtig: [2],
+      erklaerung: "Bei Few-Shot übernimmt die KI auch ungewollte Muster. Sind alle Beispiele gleich lang oder beginnen gleich, kopiert sie das. Anthropic empfiehlt 3 bis 5 unterschiedliche, klar markierte Beispiele.",
+      quelle: "Gute Prompts bauen: Aufbau und Techniken"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Schwächen in diesem Prompt für einen Blogartikel.",
+      teile: [
+        { text: "Schreib was über Erbrecht.", falsch: true, warum: "Keine Rolle, keine Zielgruppe, kein Ziel, kein klares Thema. Die KI kennt weder Kanzlei noch Leser, außer du sagst es ihr." },
+        { text: "Fokus-Keyword: „Erbe ausschlagen Frist“.", falsch: false },
+        { text: "Mach es irgendwie gut und professionell.", falsch: true, warum: "Zu vage. Besser konkret: „sachlich, verständlich, per Sie, für Laien ohne Vorwissen“." },
+        { text: "Etwa 1.200 Wörter, Gliederung mit H2 und H3.", falsch: false },
+        { text: "Keine Aufzählungen, keine Fachbegriffe, keine langen Sätze, nichts Werbliches.", falsch: true, warum: "Nur Verbote. Sag, was du willst, z. B. „Schreibe in kurzen Absätzen und erkläre Fachbegriffe“." }
+      ],
+      erklaerung: "Rolle, Kontext, Aufgabe, Format, Beispiele: Hier fehlen Rolle und Kontext, und das Format ist nur über Verbote beschrieben. Keyword und Länge sind dagegen gut vorgegeben.",
+      quelle: "Gute Prompts bauen: Aufbau und Techniken"
+    },
+    {
+      typ: "fehler",
+      frage: "Was ist an diesem Prompt aus Datenschutz-Sicht problematisch?",
+      teile: [
+        { text: "Du bist Redakteurin für die Website einer deutschen Kanzlei.", falsch: false },
+        { text: "Hier die E-Mail von Frau Petra M., Az. 12 O 345/26, zu ihrem Streit mit ihrem Bruder ums Elternhaus:", falsch: true, warum: "Name, Aktenzeichen und E-Mail einer Mandantin gehören nie in ein KI-Werkzeug (Verschwiegenheit, § 43a Abs. 2 BRAO)." },
+        { text: "Mach daraus einen anonymen Fallbericht, die Namen ändere ich später.", falsch: true, warum: "Die Daten sind dann schon beim Anbieter. Außerdem reicht Anonymisieren oft nicht: Der ungewöhnliche Sachverhalt macht die Person erkennbar." },
+        { text: "Zielgruppe: Privatleute ohne Vorwissen.", falsch: false },
+        { text: "Markiere jede Rechtsaussage mit [prüfen].", falsch: false }
+      ],
+      erklaerung: "Für Marketing-Texte brauchst du keine echten Fälle. Ein ausgedachtes, allgemeines Beispiel erfüllt denselben Zweck ohne Risiko.",
+      quelle: "Assistenten, Qualitätskontrolle und Datenschutz"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Stellen in diesem Recherche-Prompt, die zu falschen Fakten führen können.",
+      teile: [
+        { text: "Recherchiere den aktuellen Stand zur Mietpreisbremse in Deutschland.", falsch: false },
+        { text: "Quellen brauchst du nicht anzugeben.", falsch: true, warum: "Ohne Quelle mit Link und Datum kannst du nichts prüfen. Die Vorlage verlangt zu jeder Aussage eine Quelle." },
+        { text: "Wenn du etwas nicht weißt, ergänze einfach plausible Zahlen.", falsch: true, warum: "Lädt zu Halluzinationen ein. Besser Unsicherheit erlauben: „Wenn du keine verlässliche Quelle findest, schreib das.“" },
+        { text: "Trenne gesicherte Fakten, Einschätzungen und offene Punkte.", falsch: false },
+        { text: "Das Ergebnis übernehme ich dann direkt in den Artikel.", falsch: true, warum: "Ergebnis ungeprüft übernehmen ist der teuerste Fehler. Zahlen und Normen an der Primärquelle prüfen und fachlich freigeben lassen." }
+      ],
+      erklaerung: "Vergleiche mit Vorlage 12 „Recherche mit Quellen“: Quellen mit Link und Datum, klare Trennung, Primärquellen bevorzugen und offen sagen, wenn nichts Verlässliches gefunden wird.",
+      quelle: "Prompt-Bibliothek: 14 Vorlagen für den Marketing-Alltag"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Fehler in diesem Prompt für Title und Meta-Description.",
+      teile: [
+        { text: "Erstelle 5 Varianten für Title (max. 60 Zeichen) und Meta-Description (max. 155 Zeichen).", falsch: false },
+        { text: "Fokus-Keyword: „Scheidung Kosten“, möglichst weit vorne.", falsch: false },
+        { text: "Betone, dass wir die beste Kanzlei der Region sind und jeden Fall gewinnen.", falsch: true, warum: "Superlative wie „beste Kanzlei“ und Erfolgsversprechen gehören nicht in Kanzlei-Texte. Die Vorlage verlangt stattdessen einen klaren Nutzen." },
+        { text: "Halte dich kurz, aber erkläre in jeder Description alle Details zum Thema.", falsch: true, warum: "Widersprüchliche Vorgabe: Kurz und alle Details schließen sich bei 155 Zeichen aus." },
+        { text: "Ausgabe als Tabelle mit Zeichenzahl.", falsch: false }
+      ],
+      erklaerung: "Die Vorlage 4 „Title und Description“ ist klar und widerspruchsfrei: Zeichenlimits, Keyword vorne, Nutzen am Ende, keine Superlative, Tabelle mit Zeichenzahl.",
+      quelle: "Prompt-Bibliothek: 14 Vorlagen für den Marketing-Alltag"
+    },
+    {
+      typ: "fehler",
+      frage: "Prüfe diese Anweisungen für einen Redaktions-Assistenten. Welche Teile sind problematisch?",
+      teile: [
+        { text: "Du unterstützt die Online-Redaktion einer deutschen Anwaltskanzlei.", falsch: false },
+        { text: "Schreib sachlich, per Sie, ohne Werbesprache und ohne Erfolgsversprechen.", falsch: false },
+        { text: "Wenn ein passender Paragraf fehlt, denk dir einen plausiblen aus.", falsch: true, warum: "Das Gegenteil ist richtig: Erfinde nie Paragrafen, Urteile, Zahlen oder Zitate." },
+        { text: "Alle Regeln zu Ton und Ablauf stehen nur in der hochgeladenen Datei „regeln.pdf“.", falsch: true, warum: "Regeln, Ton und Arbeitsweise gehören in die Anweisungen, nicht in hochgeladene Dateien. Das Wissen ist Nachschlagematerial." },
+        { text: "Frag nach, wenn Zielgruppe oder Keyword fehlen.", falsch: false }
+      ],
+      erklaerung: "Anweisungen regeln das Verhalten, Wissen ist Nachschlagematerial. Und: Die Anweisungen zusätzlich als eigene Textdatei sichern, damit du sie in jedes Werkzeug mitnehmen kannst.",
+      quelle: "Assistenten, Qualitätskontrolle und Datenschutz"
     }
   ],
   begriffe: [

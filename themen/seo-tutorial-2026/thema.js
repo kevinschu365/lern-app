@@ -82,7 +82,115 @@ window.LERN_THEMEN.push({
     { typ: "reihenfolge", frage: "Bring die drei Schritte des Information Retrieval in die richtige Reihenfolge.", schritte: ["Crawling", "Indexierung", "Ranking"], erklaerung: "Erst durchsuchen Bots das Web, dann werden Inhalte in den Index aufgenommen, bei einer Suchanfrage berechnet der Algorithmus das Ranking.", quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung" },
     { typ: "reihenfolge", frage: "Bring die Phasen der Customer Journey in die richtige Reihenfolge.", schritte: ["Erste Informationssuche (Top of Funnel)", "Vergleich", "Kaufabschluss (Bottom of Funnel)"], erklaerung: "So beschreibt das Glossar die Kundenreise von Tofu bis Bofu.", quelle: "SEO & GEO Tutorial 2026: Studienführer und Prüfungsunterlagen" },
     { typ: "reihenfolge", frage: "Aufbau nach der umgekehrten Pyramide: Bring die Inhalte von oben nach unten in die richtige Reihenfolge.", schritte: ["Kernaussage bzw. Definition sofort sichtbar", "Vertiefende Details", "Praxisbeispiele und Hintergrundwissen"], erklaerung: "Die wichtigste Antwort steht ganz oben ohne Scrollen, Vertiefungen folgen weiter unten.", quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung" },
-    { typ: "reihenfolge", frage: "Von der Keyword- zur Prompt-Recherche: Bring die Schritte in eine sinnvolle Reihenfolge.", schritte: ["W-Fragen und Longtail-Keywords der Zielgruppe sammeln", "Daraus Master Prompts ableiten", "Prüfen, ob die eigene Marke in KI-Antworten genannt wird"], erklaerung: "Master Prompts werden aus W-Fragen und informationsgetriebenen Longtail-Keywords abgeleitet und dienen als Test-Standard für die Sichtbarkeit in Chatbots.", quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung" }
+    { typ: "reihenfolge", frage: "Von der Keyword- zur Prompt-Recherche: Bring die Schritte in eine sinnvolle Reihenfolge.", schritte: ["W-Fragen und Longtail-Keywords der Zielgruppe sammeln", "Daraus Master Prompts ableiten", "Prüfen, ob die eigene Marke in KI-Antworten genannt wird"], erklaerung: "Master Prompts werden aus W-Fragen und informationsgetriebenen Longtail-Keywords abgeleitet und dienen als Test-Standard für die Sichtbarkeit in Chatbots.", quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung" },
+    {
+      typ: "fall",
+      fall: "Auf der Kanzlei-Website sind der Blogartikel „Erbe ausschlagen: das musst du wissen“ und die Ratgeberseite „Erbe ausschlagen“ beide auf dasselbe Haupt-Keyword optimiert. Die Rankings beider Seiten schwanken stark.",
+      frage: "Welches Problem liegt vor, und was hilft?",
+      optionen: [
+        "Interner Duplicate Content. Beide Texte einfach umformulieren.",
+        "Keyword-Kannibalisierung. Per Keyword-Map bzw. URL-Mapping jedem Keyword eine Ziel-URL zuordnen und doppelte Keywords in Title Tags und H1 bereinigen.",
+        "Zu wenige Backlinks. Mehr Links auf beide Seiten kaufen.",
+        "Ein Google-Fehler, der sich von selbst erledigt."
+      ],
+      richtig: [1],
+      erklaerung: "Wenn mehrere Unterseiten auf dasselbe Keyword optimiert sind, machen sie sich gegenseitig die Platzierungen streitig. Durch Bereinigung lassen sich oft schnelle Ranking-Gewinne erzielen. Duplicate Content wäre dagegen identischer Text unter mehreren URLs.",
+      quelle: "Vergleich von SEO- und Geo-Optimierungskonzepten"
+    },
+    {
+      typ: "fall",
+      fall: "Eine SEO-Agentur bietet der Kanzlei an: „Wir garantieren Ihnen Platz 1 bei Google für ‚Anwalt Erbrecht‘ innerhalb von vier Wochen.“",
+      frage: "Wie bewertest du das Angebot?",
+      optionen: [
+        "Seriös, wenn die Agentur viele Referenzen hat.",
+        "Unseriös: Google hält die Gewichtung seiner Ranking-Faktoren geheim und ändert den Algorithmus laufend, niemand kontrolliert das finale Ranking. Deutliche Ergebnisse brauchen eher 6 bis 12 Monate.",
+        "Seriös, weil Shorttail-Keywords schnell ranken.",
+        "Seriös, solange zusätzlich Google Ads geschaltet werden."
+      ],
+      richtig: [1],
+      erklaerung: "Platz-1-Garantien sind unseriös: über 14.000 geheim gewichtete Ranking-Faktoren, ständige Updates, SEO ist keine exakte Wissenschaft. Dazu ist „Anwalt Erbrecht“ als kurzes Keyword eher stark umkämpft.",
+      quelle: "SEO & GEO Tutorial 2026: Studienführer und Prüfungsunterlagen"
+    },
+    {
+      typ: "fall",
+      fall: "Der Ratgeber „Was ist ein Pflichtteil?“ beginnt mit vier Absätzen über die Geschichte der Kanzlei. Die eigentliche Antwort steht erst weit unten nach langem Scrollen.",
+      frage: "Wie baust du den Text besser auf?",
+      optionen: [
+        "Nach der umgekehrten Pyramide: Kernantwort bzw. Definition ganz oben, dann Details. Dazu kurze Abschnitte (Content Chunks) von 3 bis 5 Sätzen, die eine Frage direkt beantworten.",
+        "Die Einleitung behalten und das Keyword „Pflichtteil“ öfter einbauen.",
+        "Den Text kürzen, bis nur noch die Überschrift bleibt.",
+        "Die Antwort in ein Bild packen, damit die Seite schöner aussieht."
+      ],
+      richtig: [0],
+      erklaerung: "Die zentrale Antwort gehört ohne Scrollen an den Anfang. Das sorgt für positive Nutzersignale, und prägnante Chunks werden von KI-Systemen bevorzugt extrahiert und zitiert.",
+      quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung"
+    },
+    {
+      typ: "fall",
+      fall: "Ein Kollege schlägt vor, mit ChatGPT 50 Ratgeberartikel zu Rechtsthemen zu erzeugen und sie ohne Überarbeitung zu veröffentlichen. „Mehr Seiten, mehr Rankings.“",
+      frage: "Was spricht dagegen?",
+      optionen: [
+        "Nichts, Google kann KI-Texte nicht erkennen.",
+        "Nur die Ladezeit der Website.",
+        "Massen-KI-Texte liefern meist nur oberflächliches Standardwissen ohne echte Expertise und können gegen Googles Spam-Richtlinien verstoßen. Recht ist ein YMYL-Thema mit strengen E-E-A-T-Maßstäben, die Texte müssen von Fachleuten nachgearbeitet werden.",
+        "Dass ChatGPT keine Überschriften schreiben kann."
+      ],
+      richtig: [2],
+      erklaerung: "„Mensch vor KI-Masse“: Reine KI-Texte ohne Expertenwissen ranken nicht nachhaltig. Gerade bei YMYL-Themen wie Recht zählen Erfahrung, Fachwissen, Autorität und Vertrauen, etwa über echte Autorenprofile und Belege.",
+      quelle: "SEO & GEO Tutorial 2026: Studienführer und Prüfungsunterlagen"
+    },
+    {
+      typ: "fall",
+      fall: "Die Kanzlei möchte, dass ChatGPT & Co. sie nennen, wenn jemand fragt: „Welche Kanzlei hilft mir bei einem Erbstreit in [Stadt]?“",
+      frage: "Welche Maßnahmen helfen laut Material? (Mehrere richtig)",
+      optionen: [
+        "Markenerwähnungen (Brand Mentions) und Einträge in relevanten Verzeichnissen und Bewertungsportalen aufbauen.",
+        "Das Keyword „Erbrecht“ so oft wie möglich in jeden Text schreiben.",
+        "Master Prompts definieren und regelmäßig prüfen, ob die Kanzlei in den KI-Antworten genannt wird.",
+        "Gekaufte Forenlinks und Linknetzwerke (PBNs) nutzen."
+      ],
+      richtig: [0, 2],
+      erklaerung: "LLMs greifen bei Empfehlungen auf Verzeichnisse, Bewertungsportale und Medienberichte zurück. Master Prompts dienen als Test-Standard für die eigene Sichtbarkeit. Keyword Stuffing und gekaufte Links sind veraltete Spam-Taktiken.",
+      quelle: "Vergleich von SEO- und Geo-Optimierungskonzepten"
+    },
+    {
+      typ: "fehler",
+      frage: "Prüfe die Metadaten und Überschriften der Ratgeberseite zum Keyword „Erbe ausschlagen Frist“. Was ist falsch?",
+      teile: [
+        { text: "Title: „Willkommen bei Kanzlei Muster – wir informieren über Erbrecht, Erbe, Erbschaft und Erbe ausschlagen Frist“", falsch: true, warum: "Das Keyword steht nicht am Anfang, der Title ist deutlich länger als 60 Zeichen, und die Begriffshäufung wirkt wie Keyword Stuffing." },
+        { text: "Meta-Description: „Erbe ausschlagen: Welche Frist gilt und was ist jetzt zu tun? Wir erklären die Schritte verständlich. Jetzt Ratgeber lesen.“", falsch: false },
+        { text: "H1: „Erbe ausschlagen: Frist und Ablauf“", falsch: false },
+        { text: "Weiter unten eine zweite H1: „Unsere Leistungen“", falsch: true, warum: "Die H1 gibt es nur einmal pro Seite, darunter folgen logische H2 und H3." }
+      ],
+      erklaerung: "Title Tag: Haupt-Keyword ganz vorne, max. 60 Zeichen. Meta-Description: max. 150–155 Zeichen mit Nutzen und Call to Action. Saubere Überschriften-Hierarchie mit nur einer H1.",
+      quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Fehler in diesem Ratgeberartikel zum Pflichtteil.",
+      teile: [
+        { text: "Einstieg: „Seit vielen Jahren beschäftigen wir uns mit allen Fragen rund ums Erbrecht und freuen uns, dass Sie heute zu uns gefunden haben.“", falsch: true, warum: "Keine Kernantwort oben. Nach der umgekehrten Pyramide steht die Antwort ohne Scrollen am Anfang." },
+        { text: "„Pflichtteil, Pflichtteil Anspruch, Pflichtteil berechnen – beim Pflichtteil im Erbrecht ist der Pflichtteil wichtig.“", falsch: true, warum: "Keyword Stuffing: unnatürliche Anhäufung von Suchbegriffen, eine veraltete Spam-Taktik." },
+        { text: "FAQ-Abschnitt: „Wer hat Anspruch auf einen Pflichtteil?“ mit einer Antwort in 3 bis 5 Sätzen.", falsch: false },
+        { text: "Autorenbox mit Profilseite der Fachanwältin und Quellenangaben.", falsch: false },
+        { text: "Derselbe Text steht wortgleich auch unter /pflichtteil-ratgeber und /erbrecht-pflichtteil.", falsch: true, warum: "Interner Duplicate Content: identische Inhalte unter mehreren URLs derselben Website verwirren die Suchmaschine." }
+      ],
+      erklaerung: "FAQ als Content Chunk und Autorenprofil mit Belegen (E-E-A-T) sind richtig. Fehlende Kernantwort, Keyword Stuffing und Duplicate Content schaden.",
+      quelle: "SEO & GEO Tutorial 2026: Studienführer und Prüfungsunterlagen"
+    },
+    {
+      typ: "fehler",
+      frage: "Nach dem Relaunch der Kanzlei-Website liegt diese Technik-Checkliste vor. Welche Punkte sind Fehler?",
+      teile: [
+        { text: "Die robots.txt sperrt alle Bots außer dem Googlebot, auch den ChatGPT-Bot.", falsch: true, warum: "Wichtige KI-Bots nicht versehentlich aussperren, sonst kann die Seite nicht in KI-Antworten erscheinen." },
+        { text: "Alte URLs leiten per 301 auf die passenden neuen Seiten weiter.", falsch: false },
+        { text: "Alle Ratgeberseiten stehen auf noindex, nur das Impressum ist indexierbar.", falsch: true, warum: "Verkehrt herum: noindex ist für Seiten wie Impressum oder reine Filterseiten gedacht, nicht für die wichtigen Inhalte." },
+        { text: "Titelbilder als große PNG-Dateien, Caching ist deaktiviert.", falsch: true, warum: "Schadet Ladezeiten und Core Web Vitals. Besser moderne Formate wie WebP und effizientes Caching." },
+        { text: "Strukturierte Daten zur Organisation im JSON-LD-Format.", falsch: false }
+      ],
+      erklaerung: "Technisches SEO ist das Fundament: Crawler und KI-Bots müssen die Seiten erreichen, wichtige Inhalte müssen indexierbar sein, und die Seite muss schnell laden.",
+      quelle: "SEO & GEO 2026: Die Kunst der modernen Suchmaschinen- und KI-Optimierung"
+    }
   ],
   tabellen: [
     {"titel":"Vergleich von SEO- und Geo-Optimierungskonzepten","spalten":["Konzept / Begriff","Kategorie","Beschreibung und Relevanz","Hauptunterschied / Besonderheit","Typische Werkzeuge / Methoden","Erfolgsaussichten (Inferred)","Quelle"],"zeilen":[["GEO (Generative Engine Optimization)","GEO (Generative Engine Optimization)","Bezeichnet alle Maßnahmen, die dazu führen sollen, dass Inhalte häufiger in den KI-Antworten und Synthesen von Chatbots (z. B. ChatGPT, Gemini, Perplexity) genannt, empfohlen oder zitiert werden.","Optimiert für Large Language Models (LLMs), die mit Trainingsdaten arbeiten und RAG (Retrieval-Augmented Generation) sowie Wahrscheinlichkeitsprognosen nutzen; Fokus liegt auf Prompts, Zitiermöglichkeit und Marken-Erwähnungen (Brand Mentions).","Master-Prompt-Erstellung, Content Chunks/Absätze, prägnante W-Fragen/FAQs, Hervorhebung von Definitionen, Pflege der Online-Reputation und Eintrag in relevante Branchenverzeichnisse/Bestenlisten. Tools: AlsoSearched, Answer The Public, Query Fanout, Sistrix GEO-Modul.","Zukunftsweisend und stark wachsend durch verändertes Nutzerverhalten (besonders bei jüngeren Zielgruppen), baut jedoch auf soliden SEO-Grundlagen auf.","[1]"],["SEO (Search Engine Optimization / Suchmaschinenoptimierung)","Klassisches SEO","Bezeichnet alle Maßnahmen, die dazu dienen, Inhalte in den organischen (nicht bezahlten) Suchergebnissen von Suchmaschinen wie Google zu relevanten Keywords bestmöglich auffindbar zu machen.","Optimiert für klassische Suchmaschinen-Crawler und Algorithmen (z. B. Indexierung, Rankings in den „zehn blauen Links“); basiert stark auf Keywords, Crawlbarkeit und Suchintention.","Keyword-Recherche, Onpage-Optimierung (Title Tags, Meta-Descriptions, H-Tags), technisches SEO (Ladezeiten, Schema-Daten, Status Codes), Content-Erstellung, Linkaufbau (Backlinks, Digital PR). Tools: Sistrix, Screaming Frog, Ahrefs, Seability, Keyword Surfer, Google Search Console.","Hoch für organischen Traffic; erfordert kontinuierlichen Einsatz und Geduld (meist 6–12 Monate bis zu deutlichen Ergebnissen).","[1]"],["Master-Prompts & Prompt-Recherche","GEO-Strategie","Das Identifizieren und Analysieren von typischen, ausformulierten Nutzeranfragen (Prompts) an KI-Chatbots anstelle einzelner Starr-Keywords.","Da Nutzer mit KIs in ganzen Sätzen/Fragen chatten und es keine öffentlichen Daten (wie Suchvolumina) zu Prompts gibt, müssen Master-Prompts hypothetisch abgeleitet und getrackt werden.","W-Fragen-Analyse, Tools wie AlsoSearched, Answer The Public, Query Fanout sowie GEO-Tracking-Module (z. B. in Sistrix).","Notwendige Anpassung der Keyword-Recherche an das Zeitalter generativer KIs.","[1]"],["Content Chunks & Inverted Pyramid Design","Content-Strategie & Design","Strukturierung von Inhalten so, dass die Kernantwort/Definition direkt zu Beginn ohne Scrollen gegeben wird (Umgekehrte Pyramide), gefolgt von tiefgehenden Details und klar abgegrenzten Text-Abschnitten (Chunks).","Erleichtert sowohl Nutzern das schnelle Finden von Antworten als auch KI-Systemen das Extrahieren und Zitieren prägnanter Passagen.","Optische Hervorhebungen, Definition-Boxes, prägnante FAQ-Abschnitte (3–5 Sätze), saubere HTML-Formatierung.","Sehr hoch, um in Google AI Overviews und KI-Antworten als Quelle zitiert zu werden.","[1]"],["RAG (Retrieval-Augmented Generation)","KI-Technologie / LLMs","Methode, bei der das statische Modellwissen eines Large Language Models mit externen, aktuellen Informationsquellen (wie Live-Websuchen) kombiniert wird.","Ermöglicht es KI-Chatbots, auch zu tagesaktuellen Ereignissen verlässliche Echtzeit-Antworten mit Quellenangaben zu generieren.","Anbindung von LLMs an Suchmaschinen-APIs (z. B. ChatGPT-Verknüpfung mit Bing).","Entscheidend für GEO, da aktuelle Webinhalte so in KI-Antworten einfließen können.","[1]"],["E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness)","Google Qualitätsrichtlinie","Ein von Google genutztes Konzept/Filter zur Beurteilung der Qualität und Glaubwürdigkeit von Webseiten, insbesondere in sensiblen Bereichen (YMYL: Your Money, Your Life).","Kein direkter Rankingfaktor, sondern ein Qualitätsfilter/Schwellenwert. Fehlt E-E-A-T, werden gute Rankings verhindert.","Transparente Autorenprofile, Nachweis von Fachkenntnissen, Veröffentlichung echter Erfahrungsberichte, Belegen durch wissenschaftliche/seriöse Quellen, Stärkung der Unternehmensreputation.","Unerlässlich für langfristigen SEO-Erfolg in Gesundheits-, Finanz- und E-Commerce-Branchen.","[1]"],["Digital PR & Brand Mentions","Offpage SEO & GEO","Erstellung von pressemitteilungswürdigen Inhalten (z. B. Studien, Umfragen, Ratgebern), um mediale Aufmerksamkeit, Verlinkungen und Markenerwähnungen zu erzielen.","Erzeugt hochgradig natürliche, autoritäre Backlinks für SEO und liefert für GEO essenzielle Markenerwähnungen (Brand Mentions), auf die LLMs bei Empfehlungen zurückgreifen.","Studien/Absurde Umfragen (z. B. HelloFresh Pizza-Studie), Fachratgeber (z. B. Senioren-Internetguide), Outreach an Journalisten, Presseportale.","Sehr hohe Hebelwirkung für Domain-Autorität und Marken-Reputation, jedoch aufwendig in der Umsetzung.","[1]"],["Keyword-Kannibalisierung","Onpage-SEO Problemstellung","Entsteht, wenn mehrere Unterseiten derselben Website auf dasselbe Keyword oder dieselbe Suchintention optimiert sind.","Verwirrt die Suchmaschine, führt zu schwankenden Rankings und kann das Rankingpotenzial beider Seiten komplett zerstören.","URL-Mapping, Bereinigung doppelter Keywords in Title Tags/H1s, SERP-Intent-Vergleich bei ähnlichen Keywords.","Durch Bereinigung lassen sich oft schnelle Ranking-Gewinne erzielen.","[1]"],["SEA / Paid Search (Search Engine Advertising)","Suchmaschinenwerbung","Bezahlte Anzeigenschaltung in Suchmaschinen (z. B. Google Ads) im gesponsorten Bereich der Suchergebnisseite.","Liefert sofortige Sichtbarkeit und Klicks gegen Bezahlung (CPC), generiert jedoch bei europäischen Nutzern deutlich weniger Klicks im Vergleich zum organischen Bereich.","Google Ads, Keyword Planner, Testen von Keywords auf Conversions und Klickpreise (CPC).","Sehr gut für schnelle Tests von Conversions und Keywords, jedoch anhaltend kostenintensiv.","[1]"],["Information Retrieval","IT-Grundlage / Suchmaschinentechnik","Wissenschaft und IT-Disziplin hinter der Speicherung, Organisation und schnellen Bereitstellung großer Datenmengen für Nutzer (z. B. im World Wide Web).","Die technische Funktionsweise von klassischen Suchmaschinen über die drei Hauptschritte Crawling, Indexierung und Ranking.","Web-Crawler (Bots), Datenbank-Indexierung, mathematische Retrieval-Modelle.","Theoretisches Fundament; das Verständnis hilft beim gezielten technischen SEO.","[1]"]]}

@@ -4,6 +4,18 @@
 
 window.LERN_CHANGELOG = [
   {
+    version: "2.6",
+    datum: "16.11.2026",
+    titel: "Faktencheck & neue Aufgaben",
+    neu: [
+      "KI aktuell und Marketing-Trends wurden gegen Primärquellen geprüft: rund 80 Stellen korrigiert oder genauer formuliert, Quellen ergänzt.",
+      "Neuer Fragetyp „Fallbeispiel“: kurze Praxissituation aus dem Kanzlei-Alltag, was tust du?",
+      "Neuer Fragetyp „Rechenaufgabe“: Ergebnis selbst eintippen, z. B. CTR oder Engagement-Rate, mit Rechenweg.",
+      "Neuer Fragetyp „Fehler finden“: problematische Stellen in Posts, Newslettern oder Impressum antippen.",
+      "Rund 95 neue Aufgaben dieser Typen in allen sieben Themen."
+    ]
+  },
+  {
     version: "2.5",
     datum: "16.11.2026",
     titel: "Begriffe A–Z",

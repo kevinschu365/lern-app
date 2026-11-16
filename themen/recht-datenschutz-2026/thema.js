@@ -572,6 +572,202 @@ window.LERN_THEMEN.push({
       ],
       erklaerung: "Erst die Rechte klären, dann erzeugen, prüfen, kennzeichnen und barrierearm veröffentlichen.",
       quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+
+    // ---------- Fallbeispiele (8) ----------
+    {
+      typ: "fall",
+      fall: "Ein ehemaliger Mandant schreibt bei Google eine 1-Stern-Bewertung und stellt den Ablauf seines Verfahrens aus Sicht der Kanzlei falsch dar. Die Partnerin möchte öffentlich antworten.",
+      frage: "Welche Antwort ist berufsrechtlich der sichere Weg?",
+      optionen: [
+        "Mit Details aus der Akte richtigstellen, was wirklich passiert ist",
+        "Sachlich und freundlich antworten, keine Details zum Mandat nennen und ein persönliches Gespräch anbieten",
+        "Freunde bitten, mit positiven Bewertungen gegenzuhalten",
+        "Den Namen des Mandanten nennen, damit klar ist, um wen es geht"
+      ],
+      richtig: [1],
+      erklaerung: "Die Verschwiegenheitspflicht (§ 43a Abs. 2 BRAO) gilt auch bei der Antwort auf eine schlechte Bewertung: keine Mandatsdetails, nicht einmal die Bestätigung, dass ein Mandat bestand. Bestellte Gefälligkeitsbewertungen wären zudem unzulässig.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fall",
+      fall: "Auf der Startseite soll ein Widget mit den Google-Bewertungen der Kanzlei erscheinen. Darüber ist geplant: „Nur echte, geprüfte Mandantenstimmen“. Die Kanzlei prüft die Bewertungen selbst nicht.",
+      frage: "Was ist richtig?",
+      optionen: [
+        "Passt so, Google-Bewertungen sind immer echt",
+        "Die Echtheit nur behaupten, wenn sie angemessen geprüft wird, und informieren, ob und wie die Echtheit sichergestellt wird",
+        "Negative Bewertungen ausblenden und „alle Bewertungen“ darüber schreiben",
+        "Bewertungen darf eine Kanzlei grundsätzlich nicht zeigen"
+      ],
+      richtig: [1],
+      erklaerung: "§ 5b Abs. 3 UWG verlangt die Information, ob und wie die Echtheit sichergestellt wird. Echtheit zu behaupten, ohne angemessen zu prüfen, steht auf der Schwarzen Liste. Nur positive zeigen und „alle“ behaupten wäre ebenfalls verfälschend.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fall",
+      fall: "Im Kontaktformular der Kanzlei ist ein Häkchen bei „Ja, ich möchte auch den Newsletter erhalten“ bereits gesetzt. Wer es nicht entfernt, landet direkt im Verteiler.",
+      frage: "Wie sollte die Anmeldung stattdessen aussehen?",
+      optionen: [
+        "Häkchen bleibt gesetzt, im Footer steht ein Hinweis",
+        "Häkchen leer lassen, freiwillig aktiv ankreuzen, danach Double-Opt-in mit Bestätigungsmail ohne Werbung",
+        "Jeder, der das Formular nutzt, bekommt automatisch den Newsletter, weil er ja Interesse gezeigt hat",
+        "Die Einwilligung reicht mündlich am Telefon, eine Dokumentation ist nicht nötig"
+      ],
+      richtig: [1],
+      erklaerung: "Ein vorangekreuztes Häkchen ist keine wirksame Einwilligung. E-Mail-Werbung braucht die vorherige ausdrückliche Einwilligung (§ 7 Abs. 2 Nr. 2 UWG), die man nachweisen können muss (Art. 7 DSGVO). Double-Opt-in mit Protokoll ist der bewährte Weg.",
+      quelle: "Datenschutz, Cookies, Impressum & Barrierefreiheit"
+    },
+    {
+      typ: "fall",
+      fall: "Nach einem Fachvortrag hat die Kanzlei 60 Visitenkarten gesammelt. Eine Kollegin will alle Adressen am Montag in den Newsletter-Verteiler importieren.",
+      frage: "Was ist richtig?",
+      optionen: [
+        "Erlaubt, wer eine Visitenkarte gibt, willigt in Werbung ein",
+        "Nicht ohne Einwilligung: Die Personen lieber einmal persönlich anschreiben und auf die Anmeldung per Double-Opt-in hinweisen",
+        "Erlaubt, solange im Newsletter ein Abmeldelink steht",
+        "Erlaubt, weil die Kanzlei ein berechtigtes Interesse hat"
+      ],
+      richtig: [1],
+      erklaerung: "Eine Visitenkarte ist keine ausdrückliche Einwilligung in E-Mail-Werbung (§ 7 Abs. 2 Nr. 2 UWG). Laut Checkliste gehören Adressen aus Visitenkarten, Akten oder gekauften Listen nicht einfach in den Verteiler. Ein Abmeldelink heilt die fehlende Einwilligung nicht.",
+      quelle: "Checkliste für Website und Newsletter"
+    },
+    {
+      typ: "fall",
+      fall: "Die Kanzlei bezahlt eine Finanz-Influencerin dafür, in einem Instagram-Reel die Erbrecht-Beratung der Kanzlei zu empfehlen. Die Influencerin will den Hinweis „#ad“ ganz ans Ende zwischen 20 andere Hashtags setzen.",
+      frage: "Was solltest du verlangen?",
+      optionen: [
+        "Nichts, die Influencerin ist allein verantwortlich",
+        "Klare Kennzeichnung am Anfang mit „Werbung“ oder „Anzeige“, und der Inhalt darf nichts enthalten, was der Kanzlei selbst als Werbung verboten wäre",
+        "Auf die Kennzeichnung ganz verzichten, damit es authentischer wirkt",
+        "Nur in der Story kennzeichnen, nicht im Reel"
+      ],
+      richtig: [1],
+      erklaerung: "Bei Bezahlung liegt ein kommerzieller Zweck vor, der klar erkennbar sein muss (§ 5a Abs. 4 UWG), am besten am Anfang mit „Werbung“ oder „Anzeige“. Versteckte Hashtags sind riskant. Und nach § 6 Abs. 3 BORA darf die Kanzlei nicht mitwirken, wenn Dritte für sie unsachlich werben.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fall",
+      fall: "Für einen LinkedIn-Post soll ein KI-Tool ein realistisch wirkendes Foto erzeugen, das die Partnerin der Kanzlei bei einem Vortrag vor großem Publikum zeigt. Diesen Vortrag hat es nie gegeben.",
+      frage: "Was gilt seit dem 02.08.2026?",
+      optionen: [
+        "Nichts Besonderes, KI-Bilder sind frei verwendbar",
+        "Das Bild ist ein Deepfake und muss als KI-erzeugt offengelegt werden (Art. 50 AI Act), zusätzlich kann es ohne Hinweis irreführend sein",
+        "Nur der Anbieter des KI-Tools muss etwas tun, die Kanzlei nicht",
+        "Es reicht, das Bild klein zu zeigen"
+      ],
+      richtig: [1],
+      erklaerung: "Ein realistisches künstliches Bild einer echten Person bei einem Ereignis, das nie stattfand, ist ein Deepfake. Betreiber, also auch die Kanzlei als Nutzerin, müssen das offenlegen. Unabhängig vom AI Act kann ein solches Bild ohne Hinweis nach UWG irreführend sein. Sicherer ist ohnehin ein echtes Foto.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fall",
+      fall: "Beim Website-Check fällt auf: Die Schriftarten werden bei jedem Seitenaufruf direkt von den Servern von Google Fonts geladen, noch bevor der Besucher im Banner etwas entschieden hat.",
+      frage: "Was ist die naheliegende Lösung?",
+      optionen: [
+        "Nichts tun, Schriften sind keine personenbezogenen Daten",
+        "Die Schriften lokal auf dem eigenen Server einbinden (oder sie nur nach Einwilligung laden)",
+        "Einen Hinweis „Wir nutzen Google Fonts“ ins Impressum schreiben",
+        "Die Schrift einfach fett setzen"
+      ],
+      richtig: [1],
+      erklaerung: "Beim Laden von fremden Servern wird die IP-Adresse der Besucher an den Anbieter übertragen. Das LG München I hat 2022 einem Besucher deshalb Schadensersatz zugesprochen. Laut Checkliste gehören Schriften von fremden Servern lokal eingebunden oder hinter die Einwilligung. Lokal ist meist der einfachste Weg.",
+      quelle: "Checkliste für Website und Newsletter"
+    },
+    {
+      typ: "fall",
+      fall: "Beim Relaunch übernimmt die Agentur das alte Impressum. Darin steht: „Angaben gemäß § 5 TMG“, ein Link zur OS-Plattform der EU, aber keine Angaben zur Rechtsanwaltskammer.",
+      frage: "Was musst du ändern? (Mehrere richtig)",
+      optionen: [
+        "„§ 5 TMG“ durch „§ 5 DDG“ ersetzen",
+        "Den Link zur OS-Plattform entfernen",
+        "Zuständige Kammer, Berufsbezeichnung mit Verleihungsstaat und die berufsrechtlichen Regelungen ergänzen",
+        "Das Impressum nur noch auf der Startseite verlinken"
+      ],
+      richtig: [0, 1, 2],
+      erklaerung: "Seit 14.05.2024 steht die Impressumspflicht in § 5 DDG. Die OS-Plattform ist seit Juli 2025 abgeschaltet. Kanzleien brauchen als reglementierter Beruf die Kammer- und Berufsangaben. Das Impressum muss von jeder Seite leicht erreichbar sein, nicht nur von der Startseite.",
+      quelle: "Datenschutz, Cookies, Impressum & Barrierefreiheit"
+    },
+
+    // ---------- Fehler finden (6) ----------
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in diesem Instagram-Post. Hintergrund: Rechtsanwältin Lena Berg ist seit drei Monaten zugelassen und hat keinen Fachanwaltstitel.",
+      teile: [
+        { text: "Neu im Team: Rechtsanwältin Lena Berg verstärkt unser Familienrecht.", falsch: false },
+        { text: "Als Fachanwältin für Familienrecht kennt sie jeden Kniff.", falsch: true, warum: "„Fachanwältin“ darf sich nur nennen, wem die Kammer den Titel verliehen hat. Die Angabe ist irreführend." },
+        { text: "Ihr letzter Erfolg: Herr M. aus Köln-Ehrenfeld bekam dank ihr das alleinige Sorgerecht.", falsch: true, warum: "Werbung mit Mandaten nur mit ausdrücklicher Einwilligung (§ 6 Abs. 2 BORA). Ohne sie verletzt das auch die Verschwiegenheit, der Mandant ist hier erkennbar." },
+        { text: "Termine vereinbaren Sie über den Link in unserer Bio.", falsch: false }
+      ],
+      erklaerung: "Berufsbezeichnungen müssen stimmen, und Mandate sind nur mit ausdrücklicher Einwilligung Werbematerial.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in diesem Newsletter-Text.",
+      teile: [
+        { text: "Sie erhalten diesen Newsletter, weil Sie uns auf der Messe Ihre Visitenkarte gegeben haben.", falsch: true, warum: "Eine Visitenkarte ist keine ausdrückliche Einwilligung in E-Mail-Werbung (§ 7 Abs. 2 Nr. 2 UWG)." },
+        { text: "Thema des Monats: So funktioniert ein Berliner Testament.", falsch: false },
+        { text: "Übrigens: Unsere Kanzlei ist jetzt umweltfreundlich und klimaneutral.", falsch: true, warum: "Allgemeine Umweltaussagen ohne Nachweis sind riskant, seit 27.09.2026 gelten dafür deutlich strengere Regeln im UWG." },
+        { text: "Abmelden können Sie sich per unterschriebenem Brief an unsere Kanzleiadresse.", falsch: true, warum: "Der Widerruf muss so einfach sein wie die Einwilligung (Art. 7 Abs. 3 DSGVO). Üblich ist ein gut sichtbarer Abmeldelink in jeder Mail." },
+        { text: "Impressum: Kanzlei Muster Rechtsanwälte, Musterstraße 1, 50667 Köln, vollständige Angaben unter kanzlei-beispiel.de/impressum.", falsch: false }
+      ],
+      erklaerung: "Ein rechtssicherer Newsletter braucht eine nachweisbare Einwilligung, sachliche Inhalte und eine einfache Abmeldung.",
+      quelle: "Checkliste für Website und Newsletter"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in diesem Cookie-Banner.",
+      teile: [
+        { text: "Wir nutzen Google Analytics zur Statistik und YouTube für eingebettete Videos. Details, Zwecke und Drittlandübermittlung findest du in den Einstellungen.", falsch: false },
+        { text: "Statistik ☑  Marketing ☑ (bereits angehakt)", falsch: true, warum: "Vorausgewählte Häkchen sind keine wirksame Einwilligung (EuGH Planet49, BGH Cookie-Einwilligung II)." },
+        { text: "Großer Button „Alle akzeptieren“. „Ablehnen“ gibt es nur auf der zweiten Ebene unter „Einstellungen“.", falsch: true, warum: "Ablehnen muss so einfach sein wie Zustimmen, in der Praxis mit einem Ablehnen-Button auf der ersten Ebene." },
+        { text: "Google Analytics startet schon beim Laden der Seite, bevor du etwas anklickst.", falsch: true, warum: "Einwilligungspflichtige Tools dürfen erst nach der Einwilligung laden (§ 25 TDDDG)." },
+        { text: "Notwendige Cookies, z. B. zum Speichern deiner Cookie-Entscheidung, sind immer aktiv.", falsch: false },
+        { text: "Deine Auswahl kannst du jederzeit über „Cookie-Einstellungen“ im Footer ändern.", falsch: false }
+      ],
+      erklaerung: "Keine Vorauswahl, Ablehnen gleichwertig, Tools erst nach Einwilligung, Einstellungen jederzeit änderbar. Unbedingt erforderliche Cookies brauchen keine Einwilligung.",
+      quelle: "Datenschutz, Cookies, Impressum & Barrierefreiheit"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in diesem Kanzlei-Impressum.",
+      teile: [
+        { text: "Angaben gemäß § 5 TMG", falsch: true, warum: "Das TMG gilt seit 14.05.2024 nicht mehr. Die Impressumspflicht steht jetzt in § 5 DDG." },
+        { text: "Kanzlei Muster Rechtsanwälte PartG mbB, Musterstraße 1, 50667 Köln, vertreten durch die Partner Anna Muster und Ben Beispiel.", falsch: false },
+        { text: "Telefon und E-Mail-Adresse für die schnelle Kontaktaufnahme.", falsch: false },
+        { text: "Berufsbezeichnung: Rechtsanwalt/Rechtsanwältin (verliehen in Deutschland). Zuständige Kammer: Rechtsanwaltskammer Köln.", falsch: false },
+        { text: "Berufsrechtliche Regelungen: auf Anfrage.", falsch: true, warum: "Bei reglementierten Berufen müssen die berufsrechtlichen Regelungen genannt werden und wo sie zugänglich sind, z. B. mit Link. „Auf Anfrage“ reicht nicht." },
+        { text: "Online-Streitbeilegung: Die EU-Kommission stellt eine Plattform bereit, die Sie unter dem folgenden Link finden.", falsch: true, warum: "Die OS-Plattform wurde im Juli 2025 abgeschaltet, der Hinweis samt Link sollte raus." }
+      ],
+      erklaerung: "Neue Rechtsgrundlage (DDG), vollständige Berufsangaben und kein veralteter OS-Link: Das sind die typischen Baustellen bei Kanzlei-Impressen.",
+      quelle: "Datenschutz, Cookies, Impressum & Barrierefreiheit"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme in diesem Werbetext für die Leistungsseite Arbeitsrecht.",
+      teile: [
+        { text: "Rechtsanwalt Dr. Klein ist Fachanwalt für Arbeitsrecht.", falsch: false },
+        { text: "Unsere Erfolgsquote vor Gericht: 100 %.", falsch: true, warum: "Kaum belegbar und erweckt den irreführenden Eindruck eines sicheren Erfolgs (§ 5 UWG, Sachlichkeitsgebot)." },
+        { text: "4,9 Sterne aus 120 Google-Bewertungen, alle von echten, geprüften Mandanten.", falsch: true, warum: "Echtheit zu behaupten, ohne sie angemessen zu prüfen, ist nach der Schwarzen Liste immer unzulässig. Nötig ist der Hinweis, ob und wie geprüft wird (§ 5b Abs. 3 UWG)." },
+        { text: "Rufen Sie uns an, wir melden uns innerhalb eines Werktags zurück.", falsch: false },
+        { text: "Wir garantieren Ihnen eine Abfindung.", falsch: true, warum: "Erfolgsversprechen sind irreführend und unsachlich. Über den Ausgang eines Verfahrens entscheidet nicht die Kanzlei." }
+      ],
+      erklaerung: "Anwaltswerbung muss sachlich und belegbar sein (§ 43b BRAO, § 6 BORA, § 5 UWG). Fakten wie ein verliehener Fachanwaltstitel oder eine Rückrufzusage sind in Ordnung.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
+    },
+    {
+      typ: "fehler",
+      frage: "Finde die Probleme bei den Bildern und Texten für einen neuen Blogbeitrag.",
+      teile: [
+        { text: "Der Text wurde mit KI-Hilfe entworfen, von Rechtsanwältin Muster geprüft und redaktionell verantwortet.", falsch: false },
+        { text: "Titelbild: realistisch wirkendes KI-Foto unserer Partnerin vor dem Landgericht, ohne Hinweis auf KI.", falsch: true, warum: "Ein realistisches künstliches Bild einer echten Person ist ein Deepfake und muss offengelegt werden (Art. 50 AI Act)." },
+        { text: "Infografik: KI-Bild „im Stil“ einer bekannten Zeichentrickfigur als Maskottchen.", falsch: true, warum: "KI-Ausgaben können fremde Rechte verletzen, etwa wenn sie geschützte Figuren nachbilden." },
+        { text: "Foto vom Team-Event: Alle Abgebildeten haben schriftlich eingewilligt.", falsch: false },
+        { text: "Stockfoto aus einer Bilddatenbank, Lizenz für Web und Social Media dokumentiert.", falsch: false },
+        { text: "Unter dem KI-Titelbild steht: „Urheberrechtlich geschütztes Werk, Kopieren verboten!“", falsch: true, warum: "Rein KI-generierte Bilder sind nach herrschender Meinung in der Regel nicht urheberrechtlich geschützt, weil die menschliche Schöpfung fehlt. Der Hinweis ist so nicht haltbar." }
+      ],
+      erklaerung: "Ein KI-Text mit menschlicher Prüfung und redaktioneller Verantwortung muss nach Art. 50 in der Regel nicht gekennzeichnet werden. Deepfakes schon. Fremde Figuren meiden, Lizenzen und Einwilligungen dokumentieren.",
+      quelle: "Werberecht, KI & Urheberrecht, Anwaltswerbung"
     }
   ],
 

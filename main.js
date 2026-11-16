@@ -183,6 +183,44 @@ function normalizeQuestion(q) {
         explanation,
         quelle
       };
+    case "fall": {
+      if (!q.fall || !q.frage || !Array.isArray(q.optionen)) return null;
+      const correct = (Array.isArray(q.richtig) ? q.richtig : [q.richtig]).map(Number);
+      return {
+        type: correct.length > 1 ? "multi" : "single",
+        kind: "case",
+        prompt: `<span class="case-box">${esc(q.fall)}</span>${esc(q.frage)}`,
+        options: q.optionen.map(esc),
+        correct,
+        explanation,
+        quelle
+      };
+    }
+    case "rechnen": {
+      const answer = Number(String(q.loesung).replace(",", "."));
+      if (!q.frage || !Number.isFinite(answer)) return null;
+      return {
+        type: "number",
+        kind: "calc",
+        prompt: esc(q.frage),
+        answer,
+        tolerance: Number.isFinite(Number(q.toleranz)) ? Number(q.toleranz) : Math.max(0.01, Math.abs(answer) * 0.01),
+        unit: esc(q.einheit || ""),
+        explanation,
+        quelle
+      };
+    }
+    case "fehler": {
+      if (!Array.isArray(q.teile) || !q.teile.some((t) => t && t.falsch)) return null;
+      return {
+        type: "spot",
+        kind: "spot",
+        prompt: esc(q.frage || "Tippe alle Stellen an, die falsch oder problematisch sind."),
+        segments: q.teile.map((t) => ({ text: esc(t.text || ""), bad: !!t.falsch, why: esc(t.warum || "") })),
+        explanation,
+        quelle
+      };
+    }
     case "reihenfolge":
       if (!Array.isArray(q.schritte) || q.schritte.length < 2) return null;
       return {
@@ -225,6 +263,8 @@ function solutionText(q) {
   if (q.type === "open") return q.sample || "";
   if (q.type === "match") return q.pairs.map((p) => `${p[0]} → ${p[1]}`).join(" · ");
   if (q.type === "order") return q.steps.map((s, i) => `${i + 1}. ${s}`).join(" · ");
+  if (q.type === "number") return `${String(q.answer).replace(".", ",")}${q.unit ? ` ${q.unit}` : ""}`;
+  if (q.type === "spot") return q.segments.filter((x) => x.bad).map((x) => x.text).join(" · ");
   return (q.correct || []).map((i) => q.options[i]).filter(Boolean).join(" / ");
 }
 
@@ -1135,7 +1175,10 @@ const KIND_LABELS = {
   match: "Zuordnen",
   order: "Reihenfolge",
   fit: "Passt das zusammen?",
-  pick: "Welche Erklärung passt?"
+  pick: "Welche Erklärung passt?",
+  case: "Fallbeispiel",
+  calc: "Rechenaufgabe",
+  spot: "Fehler finden"
 };
 
 function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true, onFinish = null } = {}) {
@@ -1155,6 +1198,8 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
       a.match = {};
       a.rightOrder = shuffle(q.pairs.map((_, i) => i));
     }
+    if (q.type === "number") a.num = "";
+    if (q.type === "spot") a.spot = [];
     if (q.type === "order") {
       let order = shuffle(q.steps.map((_, i) => i));
       let guard = 0;
@@ -1182,12 +1227,24 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
   const isReady = (q, a) => {
     if (q.type === "match") return q.pairs.every((_, i) => a.match[i] !== undefined);
     if (q.type === "order") return true;
+    if (q.type === "number") return String(a.num || "").trim() !== "";
+    if (q.type === "spot") return a.spot.length > 0;
     return a.selected.length > 0;
   };
+
+  const parseNumber = (text) => Number(String(text).replace(/\s|%|€|EUR/gi, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
 
   const evaluate = (q, a) => {
     if (q.type === "match") return q.pairs.every((_, i) => a.match[i] === i);
     if (q.type === "order") return a.order.every((v, i) => v === i);
+    if (q.type === "number") {
+      const value = parseNumber(a.num);
+      return Number.isFinite(value) && Math.abs(value - q.answer) <= q.tolerance + 1e-9;
+    }
+    if (q.type === "spot") {
+      const bad = q.segments.map((x, i) => (x.bad ? i : -1)).filter((i) => i >= 0);
+      return sameSelection(a.spot, bad);
+    }
     return sameSelection(a.selected, q.correct);
   };
 
@@ -1227,6 +1284,23 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
             </div>`;
         })
         .join("")}</div>`;
+    } else if (q.type === "number") {
+      main = `
+        <div class="calc">
+          <input class="calc-input ${a.checked ? (a.correct ? "is-correct" : "is-wrong") : ""}" type="text" inputmode="decimal" autocomplete="off" data-num value="${esc(a.num)}" placeholder="Deine Lösung" ${a.checked ? "disabled" : ""} />
+          ${q.unit ? `<span class="calc-unit">${q.unit}</span>` : ""}
+        </div>
+        ${a.checked && !a.correct ? `<div class="answer-box"><strong>Richtig wäre</strong><p>${solutionText(q)}</p></div>` : ""}`;
+    } else if (q.type === "spot") {
+      main = `<p class="spot-text">${q.segments
+        .map((seg, si) => {
+          const chosen = a.spot.includes(si);
+          let cls = chosen ? "is-selected" : "";
+          if (a.checked) cls = seg.bad ? (chosen ? "is-correct" : "is-missed") : chosen ? "is-wrong" : "";
+          return `<button class="spot-seg ${cls}" type="button" data-seg="${si}" ${a.checked ? "disabled" : ""}>${seg.text}</button>`;
+        })
+        .join(" ")}</p>
+        ${a.checked ? `<ul class="spot-why">${q.segments.filter((x) => x.bad).map((x) => `<li><strong>${x.text}</strong>${x.why ? ` – ${x.why}` : ""}</li>`).join("")}</ul>` : ""}`;
     } else if (q.type === "order") {
       const last = a.order.length - 1;
       main = `<ol class="order">${a.order
@@ -1266,10 +1340,16 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
           ? "Wähle zu jedem Begriff die passende Erklärung."
           : q.type === "order"
             ? "Verschiebe die Schritte mit den Pfeilen."
-            : q.kind
+            : q.type === "number"
+              ? "Gib das Ergebnis als Zahl ein, Komma oder Punkt sind beide okay."
+              : q.type === "spot"
+                ? "Tippe alle Stellen an, die du für falsch hältst, dann „Ergebnis ansehen“."
+                : q.kind === "case"
+                  ? "Es können eine oder mehrere Antworten richtig sein."
+                  : q.kind
               ? ""
               : "Es können eine oder mehrere Antworten richtig sein.";
-      return `${main}${hint ? `<p class="hint">${hint}</p>` : ""}${isReady(q, a) ? confRow(a) : ""}`;
+      return `${main}${hint ? `<p class="hint">${hint}</p>` : ""}${isReady(q, a) || q.type === "number" ? confRow(a) : ""}`;
     }
 
     const confNote =
@@ -1280,7 +1360,9 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
           : "";
     const verdict = a.correct
       ? "Richtig!"
-      : q.type === "match" || q.type === "order"
+      : q.type === "spot"
+        ? "Nicht ganz. Grün = gefunden, rot umrandet = übersehen, rot = kein Fehler."
+        : q.type === "match" || q.type === "order" || q.type === "number"
         ? "Nicht ganz. Rot markiert ist, was noch nicht stimmt."
         : "Nicht ganz. Grün markiert ist die richtige Lösung.";
     return `
@@ -1363,6 +1445,18 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
     const a = current();
     if (event.target.matches("[data-own]")) a.text = event.target.value;
     if (event.target.matches("[data-why]")) a.why = event.target.value;
+    if (event.target.matches("[data-num]")) {
+      a.num = event.target.value;
+      const check = el.querySelector('[data-action="check"]');
+      if (check) check.disabled = !a.num.trim();
+    }
+  };
+
+  el.onkeydown = (event) => {
+    if (event.key === "Enter" && event.target.matches("[data-num]")) {
+      event.preventDefault();
+      el.querySelector('[data-action="check"]')?.click();
+    }
   };
 
   el.onchange = (event) => {
@@ -1384,6 +1478,11 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
 
     if (q && btn.dataset.conf && !a.checked) {
       a.conf = a.conf === btn.dataset.conf ? "" : btn.dataset.conf;
+      return draw();
+    }
+    if (q && btn.dataset.seg !== undefined && !a.checked) {
+      const si = Number(btn.dataset.seg);
+      a.spot = a.spot.includes(si) ? a.spot.filter((v) => v !== si) : [...a.spot, si];
       return draw();
     }
     if (q && btn.dataset.move && !a.checked) {
@@ -1420,6 +1519,7 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
         if (q.options) q.options.forEach((opt, oi) => parts.push(`Antwort ${oi + 1}: ${opt}`));
         if (q.pairs) q.pairs.forEach((p) => parts.push(p[0]));
         if (q.steps) a.order.forEach((si, pos) => parts.push(`${pos + 1}: ${q.steps[si]}`));
+        if (q.segments) parts.push(q.segments.map((x) => x.text).join(" "));
         if (a.checked && q.explanation) parts.push(q.explanation);
         if (a.revealed && q.sample) parts.push(`Musterantwort: ${q.sample}`);
         return toggleSpeak(parts.join(". "), btn);
