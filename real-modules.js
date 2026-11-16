@@ -43,11 +43,11 @@ const open = (prompt, sampleAnswer) => ({
 const genericFlashcards = (topic) => [
   {
     front: `${topic} - Praxisfrage`,
-    back: `Frage dich bei diesem Modul immer zuerst: Welches Problem wird geloest und fuer welche Zielgruppe ist das relevant?`
+    back: `Frage dich bei diesem Modul immer zuerst: Welches Problem wird gelöst und für welche Zielgruppe ist das relevant?`
   },
   {
     front: `${topic} - Erfolg`,
-    back: `Ueberlege dir fuer dieses Modul immer passende Kennzahlen, typische Fehler und einen Praxisfall aus einem echten Unternehmen.`
+    back: `Überlege dir für dieses Modul immer passende Kennzahlen, typische Fehler und einen Praxisfall aus einem echten Unternehmen.`
   }
 ];
 
@@ -62,9 +62,9 @@ const moduleTopics = [
   "Suchmaschinenwerbung (SEA)",
   "Social Media Advertisement",
   "E-Commerce Webshops",
-  "E-Commerce Digitale Marktplaetze",
+  "E-Commerce Digitale Marktplätze",
   "WordPress",
-  "Texten fuers Web",
+  "Texten fürs Web",
   "Visuals mit Canva & KI",
   "Video-Content mit DaVinci & KI",
   "Analyse & Optimierung",
@@ -80,38 +80,38 @@ function baseModule(topic, index) {
     topic,
     color: tone.color,
     softColor: tone.soft,
-    summary: `Dieses Modul ist als Platzhalter vorbereitet. Sobald die Praesentation vorliegt, wird es mit einer kompakten Zusammenfassung, praxistauglichen Quizfragen, Karteikarten und Uebungen gefuellt.`,
+    summary: `Dieses Modul ist als Platzhalter vorbereitet. Sobald die Präsentation vorliegt, wird es mit einer kompakten Zusammenfassung, praxistauglichen Quizfragen, Karteikarten und Übungen gefüllt.`,
     questions: [
       open(
-        `Was erwartest du inhaltlich von ${topic}, und welche Lernziele waeren fuer dich am wichtigsten?`,
-        `Formuliere 3 bis 5 Stichpunkte: Welche Kernbegriffe, Prozesse, Tools oder Gesetze koennten in diesem Modul wichtig sein und wie wuerdest du das spaeter praktisch anwenden?`
+        `Was erwartest du inhaltlich von ${topic}, und welche Lernziele wären für dich am wichtigsten?`,
+        `Formuliere 3 bis 5 Stichpunkte: Welche Kernbegriffe, Prozesse, Tools oder Gesetze könnten in diesem Modul wichtig sein und wie würdest du das später praktisch anwenden?`
       )
     ],
     flashcards: [
       {
         front: `${topic} - Kernziel`,
-        back: `Notiere in einem Satz, welches Problem oder welche Aufgabe dieses Modul im Online Marketing loesen soll.`
+        back: `Notiere in einem Satz, welches Problem oder welche Aufgabe dieses Modul im Online Marketing lösen soll.`
       },
       {
         front: `${topic} - Transfer`,
-        back: `Ueberlege dir ein Beispiel aus einem echten Unternehmen, auf das du die Inhalte dieses Moduls spaeter anwenden koenntest.`
+        back: `Überlege dir ein Beispiel aus einem echten Unternehmen, auf das du die Inhalte dieses Moduls später anwenden könntest.`
       },
       {
         front: `${topic} - Fachbegriff`,
-        back: `Halte den wichtigsten Fachbegriff dieses Moduls fest und erklaere ihn in einem Satz.`
+        back: `Halte den wichtigsten Fachbegriff dieses Moduls fest und erkläre ihn in einem Satz.`
       },
       {
         front: `${topic} - KPI`,
-        back: `Notiere eine Kennzahl oder ein Qualitaetskriterium, an dem du den Erfolg dieses Moduls in der Praxis messen wuerdest.`
+        back: `Notiere eine Kennzahl oder ein Qualitätskriterium, an dem du den Erfolg dieses Moduls in der Praxis messen würdest.`
       }
     ],
     exercises: [
-      `Erstelle eine Mini-Zusammenfassung fuer ${topic} in 5 Stichpunkten, sobald die Unterlagen vorliegen.`,
-      `Sammle 10 Fachbegriffe aus ${topic} und erklaere jeden Begriff in einem einfachen Satz.`
+      `Erstelle eine Mini-Zusammenfassung für ${topic} in 5 Stichpunkten, sobald die Unterlagen vorliegen.`,
+      `Sammle 10 Fachbegriffe aus ${topic} und erkläre jeden Begriff in einem einfachen Satz.`
     ],
     tips: [
-      `Lerne dieses Modul zuerst ueber Begriffe, dann ueber Prozesse, dann ueber Anwendungsfaelle.`,
-      `Pruefe bei jedem Thema, wie man Erfolg, Risiken und typische Fehler in der Praxis erkennt.`
+      `Lerne dieses Modul zuerst über Begriffe, dann über Prozesse, dann über Anwendungsfälle.`,
+      `Prüfe bei jedem Thema, wie man Erfolg, Risiken und typische Fehler in der Praxis erkennt.`
     ]
   };
 }
@@ -332,7 +332,7 @@ const content = [
       single("Was ist \"Above the Fold\"?", ["Ein Designstil mit gefalteten Papiereffekten", "Der Bereich einer Website, der ohne Scrollen sichtbar ist", "Ein veraltetes Webdesign-Konzept", "Eine HTML-Struktur-Regel"], 1, "Above the Fold ist der sichtbare Bereich ohne Scrolling - hier platzieren gute Websites die wichtigsten Inhalte, CTAs und Markenbotschaften."),
       single("Was ist eine Landingpage?", ["Eine Seite nur für Flugbucher", "Eine spezialisierte Seite, auf der Nutzer von einer Kampagne landen, um eine klare Handlung auszuführen", "Die Startseite einer Website", "Eine technische Fehlerseite"], 1, "Landingpages sind optimiert für ein spezifisches Nutzer-Interest (z.B. nach Google-Anzeige, E-Mail-Kampagne). Sie führen zu einer klaren Conversion: Lead, Kauf, Newsletter-Anmeldung."),
       single("Was ist eine Conversion?", ["Die Umwandlung der Website in mobile Version", "Eine gewünschte Nutzeraktion wie Kauf, Anfrage, Newsletter-Anmeldung, Download", "Ein technischer Prozess beim Server", "Ein Designtrend"], 1, "Eine Conversion ist jede gewünschte Aktion eines Nutzers: Kauf, Lead-Generierung, Newsletter-Anmeldung, Download, Telefon-Anruf. Ziel von CRO ist es, mehr Conversions zu erreichen."),
-      single("Was ist Conversion Rate Optimization (CRO)?", ["Die Optimierung der Website-Geschwindigkeit", "Ein Prozess zur Steigerung der Anzahl gewünschter Nutzeraktionen", "Die Optimierung von Zahlungsgebuehren", "Nur für E-Commerce-Seiten relevant"], 1, "CRO bedeutet, Hürden abzubauen, Vertrauen aufzubauen, Nutzer gezielt zu führen - um die Conversion Rate zu erhöhen (z.B. von 2% auf 3%)."),
+      single("Was ist Conversion Rate Optimization (CRO)?", ["Die Optimierung der Website-Geschwindigkeit", "Ein Prozess zur Steigerung der Anzahl gewünschter Nutzeraktionen", "Die Optimierung von Zahlungsgebühren", "Nur für E-Commerce-Seiten relevant"], 1, "CRO bedeutet, Hürden abzubauen, Vertrauen aufzubauen, Nutzer gezielt zu führen - um die Conversion Rate zu erhöhen (z.B. von 2% auf 3%)."),
       single("Was ist ein Call-to-Action (CTA)?", ["Ein technischer Code für die Navigation", "Eine Handlungsaufforderung an den Nutzer (z.B. \"Jetzt beraten lassen\", \"Kostenlos testen\")", "Ein Kundensupport-System", "Eine automatische Website-Benachrichtigung"], 1, "CTAs sind explizite Aufforderungen zu Nutzeraktionen - klar, sichtbar, handlungsorientiert und zur Customer-Journey-Phase passend (z.B. \"Mehr erfahren\" in Consideration, \"Kaufen\" in Conversion)."),
       single("Welche Merkmale hat ein effektiver CTA?", ["Je mehr CTAs, desto besser", "Gut versteckt, um nicht zu aufdringlich zu wirken", "Klar, sichtbar, handlungsorientiert und zur Journey-Phase passend", "Alle CTAs sollten gleich aussehen"], 2, "Gute CTAs sind klar formuliert, visuell hervorgehoben, nutzerorientiert (\"Jetzt Angebot anfordern\" besser als \"Klick hier\") und zeitlich richtig platziert in der Journey."),
       single("Was sind Vertrauenselemente auf einer Website?", ["Nur das Impressum", "Kundenbewertungen, Siegel, Zertifikate, Referenzen, echte Bilder, klare Ansprechpartner, Transparenz", "Versteckte AGB", "Zufällige Logos von bekannten Marken"], 1, "Trust-Elemente bauen Glaubwürdigkeit auf: Kundenbewertungen, Sicherheitssiegel, Zertifikate, echte Fotos (kein Stock-Bildermaterial), sichtbare Kontaktdaten, transparente Geschäftsbedingungen."),
@@ -393,8 +393,8 @@ const content = [
       { front: "Mockup", back: "Eine visuelle Darstellung mit Farben, Bildern, Fonts und Grafiken. Detaillierter als Wireframe, aber nicht interaktiv. Hilft, finales Design zu visualisieren, bevor Entwicklung startet." },
       { front: "Prototype", back: "Eine funktionierende, interaktive HTML/CSS-Version einer Website. Kann getestet und bedient werden, bevor die finale Entwicklung startet." },
       { front: "Mobile First", back: "Eine Design-Philosophie, bei der zuerst die mobile Version optimiert wird, bevor für größere Bildschirme gestaltet wird. Sinnvoll, weil ~66% des Traffics mobil ist und Priorisierung auf kleinen Screens schwieriger ist." },
-      { front: "Responsive Design", back: "Ein Design-Ansatz, bei dem sich eine Website automatisch an verschiedene Bildschirmgrössen anpasst. Typische Breakpoints: Desktop groß, Desktop klein, Tablet, Mobile." },
-      { front: "Breakpoint", back: "Ein Bildschirmgrössen-Punkt, ab dem sich Layout ändert. Standard-Breakpoints: Desktop (>1024px), Tablet (768-1024px), Mobile (<768px)." },
+      { front: "Responsive Design", back: "Ein Design-Ansatz, bei dem sich eine Website automatisch an verschiedene Bildschirmgrößen anpasst. Typische Breakpoints: Desktop groß, Desktop klein, Tablet, Mobile." },
+      { front: "Breakpoint", back: "Ein Bildschirmgrößen-Punkt, ab dem sich Layout ändert. Standard-Breakpoints: Desktop (>1024px), Tablet (768-1024px), Mobile (<768px)." },
       { front: "Above the Fold", back: "Der Bereich einer Website, der ohne Scrollen sichtbar ist. Hier gehören wichtigste Inhalte, USP, CTA und Vertrauenselemente hin." },
       { front: "UX (User Experience)", back: "Das Gesamterlebnis eines Nutzers mit einer Website. Umfasst: Ladezeiten, Navigation, Verständlichkeit, Gefühl. Gutes UX führt zu höheren Conversions." },
       { front: "UI (User Interface)", back: "Das visuelle und interaktive Design-Element einer Website: Buttons, Farben, Icons, Layouts, Forms. Die \"Oberfläche\", mit der Nutzer interagieren." },
@@ -734,82 +734,82 @@ const content = [
   {
     summary: "Social Media Marketing behandelt Grundlagen sozialer Plattformen, Ziele, Strategie, SMART-Ziele, Formate, Corporate Influencer, Ressourcenplanung und kanalbezogene Unterschiede. Im Fokus steht nicht nur Reichweite, sondern strategischer Plattform-Einsatz.",
     questions: [
-      single("Was zeichnet Social Media im Vergleich zu klassischen Medien besonders aus?", ["Einweg-Kommunikation", "Interaktion und Beteiligung", "Keine Inhalte", "Nur bezahlte Reichweite"], 1, "Social Media ist von Austausch, Reaktion und Community gepraegt."),
-      single("Was beschreibt Web 2.0 im Kern?", ["Ein rein technisches Hosting-Update", "Mehr Beteiligung, Vernetzung und nutzergenerierte Inhalte", "Nur neue Browser", "Nur den Online-Shop-Bereich"], 1, "Web 2.0 steht fuer interaktive und partizipative Webnutzung."),
-      multi("Welche Ziele kann Social Media Marketing verfolgen?", ["Reichweite", "Community-Aufbau", "Kundenservice", "Ausschliesslich Lageroptimierung"], [0, 1, 2], "Social Media kann mehrere Unternehmensziele gleichzeitig unterstuetzen."),
-      single("Was ist ein SMART-Ziel?", ["Ein moeglichst allgemeines Ziel", "Ein spezifisches, messbares und termingebundenes Ziel", "Nur ein kreativer Slogan", "Ein unbegrenztes Wunschziel"], 1, "SMART hilft, Ziele konkret steuerbar zu machen."),
-      single("Warum sollte nicht jeder Kanal gleich bespielt werden?", ["Weil jeder Kanal andere Zielgruppen, Formate und Logiken hat", "Weil nur Instagram wichtig ist", "Weil Crossposting verboten ist", "Weil Inhalte immer identisch sein muessen"], 0, "Plattformen unterscheiden sich stark in Nutzung und Erwartung."),
-      multi("Welche Formate sind typisch fuer Social Media?", ["Kurzvideo", "Story", "Carousel", "Live-Format"], [0, 1, 2, 3], "Je nach Plattform variieren die Prioritaeten, aber viele Formate sind kanaltypisch."),
-      single("Was ist ein Corporate Influencer?", ["Ein Rabattcode", "Eine Person aus dem Unternehmen, die sichtbar kommuniziert", "Ein Werbebanner", "Ein CMS-Modul"], 1, "Corporate Influencer koennen Marke, Expertise und Naehe verkoerpern."),
-      multi("Welche Elemente gehoeren zu einer Social-Media-Strategie?", ["Ziele", "Zielgruppen", "Kanalauswahl", "Ressourcenplanung"], [0, 1, 2, 3], "Strategie verbindet Unternehmensziele mit operativer Umsetzbarkeit."),
-      single("Warum ist Community Management wichtig?", ["Weil Kommentare irrelevant sind", "Weil Beziehungen, Vertrauen und Dialog gepflegt werden muessen", "Weil nur Likes zaehlen", "Weil dadurch SEO entfällt"], 1, "Social Media ist kein reiner Sendekanal."),
-      single("Was ist ein typischer Fehler in Social Media Marketing?", ["Ohne Ziel, Zielgruppe und Ressourcen einfach zu posten", "Formate zu testen", "Kommentare zu beantworten", "Kanalspezifisch zu denken"], 0, "Beliebiges Posten fuehrt selten zu nachhaltigen Ergebnissen."),
-      multi("Welche Kennzahlen koennen fuer Social Media relevant sein?", ["Engagement Rate", "Reichweite", "Klicks", "Mietvertrag"], [0, 1, 2], "Abhaengig vom Ziel sind verschiedene KPIs sinnvoll."),
-      open("Erklaere den Unterschied zwischen Reichweite und Engagement.", "Reichweite beschreibt, wie viele Personen einen Inhalt sehen. Engagement beschreibt, wie stark Nutzer mit dem Inhalt interagieren, etwa ueber Likes, Kommentare, Saves oder Shares."),
-      open("Warum ist Ressourcenplanung in Social Media wichtig?", "Weil Plattformen regelmaessige Inhalte, Betreuung, Abstimmung und Reaktion erfordern. Ohne Zeit und Verantwortlichkeiten leidet die Qualitaet und Kontinuitaet."),
-      open("Nenne ein Beispiel, wie sich derselbe Inhalt fuer LinkedIn und Instagram unterscheiden sollte.", "Auf LinkedIn eher fachlicher, textstaerker und businessbezogen. Auf Instagram visueller, kompakter und emotionaler oder alltagsnaher aufbereitet." )
+      single("Was zeichnet Social Media im Vergleich zu klassischen Medien besonders aus?", ["Einweg-Kommunikation", "Interaktion und Beteiligung", "Keine Inhalte", "Nur bezahlte Reichweite"], 1, "Social Media ist von Austausch, Reaktion und Community geprägt."),
+      single("Was beschreibt Web 2.0 im Kern?", ["Ein rein technisches Hosting-Update", "Mehr Beteiligung, Vernetzung und nutzergenerierte Inhalte", "Nur neue Browser", "Nur den Online-Shop-Bereich"], 1, "Web 2.0 steht für interaktive und partizipative Webnutzung."),
+      multi("Welche Ziele kann Social Media Marketing verfolgen?", ["Reichweite", "Community-Aufbau", "Kundenservice", "Ausschließlich Lageroptimierung"], [0, 1, 2], "Social Media kann mehrere Unternehmensziele gleichzeitig unterstützen."),
+      single("Was ist ein SMART-Ziel?", ["Ein möglichst allgemeines Ziel", "Ein spezifisches, messbares und termingebundenes Ziel", "Nur ein kreativer Slogan", "Ein unbegrenztes Wunschziel"], 1, "SMART hilft, Ziele konkret steuerbar zu machen."),
+      single("Warum sollte nicht jeder Kanal gleich bespielt werden?", ["Weil jeder Kanal andere Zielgruppen, Formate und Logiken hat", "Weil nur Instagram wichtig ist", "Weil Crossposting verboten ist", "Weil Inhalte immer identisch sein müssen"], 0, "Plattformen unterscheiden sich stark in Nutzung und Erwartung."),
+      multi("Welche Formate sind typisch für Social Media?", ["Kurzvideo", "Story", "Carousel", "Live-Format"], [0, 1, 2, 3], "Je nach Plattform variieren die Prioritäten, aber viele Formate sind kanaltypisch."),
+      single("Was ist ein Corporate Influencer?", ["Ein Rabattcode", "Eine Person aus dem Unternehmen, die sichtbar kommuniziert", "Ein Werbebanner", "Ein CMS-Modul"], 1, "Corporate Influencer können Marke, Expertise und Nähe verkörpern."),
+      multi("Welche Elemente gehören zu einer Social-Media-Strategie?", ["Ziele", "Zielgruppen", "Kanalauswahl", "Ressourcenplanung"], [0, 1, 2, 3], "Strategie verbindet Unternehmensziele mit operativer Umsetzbarkeit."),
+      single("Warum ist Community Management wichtig?", ["Weil Kommentare irrelevant sind", "Weil Beziehungen, Vertrauen und Dialog gepflegt werden müssen", "Weil nur Likes zählen", "Weil dadurch SEO entfällt"], 1, "Social Media ist kein reiner Sendekanal."),
+      single("Was ist ein typischer Fehler in Social Media Marketing?", ["Ohne Ziel, Zielgruppe und Ressourcen einfach zu posten", "Formate zu testen", "Kommentare zu beantworten", "Kanalspezifisch zu denken"], 0, "Beliebiges Posten führt selten zu nachhaltigen Ergebnissen."),
+      multi("Welche Kennzahlen können für Social Media relevant sein?", ["Engagement Rate", "Reichweite", "Klicks", "Mietvertrag"], [0, 1, 2], "Abhängig vom Ziel sind verschiedene KPIs sinnvoll."),
+      open("Erkläre den Unterschied zwischen Reichweite und Engagement.", "Reichweite beschreibt, wie viele Personen einen Inhalt sehen. Engagement beschreibt, wie stark Nutzer mit dem Inhalt interagieren, etwa über Likes, Kommentare, Saves oder Shares."),
+      open("Warum ist Ressourcenplanung in Social Media wichtig?", "Weil Plattformen regelmäßige Inhalte, Betreuung, Abstimmung und Reaktion erfordern. Ohne Zeit und Verantwortlichkeiten leidet die Qualität und Kontinuität."),
+      open("Nenne ein Beispiel, wie sich derselbe Inhalt für LinkedIn und Instagram unterscheiden sollte.", "Auf LinkedIn eher fachlicher, textstärker und businessbezogen. Auf Instagram visueller, kompakter und emotionaler oder alltagsnaher aufbereitet." )
     ],
     flashcards: [
       { front: "Web 2.0", back: "Interaktive Webnutzung mit Beteiligung, Austausch und nutzergenerierten Inhalten." },
       { front: "SMART-Ziel", back: "Spezifisch, messbar, attraktiv, realistisch und terminiert." },
       { front: "Engagement", back: "Interaktionen wie Likes, Kommentare, Shares, Saves oder Klicks." },
       { front: "Community Management", back: "Aktive Pflege von Beziehungen, Kommentaren, Nachrichten und Dialogen." },
-      { front: "Corporate Influencer", back: "Sichtbare Person aus dem Unternehmen, die glaubwuerdig kommuniziert." },
+      { front: "Corporate Influencer", back: "Sichtbare Person aus dem Unternehmen, die glaubwürdig kommuniziert." },
       { front: "Reach", back: "Anzahl der erreichten Personen oder Accounts." },
       { front: "Content Format", back: "Darstellungsform eines Inhalts, etwa Reel, Story, Carousel oder Live." },
       { front: "Kanalstrategie", back: "Bewusste Auswahl und Nutzung von Plattformen passend zu Zielen und Zielgruppen." }
     ],
     exercises: [
-      "Definiere fuer ein Unternehmen zwei SMART-Ziele und passende KPIs fuer Social Media.",
+      "Definiere für ein Unternehmen zwei SMART-Ziele und passende KPIs für Social Media.",
       "Vergleiche zwei Plattformen hinsichtlich Zielgruppe, Formate und typischer Inhalte.",
-      "Entwirf einen Wochenplan mit Formaten fuer einen Kanal deiner Wahl."
+      "Entwirf einen Wochenplan mit Formaten für einen Kanal deiner Wahl."
     ],
     tips: [
-      "Lerne Kanaele nicht als Selbstzweck, sondern immer aus Unternehmenssicht.",
+      "Lerne Kanäle nicht als Selbstzweck, sondern immer aus Unternehmenssicht.",
       "Denke Social Media immer als Kombination aus Inhalt, Interaktion und Auswertung.",
-      "Wenn ein Post nicht performt, pruefe zuerst Ziel, Hook, Format und Plattform-Fit."
+      "Wenn ein Post nicht performt, prüfe zuerst Ziel, Hook, Format und Plattform-Fit."
     ]
   },
   {
     summary: "Das SEO-Modul behandelt Suchmaschinenoptimierung im Zusammenspiel mit SEM und SEA. Wichtige Themen sind SERPs, Crawling, Indexierung, Ranking, Onpage-Optimierung, Local SEO, Relaunch-Risiken, GEO und sprachbasierte Suche.",
     questions: [
-      single("Wofuer steht SEO?", ["Search Engine Optimization", "Search Engine Operation", "System Engine Output", "Search Experience Option"], 0, "SEO steht fuer Suchmaschinenoptimierung."),
-      single("Wie verhalten sich SEM, SEO und SEA zueinander?", ["SEO und SEA sind Teil von SEM", "SEM ist Teil von SEO", "SEA ist Teil von SEO", "Es gibt keinen Zusammenhang"], 0, "SEM ist der Oberbegriff fuer organische und bezahlte Suchmaschinenmassnahmen."),
+      single("Wofür steht SEO?", ["Search Engine Optimization", "Search Engine Operation", "System Engine Output", "Search Experience Option"], 0, "SEO steht für Suchmaschinenoptimierung."),
+      single("Wie verhalten sich SEM, SEO und SEA zueinander?", ["SEO und SEA sind Teil von SEM", "SEM ist Teil von SEO", "SEA ist Teil von SEO", "Es gibt keinen Zusammenhang"], 0, "SEM ist der Oberbegriff für organische und bezahlte Suchmaschinenmaßnahmen."),
       single("Was sind SERPs?", ["Server Error Reporting Pages", "Suchergebnisseiten einer Suchmaschine", "Social Engagement Ranking Posts", "Keyword-Listen in Excel"], 1, "SERPs sind die Search Engine Results Pages."),
-      multi("Welche Prozesse gehoeren zur technischen Grundlage von SEO?", ["Crawling", "Indexierung", "Ranking", "Rendering"], [0, 1, 2, 3], "Suchmaschinen muessen Inhalte finden, verstehen und bewerten koennen."),
+      multi("Welche Prozesse gehören zur technischen Grundlage von SEO?", ["Crawling", "Indexierung", "Ranking", "Rendering"], [0, 1, 2, 3], "Suchmaschinen müssen Inhalte finden, verstehen und bewerten können."),
       single("Was passiert beim Crawling?", ["Nutzer kaufen Produkte", "Suchmaschinenbots entdecken und lesen Inhalte", "Keywords werden automatisch verkauft", "Anzeigen werden gebucht"], 1, "Crawler durchsuchen Websites nach Inhalten und Verlinkungen."),
-      single("Was bedeutet Indexierung?", ["Inhalte werden in den Suchmaschinenbestand aufgenommen", "Nur die Homepage wird gespeichert", "Anzeigen werden pausiert", "Texte werden geloescht"], 0, "Nur indexierte Inhalte koennen in Suchergebnissen erscheinen."),
-      single("Was beschreibt Ranking?", ["Die Positionierung eines Dokuments fuer eine Suchanfrage", "Nur die Domainlaenge", "Das Hostingmodell", "Die Anzahl der Farben einer Website"], 0, "Ranking beschreibt die Reihenfolge in den Suchergebnissen."),
-      multi("Welche Faktoren koennen Onpage-SEO beeinflussen?", ["Title und Meta Description", "Ueberschriftenstruktur", "Interne Verlinkung", "Lohnabrechnung"], [0, 1, 2], "Gute Onpage-Optimierung verbindet Technik, Inhalt und Nutzerlogik."),
-      single("Was ist Local SEO?", ["Nur Werbung fuer globale Maerkte", "Optimierung fuer lokale Suchanfragen und Sichtbarkeit", "Nur Social Media fuer kleine Unternehmen", "Ein anderes Wort fuer Hosting"], 1, "Local SEO ist besonders fuer standortbezogene Angebote relevant."),
-      multi("Welche Relaunch-Risiken sind fuer SEO typisch?", ["Verlust wichtiger URLs", "Fehlende Redirects", "Indexierungsprobleme", "Verlust von Rankings"], [0, 1, 2, 3], "Relaunches brauchen saubere SEO-Planung."),
-      single("Was bedeutet Suchintention?", ["Die Laune des Webdesigners", "Das Ziel hinter einer Suchanfrage", "Nur der CPC", "Die Farbe der SERP"], 1, "Suchintention ist zentral fuer passende Inhalte."),
-      single("Was ist GEO im Kontext des Moduls?", ["Nur Geografieunterricht", "Optimierung fuer generative Such- und Antwortsysteme", "Ein lokaler Branchenbucheintrag", "Ein Trackingpixel"], 1, "Neben klassischer Suche werden auch generative Antwortsysteme relevanter."),
-      multi("Welche Kennzahlen koennen zur SEO-Bewertung sinnvoll sein?", ["Organischer Traffic", "Sichtbarkeit", "Rankings", "Betriebskosten"], [0, 1, 2], "Nicht nur Traffic, sondern auch Zielerreichung ist wichtig."),
-      single("Warum ist Voice Search besonders relevant fuer bestimmte Suchanfragen?", ["Weil sie oft natuerlicher und frageorientierter formuliert sind", "Weil dadurch keine Inhalte mehr noetig sind", "Weil Keywords unwichtig werden", "Weil nur Videos ranken"], 0, "Sprachsuche veraendert Form und Erwartung von Suchanfragen."),
-      open("Erklaere den Unterschied zwischen Crawling, Indexierung und Ranking.", "Crawling bedeutet, dass Bots Inhalte entdecken. Indexierung bedeutet, dass diese Inhalte in den Suchmaschinenbestand aufgenommen werden. Ranking beschreibt, wie gut die Seite fuer bestimmte Suchanfragen platziert wird."),
-      open("Warum ist Suchintention fuer SEO oft wichtiger als reine Keyword-Wiederholung?", "Weil Suchmaschinen immer besser verstehen, welches Problem Nutzer loesen wollen. Inhalte muessen diese Absicht passend beantworten, statt nur Begriffe haeufig zu wiederholen."),
-      open("Nenne drei Punkte, die du vor einem Website-Relaunch aus SEO-Sicht pruefen wuerdest.", "Zum Beispiel URL-Struktur, Redirect-Konzept, Indexierungssteuerung, interne Verlinkung, Meta-Daten, Ladezeit oder bestehende Rankings." )
+      single("Was bedeutet Indexierung?", ["Inhalte werden in den Suchmaschinenbestand aufgenommen", "Nur die Homepage wird gespeichert", "Anzeigen werden pausiert", "Texte werden gelöscht"], 0, "Nur indexierte Inhalte können in Suchergebnissen erscheinen."),
+      single("Was beschreibt Ranking?", ["Die Positionierung eines Dokuments für eine Suchanfrage", "Nur die Domainlänge", "Das Hostingmodell", "Die Anzahl der Farben einer Website"], 0, "Ranking beschreibt die Reihenfolge in den Suchergebnissen."),
+      multi("Welche Faktoren können Onpage-SEO beeinflussen?", ["Title und Meta Description", "Überschriftenstruktur", "Interne Verlinkung", "Lohnabrechnung"], [0, 1, 2], "Gute Onpage-Optimierung verbindet Technik, Inhalt und Nutzerlogik."),
+      single("Was ist Local SEO?", ["Nur Werbung für globale Märkte", "Optimierung für lokale Suchanfragen und Sichtbarkeit", "Nur Social Media für kleine Unternehmen", "Ein anderes Wort für Hosting"], 1, "Local SEO ist besonders für standortbezogene Angebote relevant."),
+      multi("Welche Relaunch-Risiken sind für SEO typisch?", ["Verlust wichtiger URLs", "Fehlende Redirects", "Indexierungsprobleme", "Verlust von Rankings"], [0, 1, 2, 3], "Relaunches brauchen saubere SEO-Planung."),
+      single("Was bedeutet Suchintention?", ["Die Laune des Webdesigners", "Das Ziel hinter einer Suchanfrage", "Nur der CPC", "Die Farbe der SERP"], 1, "Suchintention ist zentral für passende Inhalte."),
+      single("Was ist GEO im Kontext des Moduls?", ["Nur Geografieunterricht", "Optimierung für generative Such- und Antwortsysteme", "Ein lokaler Branchenbucheintrag", "Ein Trackingpixel"], 1, "Neben klassischer Suche werden auch generative Antwortsysteme relevanter."),
+      multi("Welche Kennzahlen können zur SEO-Bewertung sinnvoll sein?", ["Organischer Traffic", "Sichtbarkeit", "Rankings", "Betriebskosten"], [0, 1, 2], "Nicht nur Traffic, sondern auch Zielerreichung ist wichtig."),
+      single("Warum ist Voice Search besonders relevant für bestimmte Suchanfragen?", ["Weil sie oft natürlicher und frageorientierter formuliert sind", "Weil dadurch keine Inhalte mehr nötig sind", "Weil Keywords unwichtig werden", "Weil nur Videos ranken"], 0, "Sprachsuche verändert Form und Erwartung von Suchanfragen."),
+      open("Erkläre den Unterschied zwischen Crawling, Indexierung und Ranking.", "Crawling bedeutet, dass Bots Inhalte entdecken. Indexierung bedeutet, dass diese Inhalte in den Suchmaschinenbestand aufgenommen werden. Ranking beschreibt, wie gut die Seite für bestimmte Suchanfragen platziert wird."),
+      open("Warum ist Suchintention für SEO oft wichtiger als reine Keyword-Wiederholung?", "Weil Suchmaschinen immer besser verstehen, welches Problem Nutzer lösen wollen. Inhalte müssen diese Absicht passend beantworten, statt nur Begriffe häufig zu wiederholen."),
+      open("Nenne drei Punkte, die du vor einem Website-Relaunch aus SEO-Sicht prüfen würdest.", "Zum Beispiel URL-Struktur, Redirect-Konzept, Indexierungssteuerung, interne Verlinkung, Meta-Daten, Ladezeit oder bestehende Rankings." )
     ],
     flashcards: [
-      { front: "SEO", back: "Suchmaschinenoptimierung fuer organische Sichtbarkeit." },
-      { front: "SEM", back: "Suchmaschinenmarketing als Oberbegriff fuer SEO und SEA." },
+      { front: "SEO", back: "Suchmaschinenoptimierung für organische Sichtbarkeit." },
+      { front: "SEM", back: "Suchmaschinenmarketing als Oberbegriff für SEO und SEA." },
       { front: "SEA", back: "Bezahlte Suchmaschinenwerbung." },
       { front: "SERP", back: "Suchergebnisseite einer Suchmaschine." },
       { front: "Crawling", back: "Entdecken und Auslesen von Inhalten durch Bots." },
       { front: "Indexierung", back: "Aufnahme von Inhalten in den Suchmaschinenindex." },
-      { front: "Suchintention", back: "Das Ziel oder Beduerfnis hinter einer Suchanfrage." },
-      { front: "Local SEO", back: "Optimierung fuer lokale Auffindbarkeit in der Suche." }
+      { front: "Suchintention", back: "Das Ziel oder Bedürfnis hinter einer Suchanfrage." },
+      { front: "Local SEO", back: "Optimierung für lokale Auffindbarkeit in der Suche." }
     ],
     exercises: [
-      "Analysiere eine Website auf Suchintention, Titles, Ueberschriften und interne Verlinkung.",
+      "Analysiere eine Website auf Suchintention, Titles, Überschriften und interne Verlinkung.",
       "Erstelle eine Relaunch-SEO-Checkliste mit technischen und inhaltlichen Punkten.",
-      "Vergleiche fuer drei Keywords die Suchintention und leite passende Inhaltstypen ab."
+      "Vergleiche für drei Keywords die Suchintention und leite passende Inhaltstypen ab."
     ],
     tips: [
-      "Denke bei SEO nie nur in Keywords, sondern in Nutzerfragen und Seitenqualitaet.",
-      "Pruefe immer, ob Inhalte ueberhaupt gecrawlt und indexiert werden koennen.",
-      "Bei Relaunches ist saubere Vorbereitung oft wichtiger als spaetere Schadensbegrenzung."
+      "Denke bei SEO nie nur in Keywords, sondern in Nutzerfragen und Seitenqualität.",
+      "Prüfe immer, ob Inhalte überhaupt gecrawlt und indexiert werden können.",
+      "Bei Relaunches ist saubere Vorbereitung oft wichtiger als spätere Schadensbegrenzung."
     ]
   }
 ];

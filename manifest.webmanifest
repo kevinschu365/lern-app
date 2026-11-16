@@ -1,0 +1,14 @@
+{
+  "name": "Lernwelt",
+  "short_name": "Lernwelt",
+  "description": "Weiterbildung Online-Marketing und eigene Lernthemen mit Quiz, Karteikarten, Audio und Video.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fc",
+  "theme_color": "#f4f7fc",
+  "icons": [
+    { "src": "icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
+  ]
+}

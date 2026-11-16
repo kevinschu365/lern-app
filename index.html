@@ -2,96 +2,49 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LernApp Module</title>
-    <meta
-      name="description"
-      content="Lern-App mit Quizfragen, Mehrfachantworten, Übungen und Karteikarten für deine Online-Marketing-Module."
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lernwelt</title>
+    <meta name="description" content="Persönliche Lern-App: Weiterbildung Online-Marketing und eigene Lernthemen mit Quiz, Karteikarten, Audio und Video." />
+    <meta name="theme-color" content="#f4f7fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Lernwelt" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link rel="stylesheet" href="styles.css?v=20260418-2" />
+    <link rel="stylesheet" href="styles.css?v=20261116-3" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Lernplattform</p>
-          <h1>Deine Module, Quizfragen und Übungen an einem Ort</h1>
-          <p class="hero-text">
-            Diese App bündelt Quiz, offene Fragen, Mehrfachantworten,
-            Karteikarten und Übungen für deine Module.
-          </p>
-        </div>
-        <div class="hero-stats">
-          <div class="stat-card">
-            <span id="moduleCount">0</span>
-            <small>Module vorbereitet</small>
-          </div>
-          <div class="stat-card">
-            <span id="questionCount">0</span>
-            <small>Fragen insgesamt</small>
-          </div>
-          <div class="stat-card">
-            <span id="flashcardCount">0</span>
-            <small>Karteikarten</small>
-          </div>
-          <div class="stat-card">
-            <span id="learnedCount">0</span>
-            <small>Module gelernt</small>
-          </div>
-        </div>
-      </header>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a id="backBtn" class="back" href="#/" aria-label="Zurück" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+        <nav id="crumbs" class="crumbs" aria-label="Navigation"></nav>
+        <a class="topbar-btn" href="#/suche" aria-label="Suche">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </a>
+      </div>
+    </header>
 
-      <section class="panel random-panel">
-        <div class="panel-head panel-head-actions">
-          <div>
-            <h2>Zufallsmodus</h2>
-            <p>10 zufällige Fragen und 10 zufällige Karteikarten aus allen befüllten Modulen.</p>
-          </div>
-          <div class="panel-actions">
-            <button id="randomStudyRefresh" class="ghost-action" type="button" hidden>Neu mischen</button>
-            <button id="randomStudyToggle" class="progress-toggle secondary-action" type="button">Zufallsmodus öffnen</button>
-          </div>
-        </div>
-        <div id="randomStudy" class="random-study" hidden></div>
-      </section>
+    <main id="app" class="shell" aria-live="polite"></main>
 
-      <section class="panel exam-panel">
-        <div class="panel-head panel-head-actions">
-          <div>
-            <h2>Prüfungsmodus</h2>
-            <p>30 gemischte, automatisch auswertbare Fragen mit Ergebnis, Fehleranalyse und Wiederholungshinweisen.</p>
-          </div>
-          <div class="panel-actions">
-            <button id="examModeRefresh" class="ghost-action" type="button" hidden>Neue Prüfung</button>
-            <button id="examModeToggle" class="progress-toggle secondary-action" type="button">Prüfung starten</button>
-          </div>
-        </div>
-        <div id="examMode" class="exam-mode" hidden></div>
-      </section>
+    <!-- Weiterbildung 2025 Ecomex -->
+    <script src="real-modules.js?v=20261116-2"></script>
+    <script src="module-overrides.js?v=20261116-2"></script>
+    <script src="module-learningcard-imports.js?v=20261116-2"></script>
 
-      <main class="layout">
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Module</h2>
-            <p>Wähle ein Modul aus, um Quiz, Karteikarten und Übungen zu starten.</p>
-          </div>
-          <div class="module-picker">
-            <label class="picker-label" for="moduleSelect">Modul auswählen</label>
-            <select id="moduleSelect" class="module-select"></select>
-          </div>
-        </section>
+    <!-- Themen-Bereiche: pro Thema eine Zeile (Format siehe themen/FORMAT.md) -->
+    <script src="themen/seo-tutorial-2026/thema.js?v=20261116-2"></script>
 
-        <section class="panel detail-panel">
-          <div id="moduleDetail" class="module-detail"></div>
-        </section>
-      </main>
-    </div>
-
-    <script src="real-modules.js?v=20260418-1"></script>
-    <script src="module-overrides.js?v=20260418-1"></script>
-    <script src="module-learningcard-imports.js?v=20260418-1"></script>
-    <script src="main.js?v=20260418-1"></script>
+    <script src="main.js?v=20261116-3"></script>
+    <script>
+      if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+    </script>
   </body>
 </html>
