@@ -693,3 +693,17 @@ window.LERN_THEMEN.push({
     {"begriff":"Zero-Click-Suche","kurz":"Suche, bei der Nutzer die Antwort direkt auf der Ergebnisseite bekommen und keine Website anklicken.","mehr":"Nimmt durch KI-Antworten zu. Für Kanzleien werden deshalb Markenbekanntheit, lokale Signale und Inhalte wichtiger, die zur Kontaktaufnahme führen.","siehe":["Google AI Overviews","GEO (Generative Engine Optimization)"]}
   ]
 });
+
+/* ---------- NotebookLM-Medien (Notebook „KI aktuell 2026 (Lernwelt)“, erstellt 17.11.2026) ---------- */
+(function () {
+  var t = (window.LERN_THEMEN || []).find(function (x) { return x.id === "ki-aktuell-2026"; });
+  if (!t) return;
+  t.audio = [
+    { titel: "AI Act Fristen und KI-Sichtbarkeit für Kanzleien (ausführlich)", datei: "audio-gesamt.m4a", dauer: "27:39" },
+    { titel: "Googles KI-Suche schluckt Kanzlei-Traffic", datei: "audio-ki-suche.m4a", dauer: "7:15" },
+    { titel: "KI-Kennzeichnungspflicht ab August 2026 rechtssicher umsetzen", datei: "audio-ai-act.m4a", dauer: "6:24" }
+  ];
+  t.videos = [{ titel: "State of AI 2026", art: "uebersicht", datei: "video-uebersicht.mp4", dauer: "7:36" }];
+  if (Array.isArray(t.mindmaps) && t.mindmaps.length) t.mindmaps[0].bild = "mindmap.png";
+  else t.mindmaps = [{ titel: "KI aktuell 2026", bild: "mindmap.png" }];
+})();

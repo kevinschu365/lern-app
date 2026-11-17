@@ -4,6 +4,19 @@
 
 window.LERN_CHANGELOG = [
   {
+    version: "2.7",
+    datum: "17.11.2026",
+    titel: "Erklärungen & NotebookLM-Medien",
+    neu: [
+      "„Warum ist das so?“ erklärt dir jetzt die Antwort: passende Fachbegriffe aus dem Glossar, die passende Karteikarte und der Bericht zum Nachlesen.",
+      "Bei falschen Antworten klappt die Erklärung automatisch auf, bei richtigen auf Antippen.",
+      "KI aktuell: 3 Audio-Folgen aus NotebookLM (ausführlich, KI-Suche, Kennzeichnungspflicht), Videoübersicht „State of AI 2026“ und Mindmap als Bild.",
+      "Marketing-Trends: 3 Audio-Folgen (ausführlich, SEO & GEO, Social & Newsletter), Videoübersicht und Mindmap als Bild.",
+      "Nach dem Gegencheck in NotebookLM: Aussage zu Kurzvideo (HubSpot) genauer formuliert.",
+      "Alle Audios mit Tempo-Wahl und Weiterhören an der letzten Stelle."
+    ]
+  },
+  {
     version: "2.6",
     datum: "16.11.2026",
     titel: "Faktencheck & neue Aufgaben",

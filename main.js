@@ -1368,12 +1368,10 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
     return `
       ${main}
       <div class="answer-box ${a.correct ? "is-pass" : "is-fail"}"><strong>${verdict}</strong>${confNote}${q.explanation ? `<p>${q.explanation}</p>` : ""}</div>
-      ${
-        a.whyOpen
-          ? `<textarea class="own-answer" data-why rows="2" placeholder="Warum ist das so? Erklär es dir in eigenen Worten …">${esc(a.why)}</textarea>`
-          : `<button class="link-btn" type="button" data-action="why">${icon("pencil")} Warum ist das so? In eigenen Worten erklären</button>`
-      }
-      ${a.correct ? "" : relatedHtml(items[index], q)}`;
+      <button class="why-toggle ${a.whyOpen ? "is-open" : ""}" type="button" data-action="why" aria-expanded="${a.whyOpen ? "true" : "false"}">
+        ${icon("bulb")} <span>Warum ist das so?</span> <small>${a.whyOpen ? "Erklärung ausblenden" : "Mehr erklären"}</small>
+      </button>
+      ${a.whyOpen ? explainHtml(items[index], q) : ""}`;
   };
 
   const draw = () => {
@@ -1444,7 +1442,6 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
     if (index >= items.length) return;
     const a = current();
     if (event.target.matches("[data-own]")) a.text = event.target.value;
-    if (event.target.matches("[data-why]")) a.why = event.target.value;
     if (event.target.matches("[data-num]")) {
       a.num = event.target.value;
       const check = el.querySelector('[data-action="check"]');
@@ -1502,6 +1499,7 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
         if (!isReady(q, a)) return;
         a.checked = true;
         a.correct = evaluate(q, a);
+        a.whyOpen = !a.correct;
         if (record) recordAnswer(q, a.correct, a.conf || "");
         else trackActivity("frage", a.correct);
         checkBadgesSoon();
@@ -1510,10 +1508,8 @@ function mountQuiz(el, rawItems, { color = "#2563eb", onReshuffle, record = true
         a.revealed = true;
         return draw();
       case "why":
-        a.whyOpen = true;
-        draw();
-        el.querySelector("[data-why]")?.focus();
-        return;
+        a.whyOpen = !a.whyOpen;
+        return draw();
       case "speak": {
         const parts = [stripTags(q.prompt).replace(/_{3,}/g, "Lücke")];
         if (q.options) q.options.forEach((opt, oi) => parts.push(`Antwort ${oi + 1}: ${opt}`));
@@ -2890,6 +2886,51 @@ function findRelatedCard(group, q) {
     }
   });
   return bestScore >= 3 ? best : null;
+}
+
+/* Begriffe aus dem Glossar, die in Frage/Lösung/Erklärung vorkommen. */
+function glossaryForQuestion(item, q) {
+  const text = ` ${foldText(`${q.prompt} ${solutionText(q)} ${q.explanation || ""}`).replace(/[^a-z0-9]+/g, " ")} `;
+  const area = item.themeId ? item.themeId : null;
+  const moduleTitle = item.group || item.label || "";
+  const mod = wbModules.find((m) => m.title === moduleTitle);
+  const hits = [];
+  glossaryEntries().forEach((e) => {
+    const names = [e.begriff.split("(")[0], (e.begriff.match(/\(([^)]+)\)/) || [])[1] || ""]
+      .map((n) => foldText(n).replace(/[^a-z0-9]+/g, " ").trim())
+      .filter((n) => n.length >= 3);
+    if (!names.some((n) => text.includes(` ${n} `))) return;
+    let score = Math.max(...names.map((n) => n.length));
+    if ((area && e.bereich === area) || (mod && e.gruppe === `wb-${mod.id}`)) score += 100;
+    hits.push({ e, score });
+  });
+  const seen = new Set();
+  return hits
+    .sort((a, b) => b.score - a.score)
+    .filter(({ e }) => {
+      const core = foldText(e.begriff.split("(")[0]).trim();
+      if (seen.has(core)) return false;
+      seen.add(core);
+      return true;
+    })
+    .slice(0, 3)
+    .map(({ e }) => e);
+}
+
+function explainHtml(item, q) {
+  const terms = glossaryForQuestion(item, q);
+  const related = relatedHtml(item, q);
+  const termHtml = terms.length
+    ? `<div class="explain-terms">${terms
+        .map(
+          (e) => `<div class="explain-term" style="--c:${e.color};"><strong>${esc(e.begriff)}</strong><p>${esc(e.kurz)}</p>${e.mehr ? `<p class="explain-more">${esc(e.mehr)}</p>` : ""}</div>`
+        )
+        .join("")}</div>`
+    : "";
+  if (!termHtml && !related) {
+    return `<div class="explain"><p class="hint">Zu dieser Frage gibt es keine weitere Erklärung. Schau in die Lernkarten oder ins Glossar „Begriffe A–Z“.</p></div>`;
+  }
+  return `<div class="explain">${termHtml ? `<small class="explain-label">Die wichtigsten Begriffe dazu</small>${termHtml}` : ""}${related}</div>`;
 }
 
 function relatedHtml(item, q) {
